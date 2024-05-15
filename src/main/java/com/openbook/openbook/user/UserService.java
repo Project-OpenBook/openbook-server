@@ -17,12 +17,14 @@ public class UserService {
     private final PasswordEncoder encoder;
 
     @Transactional
-    public void signup(SignUpRequest request) {
+    public void signup(final SignUpRequest request) {
         if(userRepository.findByEmail(request.email()).isPresent()) {
             throw new RuntimeException("중복된 이메일");
         }
-        User user = User.builder().email(request.email())
+        User user = User.builder()
+                .email(request.email())
                 .name(request.name())
+                .nickname(request.nickname())
                 .password(encoder.encode(request.password()))
                 .role(UserRole.USER)
                 .build();

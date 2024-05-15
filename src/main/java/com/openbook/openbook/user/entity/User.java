@@ -35,6 +35,8 @@ public class User extends EntityBasicTime {
 
     private String name;
 
+    private String nickname;
+
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
@@ -48,10 +50,11 @@ public class User extends EntityBasicTime {
     private List<Alarm> alarms = new ArrayList<>();
 
     @Builder
-    public User(String password, String email, String name, UserRole role) {
+    public User(String password, String email, String name, String nickname, UserRole role) {
         this.password = password;
         this.email = email;
         this.name = name;
+        this.nickname = nickname;
         this.role = role;
     }
 }

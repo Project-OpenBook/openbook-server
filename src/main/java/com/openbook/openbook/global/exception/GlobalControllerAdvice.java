@@ -1,5 +1,7 @@
 package com.openbook.openbook.global.exception;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.openbook.openbook.global.ResponseMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,4 +32,17 @@ public class GlobalControllerAdvice {
         log.error(String.format(ERROR_LOG, e.getClass().getSimpleName(), e.getMessage()));
         return ResponseEntity.badRequest().body(new ResponseMessage("예기치 않은 런타임 에러입니다."));
     }
+
+    @ExceptionHandler(AmazonClientException.class)
+    public ResponseEntity<ResponseMessage> amazonClientException(final AmazonClientException e){
+        log.error(String.format(ERROR_LOG, e.getClass().getSimpleName(), e.getMessage()));
+        return ResponseEntity.internalServerError().body(new ResponseMessage("아마존 클라이언트 에러입니다."));
+    }
+
+    @ExceptionHandler(AmazonServiceException.class)
+    public ResponseEntity<ResponseMessage> amazonServiceException(final AmazonServiceException e){
+        log.error(String.format(ERROR_LOG, e.getClass().getSimpleName(), e.getMessage()));
+        return ResponseEntity.internalServerError().body(new ResponseMessage("아마존 서비스 에러입니다."));
+    }
+
 }

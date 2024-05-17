@@ -31,10 +31,14 @@ public class SecurityConfig {
                 });
 
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/signup").permitAll();
-            auth.anyRequest().authenticated();
-        });
+                auth.requestMatchers(permitPaths).permitAll();
+                auth.anyRequest().authenticated();
+            }).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+    private final String[] permitPaths = {
+            "/login",
+            "/signup"
+    };
 }

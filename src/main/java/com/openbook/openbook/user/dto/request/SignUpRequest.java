@@ -1,4 +1,4 @@
-package com.openbook.openbook.user.dto;
+package com.openbook.openbook.user.dto.request;
 
 
 import jakarta.validation.constraints.Email;

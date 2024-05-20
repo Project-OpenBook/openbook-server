@@ -19,7 +19,7 @@ public class EventLayoutAreaService {
         for(int number=1; number<=lineMax; number++) {
             EventLayoutArea area = EventLayoutArea.builder()
                     .linkedEventLayout(layout)
-                    .type(classification)
+                    .classification(classification)
                     .number(String.valueOf(number))
                     .build();
             layoutAreaRepository.save(area);

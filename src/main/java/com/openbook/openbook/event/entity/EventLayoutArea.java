@@ -35,7 +35,7 @@ public class EventLayoutArea {
     @Enumerated(EnumType.STRING)
     private EventLayoutAreaStatus status;
 
-    private String type;
+    private String classification;
 
     private String number;
 
@@ -48,9 +48,9 @@ public class EventLayoutArea {
     }
 
     @Builder
-    public EventLayoutArea(EventLayout linkedEventLayout, String type, String number) {
+    public EventLayoutArea(EventLayout linkedEventLayout, String classification, String number) {
         this.linkedEventLayout = linkedEventLayout;
-        this.type = type;
+        this.classification = classification;
         this.number = number;
     }
 }

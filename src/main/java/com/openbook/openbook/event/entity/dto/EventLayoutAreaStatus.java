@@ -1,4 +1,4 @@
-package com.openbook.openbook.event.dto;
+package com.openbook.openbook.event.entity.dto;
 
 
 import lombok.Getter;

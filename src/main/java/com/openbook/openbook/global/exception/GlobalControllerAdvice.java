@@ -23,7 +23,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseMessage> methodArgumentNotValidException(final MethodArgumentNotValidException e){
-        log.error(String.format(ERROR_LOG, e.getParameter(), "객체검증에러"));
+        log.error(String.format(ERROR_LOG, e.getParameter(), e.getMessage(), "객체검증에러"));
         return ResponseEntity.badRequest().body(new ResponseMessage("전달된 데이터에 오류가 있습니다."));
     }
 

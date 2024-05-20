@@ -11,6 +11,7 @@ import com.openbook.openbook.global.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.UserRepository;
 import com.openbook.openbook.user.entity.User;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -33,6 +34,10 @@ public class EventService {
     public void eventRegistration(final Long userId, final EventRegistrationRequest request) {
         User user = getUserOrException(userId);
 
+        dateValidityCheck(request.openDate(), request.closeDate());
+        dateValidityCheck(request.boothRecruitmentStartDate(), request.boothRecruitmentEndDate());
+        dateValidityCheck(request.boothRecruitmentEndDate(),request.openDate());
+
         List<LayoutAreaData> areaData = getLayoutAreaList(request.areaClassifications(), request.areaMaxNumbers());
         EventLayoutData layoutData = new EventLayoutData(request.layoutType(),request.layoutImages(), areaData);
         EventLayout layout = layoutService.createEventLayout(layoutData);
@@ -50,6 +55,12 @@ public class EventService {
                 .boothRecruitmentEndDate(request.boothRecruitmentEndDate())
                 .build();
         eventRepository.save(event);
+    }
+
+    private void dateValidityCheck(LocalDate start, LocalDate end) {
+        if(start.isAfter(end)) {
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "날짜 입력 오류");
+        }
     }
 
     private List<LayoutAreaData> getLayoutAreaList(List<String> classifications, List<Integer> maxNumbers) {

@@ -1,6 +1,6 @@
 package com.openbook.openbook.event.entity;
 
-import com.openbook.openbook.event.dto.EventLayoutType;
+import com.openbook.openbook.event.entity.dto.EventLayoutType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

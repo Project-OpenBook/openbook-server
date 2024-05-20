@@ -1,7 +1,7 @@
 package com.openbook.openbook.event.entity;
 
 import com.openbook.openbook.booth.entity.BoothLocation;
-import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
+import com.openbook.openbook.event.entity.dto.EventLayoutAreaStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

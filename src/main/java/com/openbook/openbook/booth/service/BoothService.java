@@ -30,7 +30,7 @@ public class BoothService {
     private final UserRepository userRepository;
     private final S3Service s3Service;
     @Transactional
-    public void createBooth(Long userId, BoothRegistrationRequest request){
+    public void boothRegistration(Long userId, BoothRegistrationRequest request){
         User user = getUserOrException(userId);
         Event event = getEventOrException(request.linkedEvent());
 

@@ -20,8 +20,8 @@ public class UserBoothController {
 
     private final BoothService boothService;
     @PostMapping
-    public ResponseEntity <ResponseMessage>  createBooth(Authentication authentication, @Valid BoothRegistrationRequest request){
-        boothService.createBooth(Long.valueOf(authentication.getName()), request);
+    public ResponseEntity <ResponseMessage>  registration(Authentication authentication, @Valid BoothRegistrationRequest request){
+        boothService.boothRegistration(Long.valueOf(authentication.getName()), request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

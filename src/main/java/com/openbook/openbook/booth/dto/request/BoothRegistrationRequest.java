@@ -1,17 +1,14 @@
 package com.openbook.openbook.booth.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
-public record BoothCreateRequest(
+public record BoothRegistrationRequest(
         @NotBlank String name,
         @NotNull Long linkedEvent,
         @NotNull LocalDateTime openTime,

@@ -1,6 +1,6 @@
 package com.openbook.openbook.booth.service;
 
-import com.openbook.openbook.booth.dto.request.BoothCreateRequest;
+import com.openbook.openbook.booth.dto.request.BoothRegistrationRequest;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.repository.BoothRepository;
 import com.openbook.openbook.event.entity.Event;
@@ -30,7 +30,7 @@ public class BoothService {
     private final UserRepository userRepository;
     private final S3Service s3Service;
     @Transactional
-    public void createBooth(Long userId, BoothCreateRequest request){
+    public void createBooth(Long userId, BoothRegistrationRequest request){
         User user = getUserOrException(userId);
         Event event = getEventOrException(request.linkedEvent());
 

@@ -54,5 +54,5 @@ public class EventLayoutArea {
         this.number = number;
     }
 
-    public void updateStatusWaiting(){ this.status = EventLayoutAreaStatus.WAITING; }
+    public void updateStatusWaiting(EventLayoutAreaStatus status){ this.status = status; }
 }

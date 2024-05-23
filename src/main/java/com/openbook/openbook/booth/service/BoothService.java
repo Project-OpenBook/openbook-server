@@ -4,6 +4,7 @@ import com.openbook.openbook.booth.dto.request.BoothRegistrationRequest;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.repository.BoothRepository;
 import com.openbook.openbook.event.entity.Event;
+import com.openbook.openbook.event.entity.dto.EventLayoutAreaStatus;
 import com.openbook.openbook.event.repository.EventRepository;
 import com.openbook.openbook.global.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
@@ -47,8 +48,9 @@ public class BoothService {
                 .closeTime(request.closeTime())
                 .build();
 
+        boothLocationService.boothLocationApplication(request.locations());
         boothRepository.save(booth);
-        boothLocationService.createBoothLocation(booth, request.locations());
+
     }
 
     private void datePeriodCheck(LocalDateTime openTime, LocalDateTime closeTime){

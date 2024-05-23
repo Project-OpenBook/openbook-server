@@ -11,8 +11,8 @@ import java.util.List;
 public record BoothRegistrationRequest(
         @NotBlank String name,
         @NotNull Long linkedEvent,
-        @NotNull LocalDateTime openTime,
-        @NotNull LocalDateTime closeTime,
+        @NotNull String openTime,
+        @NotNull String closeTime,
         @NotNull MultipartFile mainImage,
         @NotNull @Size(min = 1, max = 3) List<Long> locations,
         @NotBlank String description,

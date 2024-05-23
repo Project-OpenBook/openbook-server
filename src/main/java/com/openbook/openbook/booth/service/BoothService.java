@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Service
@@ -34,8 +36,11 @@ public class BoothService {
     public void boothRegistration(Long userId, BoothRegistrationRequest request){
         User user = getUserOrException(userId);
         Event event = getEventOrException(request.linkedEvent());
+        
+        LocalDateTime open = timeFormat(request.openTime(), event.getOpenDate());
+        LocalDateTime close = timeFormat(request.closeTime(), event.getCloseDate());
 
-        datePeriodCheck(request.openTime(), request.closeTime());
+        datePeriodCheck(open, close);
 
         Booth booth = Booth.builder()
                 .linkedEvent(event)
@@ -44,8 +49,8 @@ public class BoothService {
                 .description(request.description())
                 .mainImageUrl(uploadAndGetS3ImageUrl(request.mainImage()))
                 .accountNumber(request.accountNumber())
-                .openTime(request.openTime())
-                .closeTime(request.closeTime())
+                .openTime(open)
+                .closeTime(close)
                 .build();
 
         boothLocationService.boothLocationApplication(request.locations());
@@ -60,6 +65,13 @@ public class BoothService {
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "시간 입력 오류");
         }
     }
+
+    private LocalDateTime timeFormat(String time, LocalDate date){
+        String dateTime = date.toString() + " " + time;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(dateTime, dateTimeFormatter);
+    }
+
 
     private String uploadAndGetS3ImageUrl(MultipartFile image) {
         String imageName = getRandomFileName(image);

@@ -40,7 +40,7 @@ public class BoothService {
         LocalDateTime open = timeFormat(request.openTime(), event.getOpenDate());
         LocalDateTime close = timeFormat(request.closeTime(), event.getCloseDate());
 
-        datePeriodCheck(open, close);
+        dateTimePeriodCheck(open, close, event);
 
         Booth booth = Booth.builder()
                 .linkedEvent(event)
@@ -58,11 +58,17 @@ public class BoothService {
 
     }
 
-    private void datePeriodCheck(LocalDateTime openTime, LocalDateTime closeTime){
-        LocalTime open = openTime.toLocalTime();
-        LocalTime close = closeTime.toLocalTime();
-        if(open.isAfter(close)){
+    private void dateTimePeriodCheck(LocalDateTime open, LocalDateTime close, Event event){
+        LocalTime openTime = open.toLocalTime();
+        LocalTime closeTime = close.toLocalTime();
+        if(openTime.isAfter(closeTime)){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "시간 입력 오류");
+        }
+
+        LocalDate now = LocalDate.now();
+
+        if(event.getOpenDate().isBefore(now) || event.getCloseDate().isAfter(now)){
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "모집 기간이 아닙니다.");
         }
     }
 

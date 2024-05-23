@@ -42,6 +42,8 @@ public class BoothService {
 
         dateTimePeriodCheck(open, close, event);
 
+        boothLocationService.boothLocationApplication(request.locations());
+
         Booth booth = Booth.builder()
                 .linkedEvent(event)
                 .manager(user)
@@ -53,7 +55,6 @@ public class BoothService {
                 .closeTime(close)
                 .build();
 
-        boothLocationService.boothLocationApplication(request.locations());
         boothRepository.save(booth);
 
     }

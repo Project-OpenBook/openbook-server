@@ -41,7 +41,7 @@ public class BoothService {
                 .manager(user)
                 .name(request.name())
                 .description(request.description())
-                .mainImageUrl(uploadAndGetS3ImageUrl(request.mainImageUrl()))
+                .mainImageUrl(uploadAndGetS3ImageUrl(request.mainImage()))
                 .accountNumber(request.accountNumber())
                 .openTime(request.openTime())
                 .closeTime(request.closeTime())

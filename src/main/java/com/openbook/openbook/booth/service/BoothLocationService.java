@@ -27,7 +27,7 @@ public class BoothLocationService {
             Optional<EventLayoutArea> eventLayoutArea = eventLayoutAreaRepository.findById(layoutId);
             EventLayoutArea layoutArea = eventLayoutArea.get();
             if(layoutArea.getStatus().equals(EventLayoutAreaStatus.EMPTY)){
-                layoutArea.updateStatusWaiting(EventLayoutAreaStatus.WAITING);
+                layoutArea.updateStatus(EventLayoutAreaStatus.WAITING);
             }else{
                 throw new OpenBookException(HttpStatus.INTERNAL_SERVER_ERROR, "이미 예약 된 자리 입니다.");
             }

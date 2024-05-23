@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,8 +21,9 @@ public class AdminEventController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/events")
-    public ResponseEntity<PageResponse<AdminEventData>> allEventList(@PageableDefault(size = 10) Pageable pageable) {
-        return ResponseEntity.ok(adminEventService.getAllRequestEventList(pageable));
+    public ResponseEntity<PageResponse<AdminEventData>> getEventPage(
+            @RequestParam(defaultValue = "all") String status, @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(PageResponse.of(adminEventService.getRequestedEvents(pageable, status)));
     }
 
 }

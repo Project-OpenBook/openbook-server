@@ -13,10 +13,10 @@ public record BoothRegistrationRequest(
         @NotNull Long linkedEvent,
         @NotNull LocalDateTime openTime,
         @NotNull LocalDateTime closeTime,
-        @NotNull MultipartFile mainImageUrl,
+        @NotNull MultipartFile mainImage,
         @NotNull @Size(min = 1, max = 3) List<Long> locations,
-        @NotNull String description,
-        @NotNull String accountNumber
+        @NotBlank String description,
+        String accountNumber
 
         ) {
 }

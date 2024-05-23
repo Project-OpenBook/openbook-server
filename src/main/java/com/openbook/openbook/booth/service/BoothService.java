@@ -68,7 +68,7 @@ public class BoothService {
 
         LocalDate now = LocalDate.now();
 
-        if(event.getOpenDate().isBefore(now) || event.getCloseDate().isAfter(now)){
+        if(now.isBefore(event.getBoothRecruitmentStartDate()) || now.isAfter(event.getBoothRecruitmentEndDate())){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "모집 기간이 아닙니다.");
         }
     }

@@ -12,7 +12,7 @@ public record PageResponse<T> (
     public static <T> PageResponse<T> of(Page<T> page){
         return new PageResponse<>(
                 page.getTotalPages(),
-                page.getNumber(),
+                page.getNumber() + 1,
                 page.getContent()
         );
     }

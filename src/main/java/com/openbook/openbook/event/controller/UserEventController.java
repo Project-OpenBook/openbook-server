@@ -6,6 +6,7 @@ import com.openbook.openbook.event.service.EventService;
 import com.openbook.openbook.global.ResponseMessage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ public class UserEventController {
     public ResponseEntity<ResponseMessage> registration(Authentication authentication,
                                                         @Valid EventRegistrationRequest request) {
         eventService.eventRegistration(Long.valueOf(authentication.getName()), request);
-        return ResponseEntity.ok(new ResponseMessage("행사 등록 요청 성공"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("신청이 완료되었습니다."));
     }
 
 }

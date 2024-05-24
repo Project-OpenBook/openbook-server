@@ -53,4 +53,6 @@ public class EventLayoutArea {
         this.classification = classification;
         this.number = number;
     }
+
+    public void updateStatus(EventLayoutAreaStatus status){ this.status = status; }
 }

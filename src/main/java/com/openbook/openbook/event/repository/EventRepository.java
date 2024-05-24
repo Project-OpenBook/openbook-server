@@ -8,8 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
+    Optional<Event> findById(Long id);
 
     @Query(value = "SELECT * FROM event ORDER BY FIELD(status, 'WAITING', 'APPROVE', 'REJECT'), registered_at", nativeQuery = true)
     Page<Event> findAllRequested(Pageable pageable);

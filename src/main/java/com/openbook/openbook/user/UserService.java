@@ -41,10 +41,9 @@ public class UserService {
     public String login(final LoginRequest request) {
         User user = userRepository.findByEmail(request.email()).orElseThrow(() ->
                 new OpenBookException(HttpStatus.NOT_FOUND, "이메일과 일치하는 유저가 존재하지 않습니다."));
-        if(!encoder.matches(request.password(), user.getPassword())) {
+        if (!encoder.matches(request.password(), user.getPassword())) {
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
         }
         return jwtUtils.generateToken(user.getId());
     }
-
 }

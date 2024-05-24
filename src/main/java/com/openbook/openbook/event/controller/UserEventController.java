@@ -17,7 +17,7 @@ public class UserEventController {
 
     private final EventService eventService;
 
-    @PostMapping("/event")
+    @PostMapping("/events")
     public ResponseEntity<ResponseMessage> registration(Authentication authentication,
                                                         @Valid EventRegistrationRequest request) {
         eventService.eventRegistration(Long.valueOf(authentication.getName()), request);

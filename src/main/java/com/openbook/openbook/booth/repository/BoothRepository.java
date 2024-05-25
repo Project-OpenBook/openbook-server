@@ -14,6 +14,6 @@ public interface BoothRepository extends JpaRepository<Booth, Long> {
     @Query(value = "SELECT * FROM booth WHERE linked_event_id = :eventId ORDER BY FIELD(status, 'WAITING', 'APPROVE', 'REJECT'), registered_at", nativeQuery = true)
     Page<Booth> findAllBoothByEventId(Pageable pageable, @Param(value = "eventId") Long eventId);
 
-    @Query(value = "SELECT b FROM Booth b WHERE b.linkedEvent.id = :eventId and b.status = :status ORDER BY b.registeredAt")
+    @Query(value = "SELECT b FROM Booth b WHERE b.linkedEvent.id = :eventId and b.status=:boothStatus ORDER BY b.registeredAt")
     Page<Booth> findAllBoothByLinkedEventAndStatus(Pageable pageable, Long eventId, BoothStatus boothStatus);
 }

@@ -61,6 +61,9 @@ public class UserEventService {
     @Transactional(readOnly = true)
     public EventLayoutStatus getEventLayoutStatus(Long eventId) {
         Event event = getEventOrException(eventId);
+        if(isNotRecruitmentPeriod(event.getBoothRecruitmentStartDate(), event.getBoothRecruitmentEndDate())) {
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "확인 가능한 기간이 아닙니다.");
+        }
         return userEventLayoutService.getLayoutStatus(event.getLayout());
     }
 
@@ -68,6 +71,11 @@ public class UserEventService {
         if(start.isAfter(end)) {
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "날짜 입력 오류");
         }
+    }
+
+    private boolean isNotRecruitmentPeriod(LocalDate reStart, LocalDate reClose) {
+        LocalDate now = LocalDate.now();
+        return now.isBefore(reStart) || now.isAfter(reClose);
     }
 
     private List<LayoutAreaCreateData> getLayoutAreaList(List<String> classifications, List<Integer> maxNumbers) {

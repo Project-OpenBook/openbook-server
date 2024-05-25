@@ -1,6 +1,6 @@
 package com.openbook.openbook.user.entity;
 
-import com.openbook.openbook.global.EntityBasicTime;
+import com.openbook.openbook.global.util.EntityBasicTime;
 import com.openbook.openbook.user.dto.AlarmType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

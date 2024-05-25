@@ -2,7 +2,7 @@ package com.openbook.openbook.global.exception;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
-import com.openbook.openbook.global.ResponseMessage;
+import com.openbook.openbook.global.dto.ResponseMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

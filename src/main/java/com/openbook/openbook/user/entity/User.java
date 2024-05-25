@@ -2,7 +2,7 @@ package com.openbook.openbook.user.entity;
 
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.event.entity.Event;
-import com.openbook.openbook.global.EntityBasicTime;
+import com.openbook.openbook.global.util.EntityBasicTime;
 import com.openbook.openbook.user.dto.UserRole;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

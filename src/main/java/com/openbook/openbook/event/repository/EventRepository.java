@@ -1,7 +1,7 @@
 package com.openbook.openbook.event.repository;
 
 import com.openbook.openbook.event.entity.Event;
-import com.openbook.openbook.event.entity.dto.EventStatus;
+import com.openbook.openbook.event.dto.EventStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,7 @@
 package com.openbook.openbook.global.exception;
 
 
-import com.openbook.openbook.global.ResponseMessage;
+import com.openbook.openbook.global.dto.ResponseMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

@@ -3,6 +3,7 @@ package com.openbook.openbook.administrator;
 
 import com.openbook.openbook.administrator.dto.AdminEventData;
 import com.openbook.openbook.event.dto.EventStatus;
+import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.repository.EventRepository;
 import com.openbook.openbook.global.exception.OpenBookException;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,18 @@ public class AdminEventService {
         return eventRepository
                 .findAllRequestedByStatus(pageable, getEventStatus(status))
                 .map(AdminEventData::of);
+    }
+
+    @Transactional
+    public void changeEventStatus(Long eventId, EventStatus status) {
+        Event event = getEventOrException(eventId);
+        event.updateStatus(status);
+    }
+
+    private Event getEventOrException(Long id) {
+        return eventRepository.findById(id).orElseThrow(() ->
+                new OpenBookException(HttpStatus.NOT_FOUND, "일치하는 행사가 존재하지 않습니다.")
+        );
     }
 
     private EventStatus getEventStatus(String status) {

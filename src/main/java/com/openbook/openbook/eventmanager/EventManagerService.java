@@ -30,7 +30,7 @@ public class EventManagerService {
         return switch (status){
             case "waiting" -> BoothStatus.WAITING;
             case "approved" -> BoothStatus.APPROVE;
-            case "rejected" -> BoothStatus.WAITING;
+            case "rejected" -> BoothStatus.REJECT;
             default -> throw new OpenBookException(HttpStatus.BAD_REQUEST, "잘못된 요청 값 입니다.");
         };
     }

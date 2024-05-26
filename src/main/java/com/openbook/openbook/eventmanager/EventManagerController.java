@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EventManagerController {
 
     private final EventManagerService eventManagerService;
-    @GetMapping("/eventManager/{eventId}/booths")
+    @GetMapping("/events/{eventId}/managed/booths")
     public ResponseEntity<PageResponse<BoothMangeData>> getBoothManagePage(@RequestParam(defaultValue = "all") String status,
                                                                            @PathVariable Long eventId,
                                                                            @PageableDefault(size = 10) Pageable pageable){

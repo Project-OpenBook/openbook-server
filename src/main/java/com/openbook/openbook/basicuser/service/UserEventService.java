@@ -67,15 +67,15 @@ public class UserEventService {
         return userEventLayoutService.getLayoutStatus(event.getLayout());
     }
 
-    private void dateValidityCheck(LocalDate start, LocalDate end) {
-        if(start.isAfter(end)) {
+    private void dateValidityCheck(LocalDate startDate, LocalDate endDate) {
+        if(startDate.isAfter(endDate)) {
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "날짜 입력 오류");
         }
     }
 
-    private boolean isNotRecruitmentPeriod(LocalDate reStart, LocalDate reClose) {
+    private boolean isNotRecruitmentPeriod(LocalDate startDate, LocalDate endDate) {
         LocalDate now = LocalDate.now();
-        return now.isBefore(reStart) || now.isAfter(reClose);
+        return now.isBefore(startDate) || now.isAfter(endDate);
     }
 
     private List<LayoutAreaCreateData> getLayoutAreaList(List<String> classifications, List<Integer> maxNumbers) {

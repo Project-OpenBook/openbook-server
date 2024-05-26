@@ -65,6 +65,10 @@ public class Event extends EntityBasicTime {
         this.status = EventStatus.WAITING;
     }
 
+    public void updateStatus(EventStatus status) {
+        this.status = status;
+    }
+
     @Builder
     public Event(User manager, EventLayout layout, String location, String name, String mainImageUrl,
                  String description, LocalDate openDate, LocalDate closeDate, LocalDate boothRecruitmentStartDate,

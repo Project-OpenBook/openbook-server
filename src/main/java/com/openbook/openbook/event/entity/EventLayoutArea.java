@@ -1,5 +1,6 @@
 package com.openbook.openbook.event.entity;
 
+import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothLocation;
 import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
 import jakarta.persistence.CascadeType;
@@ -42,16 +43,20 @@ public class EventLayoutArea {
     @OneToMany(mappedBy = "eventLayoutArea", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BoothLocation> locations = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Booth booth;
+
     @PrePersist
     public void setFirstEventLayoutAreaStatus() {
         this.status = EventLayoutAreaStatus.EMPTY;
     }
 
     @Builder
-    public EventLayoutArea(EventLayout linkedEventLayout, String classification, String number) {
+    public EventLayoutArea(EventLayout linkedEventLayout, String classification, String number, Booth booth) {
         this.linkedEventLayout = linkedEventLayout;
         this.classification = classification;
         this.number = number;
+        this.booth = booth;
     }
 
     public void updateStatus(EventLayoutAreaStatus status){ this.status = status; }

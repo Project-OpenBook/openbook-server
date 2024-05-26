@@ -1,39 +1,54 @@
 package com.openbook.openbook.basicuser.service;
 
 import com.google.gson.Gson;
-import com.openbook.openbook.basicuser.dto.EventLayoutData;
-import com.openbook.openbook.basicuser.dto.LayoutAreaData;
+import com.nimbusds.jose.shaded.gson.reflect.TypeToken;
+import com.openbook.openbook.basicuser.dto.EventLayoutCreateData;
+import com.openbook.openbook.basicuser.dto.LayoutAreaCreateData;
+import com.openbook.openbook.basicuser.dto.LayoutAreaStatusData;
+import com.openbook.openbook.basicuser.dto.response.EventLayoutStatus;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.repository.EventLayoutRepository;
+import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.global.util.S3Service;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class EventLayoutService {
+public class UserEventLayoutService {
 
-    private final EventLayoutRepository layoutRepository;
-    private final EventLayoutAreaService areaService;
+    private final EventLayoutRepository eventLayoutRepository;
+    private final UserEventLayoutAreaService layoutAreaService;
     private final S3Service s3Service;
 
     @Transactional
-    public EventLayout createEventLayout(EventLayoutData layoutData) {
+    public EventLayout createEventLayout(EventLayoutCreateData layoutData) {
         String imagesJson = new Gson().toJson(getImageUrlList(layoutData.images()));
         EventLayout eventLayout = EventLayout.builder()
                 .type(layoutData.type())
                 .imageUrl(imagesJson)
                 .build();
-        for(LayoutAreaData areaLine : layoutData.areas()) {
-            areaService.createLayoutArea(eventLayout, areaLine);
+        for(LayoutAreaCreateData areaLine : layoutData.areas()) {
+            layoutAreaService.createLayoutArea(eventLayout, areaLine);
         }
-        layoutRepository.save(eventLayout);
+        eventLayoutRepository.save(eventLayout);
         return eventLayout;
+    }
+
+    public EventLayoutStatus getLayoutStatus(EventLayout eventLayout) {
+        Map<String, List<LayoutAreaStatusData>> areas = layoutAreaService.getAreaStatus(eventLayout);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<String>>(){}.getType();
+        ArrayList<String> imageUrlList = gson.fromJson(eventLayout.getImageUrl(), type);
+        return new EventLayoutStatus(imageUrlList, eventLayout.getType(), areas);
     }
 
     private List<String> getImageUrlList(List<MultipartFile> layoutImages) {

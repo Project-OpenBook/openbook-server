@@ -9,10 +9,10 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
-public record EventLayoutData(
+public record EventLayoutCreateData(
         @Enumerated(EnumType.STRING)
         @NotBlank EventLayoutType type,
         @NotNull @Size(max = 3) List<MultipartFile> images,
-        @NotNull List<LayoutAreaData> areas
+        @NotNull List<LayoutAreaCreateData> areas
 ) {
 }

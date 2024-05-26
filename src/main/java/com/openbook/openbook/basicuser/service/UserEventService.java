@@ -2,8 +2,9 @@ package com.openbook.openbook.basicuser.service;
 
 
 import com.openbook.openbook.basicuser.dto.request.EventRegistrationRequest;
-import com.openbook.openbook.basicuser.dto.EventLayoutData;
-import com.openbook.openbook.basicuser.dto.LayoutAreaData;
+import com.openbook.openbook.basicuser.dto.EventLayoutCreateData;
+import com.openbook.openbook.basicuser.dto.LayoutAreaCreateData;
+import com.openbook.openbook.basicuser.dto.response.EventLayoutStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.repository.EventRepository;
@@ -27,7 +28,7 @@ public class UserEventService {
 
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
-    private final EventLayoutService layoutService;
+    private final UserEventLayoutService userEventLayoutService;
     private final S3Service s3Service;
 
     @Transactional
@@ -38,9 +39,9 @@ public class UserEventService {
         dateValidityCheck(request.boothRecruitmentStartDate(), request.boothRecruitmentEndDate());
         dateValidityCheck(request.boothRecruitmentEndDate(),request.openDate());
 
-        List<LayoutAreaData> areaData = getLayoutAreaList(request.areaClassifications(), request.areaMaxNumbers());
-        EventLayoutData layoutData = new EventLayoutData(request.layoutType(),request.layoutImages(), areaData);
-        EventLayout layout = layoutService.createEventLayout(layoutData);
+        List<LayoutAreaCreateData> areaData = getLayoutAreaList(request.areaClassifications(), request.areaMaxNumbers());
+        EventLayoutCreateData layoutData = new EventLayoutCreateData(request.layoutType(),request.layoutImages(), areaData);
+        EventLayout layout = userEventLayoutService.createEventLayout(layoutData);
 
         Event event = Event.builder()
                 .manager(user)
@@ -57,18 +58,32 @@ public class UserEventService {
         eventRepository.save(event);
     }
 
-    private void dateValidityCheck(LocalDate start, LocalDate end) {
-        if(start.isAfter(end)) {
+    @Transactional(readOnly = true)
+    public EventLayoutStatus getEventLayoutStatus(Long eventId) {
+        Event event = getEventOrException(eventId);
+        if(isNotRecruitmentPeriod(event.getBoothRecruitmentStartDate(), event.getBoothRecruitmentEndDate())) {
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "확인 가능한 기간이 아닙니다.");
+        }
+        return userEventLayoutService.getLayoutStatus(event.getLayout());
+    }
+
+    private void dateValidityCheck(LocalDate startDate, LocalDate endDate) {
+        if(startDate.isAfter(endDate)) {
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "날짜 입력 오류");
         }
     }
 
-    private List<LayoutAreaData> getLayoutAreaList(List<String> classifications, List<Integer> maxNumbers) {
+    private boolean isNotRecruitmentPeriod(LocalDate startDate, LocalDate endDate) {
+        LocalDate now = LocalDate.now();
+        return now.isBefore(startDate) || now.isAfter(endDate);
+    }
+
+    private List<LayoutAreaCreateData> getLayoutAreaList(List<String> classifications, List<Integer> maxNumbers) {
         if(classifications.size()!=maxNumbers.size()) {
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "배치도 구역 입력 오류");
         }
         return IntStream.range(0, classifications.size())
-                .mapToObj( i -> new LayoutAreaData(classifications.get(i), maxNumbers.get(i)))
+                .mapToObj( i -> new LayoutAreaCreateData(classifications.get(i), maxNumbers.get(i)))
                 .toList();
     }
 
@@ -80,7 +95,14 @@ public class UserEventService {
 
     private User getUserOrException(Long id) {
         return userRepository.findById(id).orElseThrow(() ->
-                new OpenBookException(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다."));
+                new OpenBookException(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다.")
+        );
+    }
+
+    private Event getEventOrException(Long id) {
+        return eventRepository.findById(id).orElseThrow(() ->
+                new OpenBookException(HttpStatus.NOT_FOUND, "행사가 존재하지 않습니다.")
+        );
     }
 
     private String getRandomFileName(MultipartFile file) {

@@ -52,12 +52,15 @@ public class EventLayoutArea {
     }
 
     @Builder
-    public EventLayoutArea(EventLayout linkedEventLayout, String classification, String number, Booth booth) {
+    public EventLayoutArea(EventLayout linkedEventLayout, String classification, String number) {
         this.linkedEventLayout = linkedEventLayout;
         this.classification = classification;
         this.number = number;
-        this.booth = booth;
     }
 
     public void updateStatus(EventLayoutAreaStatus status){ this.status = status; }
+
+    public void updateBooth(Booth booth){
+        this.booth = booth;
+    }
 }

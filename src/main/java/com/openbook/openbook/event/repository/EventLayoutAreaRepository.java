@@ -1,5 +1,6 @@
 package com.openbook.openbook.event.repository;
 
+import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import java.util.List;
@@ -11,5 +12,8 @@ import org.springframework.stereotype.Repository;
 public interface EventLayoutAreaRepository extends JpaRepository<EventLayoutArea, Long> {
     @Query("SELECT a FROM EventLayoutArea a WHERE a.linkedEventLayout=:linkedLayout")
     List<EventLayoutArea> findAllByLinkedEventLayout(EventLayout linkedLayout);
+
+    @Query("SELECT ea.booth.id FROM EventLayoutArea ea WHERE ea.id=:areaId")
+    Long findBoothById(Long areaId);
 
 }

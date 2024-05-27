@@ -28,6 +28,7 @@ public class UserBoothService {
 
     private final BoothRepository boothRepository;
     private final  BoothLocationService boothLocationService;
+    private final UserEventLayoutAreaService userEventLayoutAreaService;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final S3Service s3Service;
@@ -55,6 +56,7 @@ public class UserBoothService {
                 .build();
 
         boothRepository.save(booth);
+        userEventLayoutAreaService.registrationBooth(booth, request.locations());
 
     }
 

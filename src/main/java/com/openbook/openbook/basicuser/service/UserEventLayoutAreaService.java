@@ -50,22 +50,17 @@ public class UserEventLayoutAreaService {
     public boolean hasReservationData(List<Long> eventLayoutAreaList){
         for(Long id : eventLayoutAreaList){
             EventLayoutArea eventLayoutArea = layoutAreaRepository.findById(id).get();
-            if(eventLayoutArea.getLinkedBooth() != null){
-                return true;
+            if(eventLayoutArea.getStatus().equals(EventLayoutAreaStatus.EMPTY)){
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public void boothLocationApplication(List<Long> locations, Booth booth){
         for(Long layoutId : locations){
             EventLayoutArea eventLayoutArea = layoutAreaRepository.findById(layoutId).get();
-            if(eventLayoutArea.getStatus().equals(EventLayoutAreaStatus.EMPTY)){
-                eventLayoutArea.updateStatus(EventLayoutAreaStatus.WAITING, booth);
-            }else{
-                throw new OpenBookException(HttpStatus.INTERNAL_SERVER_ERROR, "이미 예약 된 자리 입니다.");
-            }
+            eventLayoutArea.updateBooth(EventLayoutAreaStatus.WAITING, booth);
         }
     }
-
 }

@@ -27,7 +27,6 @@ import java.util.UUID;
 public class UserBoothService {
 
     private final BoothRepository boothRepository;
-    private final  BoothLocationService boothLocationService;
     private final UserEventLayoutAreaService userEventLayoutAreaService;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;

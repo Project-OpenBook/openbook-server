@@ -50,7 +50,7 @@ public class UserEventLayoutAreaService {
     public boolean hasReservationData(List<Long> eventLayoutAreaList){
         for(Long id : eventLayoutAreaList){
             EventLayoutArea eventLayoutArea = layoutAreaRepository.findById(id).get();
-            if(eventLayoutArea.getBooth() != null){
+            if(eventLayoutArea.getLinkedBooth() != null){
                 return true;
             }
         }

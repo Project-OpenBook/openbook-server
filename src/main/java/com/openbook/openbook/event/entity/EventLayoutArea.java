@@ -44,7 +44,7 @@ public class EventLayoutArea {
     private List<BoothLocation> locations = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Booth booth;
+    private Booth linkedBooth;
 
     @PrePersist
     public void setFirstEventLayoutAreaStatus() {
@@ -60,7 +60,7 @@ public class EventLayoutArea {
 
     public void updateStatus(EventLayoutAreaStatus status, Booth booth){
         this.status = status;
-        this.booth = booth;
+        this.linkedBooth = booth;
     }
 
 }

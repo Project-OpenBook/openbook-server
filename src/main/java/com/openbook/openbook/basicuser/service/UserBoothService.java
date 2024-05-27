@@ -41,7 +41,7 @@ public class UserBoothService {
 
         dateTimePeriodCheck(open, close, event);
 
-        if(userEventLayoutAreaService.hasReservationData(request.locations())){
+        if(userEventLayoutAreaService.hasReservationData(request.layoutArea())){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 예약된 자리 입니다.");
         }else{
             Booth booth = Booth.builder()
@@ -56,7 +56,7 @@ public class UserBoothService {
                     .build();
 
             boothRepository.save(booth);
-            userEventLayoutAreaService.boothLocationApplication(request.locations(), booth);
+            userEventLayoutAreaService.boothLocationApplication(request.layoutArea(), booth);
         }
     }
 

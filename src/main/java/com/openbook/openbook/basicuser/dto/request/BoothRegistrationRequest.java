@@ -13,7 +13,7 @@ public record BoothRegistrationRequest(
         @NotNull String openTime,
         @NotNull String closeTime,
         @NotNull MultipartFile mainImage,
-        @NotNull @Size(min = 1, max = 3) List<Long> layoutArea,
+        @NotNull @Size(min = 1, max = 3) List<Long> layoutAreas,
         @NotBlank String description,
         String accountNumber
 

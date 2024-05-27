@@ -56,7 +56,7 @@ public class UserBoothService {
                     .build();
 
             boothRepository.save(booth);
-            userEventLayoutAreaService.boothLocationApplication(request.layoutAreas(), booth);
+            userEventLayoutAreaService.requestBoothLocation(request.layoutAreas(), booth);
         }
     }
 

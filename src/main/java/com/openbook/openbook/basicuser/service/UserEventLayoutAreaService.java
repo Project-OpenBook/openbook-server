@@ -55,9 +55,9 @@ public class UserEventLayoutAreaService {
         return true;
     }
 
-    public void boothLocationApplication(List<Long> locations, Booth booth){
-        for(Long layoutId : locations){
-            EventLayoutArea eventLayoutArea = layoutAreaRepository.findById(layoutId).get();
+    public void requestBoothLocation(List<Long> layoutAreas, Booth booth){
+        for(Long layoutAreaId : layoutAreas){
+            EventLayoutArea eventLayoutArea = layoutAreaRepository.findById(layoutAreaId).get();
             eventLayoutArea.updateBooth(EventLayoutAreaStatus.WAITING, booth);
         }
     }

@@ -63,4 +63,8 @@ public class EventLayoutArea {
         this.linkedBooth = booth;
     }
 
+    public void updateStatus(EventLayoutAreaStatus status){
+        this.status = status;
+    }
+
 }

@@ -48,11 +48,11 @@ public class UserEventLayoutAreaService {
     public boolean hasReservationData(List<Long> eventLayoutAreaList){
         for(Long id : eventLayoutAreaList){
             EventLayoutArea eventLayoutArea = layoutAreaRepository.findById(id).get();
-            if(eventLayoutArea.getStatus().equals(EventLayoutAreaStatus.EMPTY)){
-                return false;
+            if(!eventLayoutArea.getStatus().equals(EventLayoutAreaStatus.EMPTY)){
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public void requestBoothLocation(List<Long> layoutAreas, Booth booth){

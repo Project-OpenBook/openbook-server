@@ -3,12 +3,12 @@ package com.openbook.openbook.basicuser.service;
 import com.openbook.openbook.basicuser.dto.LayoutAreaStatusData;
 import com.openbook.openbook.basicuser.dto.LayoutAreaCreateData;
 import com.openbook.openbook.booth.entity.Booth;
+import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.openbook.openbook.global.exception.OpenBookException;
@@ -47,11 +47,24 @@ public class UserEventLayoutAreaService {
                 ));
     }
 
-    public void registrationBooth(Booth booth, List<Long> eventLayoutAreaList){
+    public boolean hasReservationData(List<Long> eventLayoutAreaList){
         for(Long id : eventLayoutAreaList){
-            Optional<EventLayoutArea> eventLayoutArea = layoutAreaRepository.findById(id);
-            EventLayoutArea layoutArea = eventLayoutArea.get();
-            layoutArea.updateBooth(booth);
+            EventLayoutArea eventLayoutArea = layoutAreaRepository.findById(id).get();
+            if(eventLayoutArea.getBooth() != null){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void boothLocationApplication(List<Long> locations, Booth booth){
+        for(Long layoutId : locations){
+            EventLayoutArea eventLayoutArea = layoutAreaRepository.findById(layoutId).get();
+            if(eventLayoutArea.getStatus().equals(EventLayoutAreaStatus.EMPTY)){
+                eventLayoutArea.updateStatus(EventLayoutAreaStatus.WAITING, booth);
+            }else{
+                throw new OpenBookException(HttpStatus.INTERNAL_SERVER_ERROR, "이미 예약 된 자리 입니다.");
+            }
         }
     }
 

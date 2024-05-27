@@ -58,9 +58,9 @@ public class EventLayoutArea {
         this.number = number;
     }
 
-    public void updateStatus(EventLayoutAreaStatus status){ this.status = status; }
-
-    public void updateBooth(Booth booth){
+    public void updateStatus(EventLayoutAreaStatus status, Booth booth){
+        this.status = status;
         this.booth = booth;
     }
+
 }

@@ -42,22 +42,23 @@ public class UserBoothService {
 
         dateTimePeriodCheck(open, close, event);
 
-        boothLocationService.boothLocationApplication(request.locations());
+        if(userEventLayoutAreaService.hasReservationData(request.locations())){
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 예약된 자리 입니다.");
+        }else{
+            Booth booth = Booth.builder()
+                    .linkedEvent(event)
+                    .manager(user)
+                    .name(request.name())
+                    .description(request.description())
+                    .mainImageUrl(uploadAndGetS3ImageUrl(request.mainImage()))
+                    .accountNumber(request.accountNumber())
+                    .openTime(open)
+                    .closeTime(close)
+                    .build();
 
-        Booth booth = Booth.builder()
-                .linkedEvent(event)
-                .manager(user)
-                .name(request.name())
-                .description(request.description())
-                .mainImageUrl(uploadAndGetS3ImageUrl(request.mainImage()))
-                .accountNumber(request.accountNumber())
-                .openTime(open)
-                .closeTime(close)
-                .build();
-
-        boothRepository.save(booth);
-        userEventLayoutAreaService.registrationBooth(booth, request.locations());
-
+            boothRepository.save(booth);
+            userEventLayoutAreaService.boothLocationApplication(request.locations(), booth);
+        }
     }
 
     private void dateTimePeriodCheck(LocalDateTime open, LocalDateTime close, Event event){

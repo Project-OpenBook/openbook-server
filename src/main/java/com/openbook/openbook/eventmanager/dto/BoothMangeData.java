@@ -12,19 +12,17 @@ import java.util.List;
 public record BoothMangeData(
         Long id,
         String name,
-//        List<BoothLocationData> location,
+        List<BoothLocationData> boothLocationData,
         String registrationDate,
         String description,
         @Enumerated(EnumType.STRING)
         BoothStatus status
 ) {
-    public static BoothMangeData of(Booth booth) {
+    public static BoothMangeData of(Booth booth, List<BoothLocationData> boothLocationData) {
         return new BoothMangeData(
                 booth.getId(),
                 booth.getName(),
-//                eventLayoutAreas.stream()
-//                        .map(BoothLocationData::of)
-//                        .toList(),
+                boothLocationData,
                 booth.getDescription(),
                 getFormattingDate(booth.getRegisteredAt()),
                 booth.getStatus()

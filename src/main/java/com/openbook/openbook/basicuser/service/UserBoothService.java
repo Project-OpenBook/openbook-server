@@ -27,7 +27,7 @@ import java.util.UUID;
 public class UserBoothService {
 
     private final BoothRepository boothRepository;
-    private final  BoothLocationService boothLocationService;
+    private final UserEventLayoutAreaService userEventLayoutAreaService;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final S3Service s3Service;
@@ -41,21 +41,23 @@ public class UserBoothService {
 
         dateTimePeriodCheck(open, close, event);
 
-        boothLocationService.boothLocationApplication(request.locations());
+        if(userEventLayoutAreaService.hasReservationData(request.layoutAreas())){
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 예약된 자리 입니다.");
+        }else{
+            Booth booth = Booth.builder()
+                    .linkedEvent(event)
+                    .manager(user)
+                    .name(request.name())
+                    .description(request.description())
+                    .mainImageUrl(uploadAndGetS3ImageUrl(request.mainImage()))
+                    .accountNumber(request.accountNumber())
+                    .openTime(open)
+                    .closeTime(close)
+                    .build();
 
-        Booth booth = Booth.builder()
-                .linkedEvent(event)
-                .manager(user)
-                .name(request.name())
-                .description(request.description())
-                .mainImageUrl(uploadAndGetS3ImageUrl(request.mainImage()))
-                .accountNumber(request.accountNumber())
-                .openTime(open)
-                .closeTime(close)
-                .build();
-
-        boothRepository.save(booth);
-
+            boothRepository.save(booth);
+            userEventLayoutAreaService.requestBoothLocation(request.layoutAreas(), booth);
+        }
     }
 
     private void dateTimePeriodCheck(LocalDateTime open, LocalDateTime close, Event event){

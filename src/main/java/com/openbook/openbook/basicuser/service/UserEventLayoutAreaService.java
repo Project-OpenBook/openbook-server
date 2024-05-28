@@ -2,12 +2,15 @@ package com.openbook.openbook.basicuser.service;
 
 import com.openbook.openbook.basicuser.dto.LayoutAreaStatusData;
 import com.openbook.openbook.basicuser.dto.LayoutAreaCreateData;
+import com.openbook.openbook.booth.entity.Booth;
+import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,4 +45,20 @@ public class UserEventLayoutAreaService {
                 ));
     }
 
+    public boolean hasReservationData(List<Long> eventLayoutAreaList){
+        for(Long id : eventLayoutAreaList){
+            EventLayoutArea eventLayoutArea = layoutAreaRepository.findById(id).get();
+            if(!eventLayoutArea.getStatus().equals(EventLayoutAreaStatus.EMPTY)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void requestBoothLocation(List<Long> layoutAreas, Booth booth){
+        for(Long layoutAreaId : layoutAreas){
+            EventLayoutArea eventLayoutArea = layoutAreaRepository.findById(layoutAreaId).get();
+            eventLayoutArea.updateBooth(EventLayoutAreaStatus.WAITING, booth);
+        }
+    }
 }

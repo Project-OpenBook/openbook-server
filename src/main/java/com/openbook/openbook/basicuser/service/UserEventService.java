@@ -66,7 +66,7 @@ public class UserEventService {
     public Slice<EventBasicData> getEventBasicData(Pageable pageable, String eventProgress) {
         Slice<Event> events = switch (eventProgress) {
             case "all" -> eventRepository.findAllApproved(pageable);
-            case "ongoing" -> eventRepository.findAllOnGoing(pageable);
+            case "ongoing" -> eventRepository.findAllOngoing(pageable);
             case "recruiting" -> eventRepository.findAllRecruiting(pageable);
             case "terminated" -> eventRepository.findAllTerminated(pageable);
             default -> throw new OpenBookException(HttpStatus.BAD_REQUEST, "요청 값이 잘못되었습니다.");

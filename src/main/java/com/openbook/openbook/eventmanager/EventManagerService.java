@@ -10,6 +10,8 @@ import com.openbook.openbook.event.repository.EventRepository;
 import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 import com.openbook.openbook.eventmanager.dto.BoothManageData;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.user.entity.User;
+import com.openbook.openbook.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +29,14 @@ public class EventManagerService {
     private final BoothRepository boothRepository;
     private final EventLayoutAreaRepository eventLayoutAreaRepository;
     private final EventRepository eventRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public Page<BoothManageData> getBoothManageData(String status, Long eventId, Pageable pageable, Long userId){
-        if(!eventRepository.findById(eventId).get().getManager().getId().equals(userId)){
+        Event event = getEventOrException(eventId);
+        User user = getUserOrException(userId);
+
+        if(!event.getManager().equals(user)){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "권한이 존재하지 않습니다.");
         }
 
@@ -57,5 +63,17 @@ public class EventManagerService {
             case "rejected" -> BoothStatus.REJECT;
             default -> throw new OpenBookException(HttpStatus.BAD_REQUEST, "요청 값이 잘못되었습니다.");
         };
+    }
+
+    private Event getEventOrException(Long id){
+        return eventRepository.findById(id).orElseThrow(() ->
+                new OpenBookException(HttpStatus.NOT_FOUND, "행사가 존재하지 않습니다.")
+        );
+    }
+
+    private User getUserOrException(Long id){
+        return userRepository.findById(id).orElseThrow(() ->
+                new OpenBookException(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다.")
+        );
     }
 }

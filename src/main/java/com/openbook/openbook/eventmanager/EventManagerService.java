@@ -29,13 +29,9 @@ public class EventManagerService {
     public Page<BoothManageData> getBoothManageData(String status, Long eventId, Pageable pageable){
 
         if(status.equals("all")) {
-            Page<Booth> booths = boothRepository.findAllBoothByEventId(pageable, eventId);
-
-            return booths.map(this::convertToBoothManageData);
+            return boothRepository.findAllBoothByEventId(pageable, eventId).map(this::convertToBoothManageData);
         }
-
-        Page<Booth> booths = boothRepository.findAllBoothByEventIdAndStatus(pageable, eventId, getBoothStatus(status));
-        return booths.map(this::convertToBoothManageData);
+        return boothRepository.findAllBoothByEventIdAndStatus(pageable, eventId, getBoothStatus(status)).map(this::convertToBoothManageData);
     }
 
     private BoothManageData convertToBoothManageData(Booth booth) {

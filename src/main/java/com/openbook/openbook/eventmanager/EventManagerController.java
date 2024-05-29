@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +20,8 @@ public class EventManagerController {
     @GetMapping("/events/{eventId}/managed/booths")
     public ResponseEntity<PageResponse<BoothManageData>> getBoothManagePage(@RequestParam(defaultValue = "all") String status,
                                                                             @PathVariable Long eventId,
-                                                                            @PageableDefault(size = 10) Pageable pageable){
-        return ResponseEntity.ok(PageResponse.of(eventManagerService.getBoothManageData(status, eventId, pageable)));
+                                                                            @PageableDefault(size = 10) Pageable pageable,
+                                                                            Authentication authentication){
+        return ResponseEntity.ok(PageResponse.of(eventManagerService.getBoothManageData(status, eventId, pageable, Long.valueOf(authentication.getName()))));
     }
 }

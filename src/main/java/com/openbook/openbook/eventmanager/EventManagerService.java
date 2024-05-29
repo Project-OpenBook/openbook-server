@@ -34,7 +34,7 @@ public class EventManagerService {
             return booths.map(this::convertToBoothMangeData);
         }
 
-        Page<Booth> booths = boothRepository.findAllBoothByLinkedEventAndStatus(pageable, eventId, getBoothStatus(status));
+        Page<Booth> booths = boothRepository.findAllBoothByEventIdAndStatus(pageable, eventId, getBoothStatus(status));
         return booths.map(this::convertToBoothMangeData);
     }
 

@@ -16,5 +16,5 @@ public interface BoothRepository extends JpaRepository<Booth, Long> {
     Page<Booth> findAllBoothByEventId(Pageable pageable, @Param(value = "eventId") Long eventId);
 
     @Query(value = "SELECT b FROM Booth b where b.linkedEvent.id =:eventId and b.status =:boothStatus ORDER BY b.registeredAt")
-    Page<Booth> findAllBoothByLinkedEventAndStatus(Pageable pageable, Long eventId, BoothStatus boothStatus);
+    Page<Booth> findAllBoothByEventIdAndStatus(Pageable pageable, Long eventId, BoothStatus boothStatus);
 }

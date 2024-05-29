@@ -4,6 +4,7 @@ package com.openbook.openbook.basicuser.service;
 import com.openbook.openbook.basicuser.dto.request.EventRegistrationRequest;
 import com.openbook.openbook.basicuser.dto.EventLayoutCreateData;
 import com.openbook.openbook.basicuser.dto.LayoutAreaCreateData;
+import com.openbook.openbook.basicuser.dto.response.EventBasicData;
 import com.openbook.openbook.basicuser.dto.response.EventLayoutStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayout;
@@ -17,6 +18,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +60,18 @@ public class UserEventService {
                 .boothRecruitmentEndDate(request.boothRecruitmentEndDate())
                 .build();
         eventRepository.save(event);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<EventBasicData> getEventBasicData(Pageable pageable, String eventProgress) {
+        Slice<Event> events = switch (eventProgress) {
+            case "all" -> eventRepository.findAllApproved(pageable);
+            case "ongoing" -> eventRepository.findAllOngoing(pageable);
+            case "recruiting" -> eventRepository.findAllRecruiting(pageable);
+            case "terminated" -> eventRepository.findAllTerminated(pageable);
+            default -> throw new OpenBookException(HttpStatus.BAD_REQUEST, "요청 값이 잘못되었습니다.");
+        };
+        return events.map(EventBasicData::of);
     }
 
     @Transactional(readOnly = true)

@@ -23,8 +23,8 @@ public record BoothManageData(
                 booth.getId(),
                 booth.getName(),
                 boothLocationData,
-                booth.getDescription(),
                 getFormattingDate(booth.getRegisteredAt()),
+                booth.getDescription(),
                 booth.getStatus()
         );
     }

@@ -12,13 +12,13 @@ import java.util.List;
 public record BoothManageData(
         Long id,
         String name,
-        List<BoothLocationData> boothLocationData,
+        List<BoothAreaData> boothLocationData,
         String registrationDate,
         String description,
         @Enumerated(EnumType.STRING)
         BoothStatus status
 ) {
-    public static BoothManageData of(Booth booth, List<BoothLocationData> boothLocationData) {
+    public static BoothManageData of(Booth booth, List<BoothAreaData> boothLocationData) {
         return new BoothManageData(
                 booth.getId(),
                 booth.getName(),

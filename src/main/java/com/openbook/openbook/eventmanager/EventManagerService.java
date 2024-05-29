@@ -5,7 +5,7 @@ import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.repository.BoothRepository;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
-import com.openbook.openbook.eventmanager.dto.BoothLocationData;
+import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 import com.openbook.openbook.eventmanager.dto.BoothManageData;
 import com.openbook.openbook.global.exception.OpenBookException;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +36,8 @@ public class EventManagerService {
 
     private BoothManageData convertToBoothManageData(Booth booth) {
         List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(booth.getId());
-        List<BoothLocationData> locationData = eventLayoutAreas.stream()
-                .map(BoothLocationData::of)
+        List<BoothAreaData> locationData = eventLayoutAreas.stream()
+                .map(BoothAreaData::of)
                 .collect(Collectors.toList());
 
         return BoothManageData.of(booth, locationData);

@@ -3,6 +3,7 @@ package com.openbook.openbook.eventmanager;
 import com.openbook.openbook.booth.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.repository.BoothRepository;
+import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
@@ -46,6 +47,29 @@ public class EventManagerService {
         return boothRepository.findAllBoothByEventIdAndStatus(pageable, eventId, getBoothStatus(status)).map(this::convertToBoothManageData);
     }
 
+    @Transactional
+    public void changeBoothStatus(Long boothId, BoothStatus boothStatus){
+        Booth booth = getBoothOrException(boothId);
+        if(!booth.getStatus().equals(boothStatus)){
+            booth.updateStatus(boothStatus);
+            List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(boothId);
+
+            if(boothStatus.equals(BoothStatus.APPROVE)){
+                for(EventLayoutArea eventLayoutArea : eventLayoutAreas){
+                    eventLayoutArea.updateStatus(EventLayoutAreaStatus.COMPLETE);
+                }
+            } else if (boothStatus.equals(BoothStatus.REJECT)) {
+                for(EventLayoutArea eventLayoutArea : eventLayoutAreas){
+                    eventLayoutArea.updateStatus(EventLayoutAreaStatus.EMPTY);
+                }
+            }
+        }else{
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 처리된 상태입니다.");
+        }
+
+    }
+
+
     private BoothManageData convertToBoothManageData(Booth booth) {
         List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(booth.getId());
         List<BoothAreaData> locationData = eventLayoutAreas.stream()
@@ -75,5 +99,9 @@ public class EventManagerService {
         return userRepository.findById(id).orElseThrow(() ->
                 new OpenBookException(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다.")
         );
+    }
+
+    private Booth getBoothOrException(Long id){
+        return boothRepository.findById(id).orElseThrow(() -> new OpenBookException(HttpStatus.NOT_FOUND, "일치하는 부스가 존재하지 않습니다."));
     }
 }

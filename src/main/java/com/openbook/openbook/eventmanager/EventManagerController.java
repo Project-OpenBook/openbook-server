@@ -1,7 +1,7 @@
 package com.openbook.openbook.eventmanager;
 
 import com.openbook.openbook.eventmanager.dto.BoothManageData;
-import com.openbook.openbook.eventmanager.dto.StatusUpdateRequest;
+import com.openbook.openbook.eventmanager.dto.BoothStatusUpdateRequest;
 import com.openbook.openbook.global.dto.PageResponse;
 import com.openbook.openbook.global.dto.ResponseMessage;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class EventManagerController {
 
     @PostMapping("/booths/{boothId}/status")
     public ResponseEntity<ResponseMessage> changeBoothStatus(@PathVariable Long boothId,
-                                                             @RequestBody StatusUpdateRequest request) {
+                                                             @RequestBody BoothStatusUpdateRequest request) {
         eventManagerService.changeBoothStatus(boothId, request.boothStatus());
         return ResponseEntity.ok(new ResponseMessage("부스 상태가 변경되었습니다."));
     }

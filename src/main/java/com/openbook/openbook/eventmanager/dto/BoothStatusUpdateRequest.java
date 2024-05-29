@@ -5,7 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 
-public record StatusUpdateRequest(
+public record BoothStatusUpdateRequest(
         @Enumerated(EnumType.STRING)
         @NotNull BoothStatus boothStatus
         ) {

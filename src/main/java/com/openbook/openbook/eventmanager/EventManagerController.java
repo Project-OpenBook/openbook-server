@@ -1,6 +1,6 @@
 package com.openbook.openbook.eventmanager;
 
-import com.openbook.openbook.eventmanager.dto.BoothMangeData;
+import com.openbook.openbook.eventmanager.dto.BoothManageData;
 import com.openbook.openbook.global.dto.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +17,9 @@ public class EventManagerController {
 
     private final EventManagerService eventManagerService;
     @GetMapping("/events/{eventId}/managed/booths")
-    public ResponseEntity<PageResponse<BoothMangeData>> getBoothManagePage(@RequestParam(defaultValue = "all") String status,
-                                                                           @PathVariable Long eventId,
-                                                                           @PageableDefault(size = 10) Pageable pageable){
-        return ResponseEntity.ok(PageResponse.of(eventManagerService.getBoothMangeData(status, eventId, pageable)));
+    public ResponseEntity<PageResponse<BoothManageData>> getBoothManagePage(@RequestParam(defaultValue = "all") String status,
+                                                                            @PathVariable Long eventId,
+                                                                            @PageableDefault(size = 10) Pageable pageable){
+        return ResponseEntity.ok(PageResponse.of(eventManagerService.getBoothManageData(status, eventId, pageable)));
     }
 }

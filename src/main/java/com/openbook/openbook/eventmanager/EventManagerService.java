@@ -6,7 +6,7 @@ import com.openbook.openbook.booth.repository.BoothRepository;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
 import com.openbook.openbook.eventmanager.dto.BoothLocationData;
-import com.openbook.openbook.eventmanager.dto.BoothMangeData;
+import com.openbook.openbook.eventmanager.dto.BoothManageData;
 import com.openbook.openbook.global.exception.OpenBookException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,25 +26,25 @@ public class EventManagerService {
     private final EventLayoutAreaRepository eventLayoutAreaRepository;
 
     @Transactional(readOnly = true)
-    public Page<BoothMangeData> getBoothMangeData(String status, Long eventId, Pageable pageable){
+    public Page<BoothManageData> getBoothManageData(String status, Long eventId, Pageable pageable){
 
         if(status.equals("all")) {
             Page<Booth> booths = boothRepository.findAllBoothByEventId(pageable, eventId);
 
-            return booths.map(this::convertToBoothMangeData);
+            return booths.map(this::convertToBoothManageData);
         }
 
         Page<Booth> booths = boothRepository.findAllBoothByEventIdAndStatus(pageable, eventId, getBoothStatus(status));
-        return booths.map(this::convertToBoothMangeData);
+        return booths.map(this::convertToBoothManageData);
     }
 
-    private BoothMangeData convertToBoothMangeData(Booth booth) {
+    private BoothManageData convertToBoothManageData(Booth booth) {
         List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(booth.getId());
         List<BoothLocationData> locationData = eventLayoutAreas.stream()
                 .map(BoothLocationData::of)
                 .collect(Collectors.toList());
 
-        return BoothMangeData.of(booth, locationData);
+        return BoothManageData.of(booth, locationData);
     }
 
 

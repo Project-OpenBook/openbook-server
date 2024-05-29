@@ -9,7 +9,7 @@ import jakarta.persistence.Enumerated;
 
 import java.util.List;
 
-public record BoothMangeData(
+public record BoothManageData(
         Long id,
         String name,
         List<BoothLocationData> boothLocationData,
@@ -18,8 +18,8 @@ public record BoothMangeData(
         @Enumerated(EnumType.STRING)
         BoothStatus status
 ) {
-    public static BoothMangeData of(Booth booth, List<BoothLocationData> boothLocationData) {
-        return new BoothMangeData(
+    public static BoothManageData of(Booth booth, List<BoothLocationData> boothLocationData) {
+        return new BoothManageData(
                 booth.getId(),
                 booth.getName(),
                 boothLocationData,

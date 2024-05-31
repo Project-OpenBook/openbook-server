@@ -60,21 +60,12 @@ public class EventManagerService {
             booth.updateStatus(boothStatus);
             List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(boothId);
 
-            if(boothStatus.equals(BoothStatus.APPROVE)){
-                for(EventLayoutArea eventLayoutArea : eventLayoutAreas){
-                    eventLayoutArea.updateStatus(EventLayoutAreaStatus.COMPLETE);
-                }
-            } else if (boothStatus.equals(BoothStatus.REJECT)) {
-                for(EventLayoutArea eventLayoutArea : eventLayoutAreas){
-                    eventLayoutArea.updateStatus(EventLayoutAreaStatus.EMPTY);
-                }
-            }
+            changeAreaStatus(eventLayoutAreas, boothStatus);
         }else{
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 처리된 상태입니다.");
         }
 
     }
-
 
     private BoothManageData convertToBoothManageData(Booth booth) {
         List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(booth.getId());
@@ -85,7 +76,6 @@ public class EventManagerService {
         return BoothManageData.of(booth, locationData);
     }
 
-
     private BoothStatus getBoothStatus(String status){
         return switch (status){
             case "waiting" -> BoothStatus.WAITING;
@@ -93,6 +83,18 @@ public class EventManagerService {
             case "rejected" -> BoothStatus.REJECT;
             default -> throw new OpenBookException(HttpStatus.BAD_REQUEST, "요청 값이 잘못되었습니다.");
         };
+    }
+
+    private void changeAreaStatus(List<EventLayoutArea> eventLayoutAreas, BoothStatus boothStatus){
+        if(boothStatus.equals(BoothStatus.APPROVE)){
+            for(EventLayoutArea eventLayoutArea : eventLayoutAreas){
+                eventLayoutArea.updateStatus(EventLayoutAreaStatus.COMPLETE);
+            }
+        } else if (boothStatus.equals(BoothStatus.REJECT)) {
+            for(EventLayoutArea eventLayoutArea : eventLayoutAreas){
+                eventLayoutArea.updateStatus(EventLayoutAreaStatus.EMPTY);
+            }
+        }
     }
 
     private Event getEventOrException(Long id){

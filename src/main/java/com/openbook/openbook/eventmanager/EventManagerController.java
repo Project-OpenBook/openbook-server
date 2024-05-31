@@ -26,8 +26,8 @@ public class EventManagerController {
 
     @PostMapping("/booths/{boothId}/status")
     public ResponseEntity<ResponseMessage> changeBoothStatus(@PathVariable Long boothId,
-                                                             @RequestBody BoothStatusUpdateRequest request) {
-        eventManagerService.changeBoothStatus(boothId, request.boothStatus());
+                                                             @RequestBody BoothStatusUpdateRequest request, Authentication authentication) {
+        eventManagerService.changeBoothStatus(boothId, request.boothStatus(), Long.valueOf(authentication.getName()));
         return ResponseEntity.ok(new ResponseMessage("부스 상태가 변경되었습니다."));
     }
 }

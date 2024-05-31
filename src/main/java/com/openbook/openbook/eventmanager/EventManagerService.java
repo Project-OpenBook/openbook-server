@@ -48,8 +48,14 @@ public class EventManagerService {
     }
 
     @Transactional
-    public void changeBoothStatus(Long boothId, BoothStatus boothStatus){
+    public void changeBoothStatus(Long boothId, BoothStatus boothStatus, Long userId){
         Booth booth = getBoothOrException(boothId);
+        User user = getUserOrException(userId);
+
+        if(!booth.getLinkedEvent().getManager().equals(user)){
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "권한이 존재하지 않습니다.");
+        }
+
         if(!booth.getStatus().equals(boothStatus)){
             booth.updateStatus(boothStatus);
             List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(boothId);

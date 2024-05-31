@@ -24,7 +24,7 @@ public class EventManagerController {
         return ResponseEntity.ok(PageResponse.of(eventManagerService.getBoothManageData(status, eventId, pageable, Long.valueOf(authentication.getName()))));
     }
 
-    @PutMapping("/booths/{boothId}/status")
+    @PutMapping("/events/booths/{boothId}/status")
     public ResponseEntity<ResponseMessage> changeBoothStatus(@PathVariable Long boothId,
                                                              @RequestBody BoothStatusUpdateRequest request, Authentication authentication) {
         eventManagerService.changeBoothStatus(boothId, request.boothStatus(), Long.valueOf(authentication.getName()));

@@ -56,14 +56,13 @@ public class EventManagerService {
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "권한이 존재하지 않습니다.");
         }
 
-        if(!booth.getStatus().equals(boothStatus)){
-            booth.updateStatus(boothStatus);
-            List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(boothId);
-
-            changeAreaStatus(eventLayoutAreas, boothStatus);
-        }else{
+        if(booth.getStatus().equals(boothStatus)){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 처리된 상태입니다.");
         }
+        booth.updateStatus(boothStatus);
+        List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(boothId);
+
+        changeAreaStatus(eventLayoutAreas, boothStatus);
 
     }
 

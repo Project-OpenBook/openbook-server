@@ -3,6 +3,7 @@ package com.openbook.openbook.eventmanager;
 import com.openbook.openbook.booth.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.repository.BoothRepository;
+import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
@@ -46,6 +47,29 @@ public class EventManagerService {
         return boothRepository.findAllBoothByEventIdAndStatus(pageable, eventId, getBoothStatus(status)).map(this::convertToBoothManageData);
     }
 
+    @Transactional
+    public void changeBoothStatus(Long boothId, BoothStatus boothStatus, Long userId){
+        Booth booth = getBoothOrException(boothId);
+        User user = getUserOrException(userId);
+
+        if(!booth.getLinkedEvent().getManager().equals(user)){
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "권한이 존재하지 않습니다.");
+        }
+
+        if(booth.getStatus().equals(boothStatus)){
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 처리된 상태입니다.");
+        }
+        booth.updateStatus(boothStatus);
+        List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(boothId);
+
+        if(boothStatus.equals(BoothStatus.APPROVE)){
+            changeAreaStatus(eventLayoutAreas, EventLayoutAreaStatus.COMPLETE);
+        } else if (boothStatus.equals(BoothStatus.REJECT)) {
+            changeAreaStatus(eventLayoutAreas, EventLayoutAreaStatus.EMPTY);
+        }
+
+    }
+
     private BoothManageData convertToBoothManageData(Booth booth) {
         List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(booth.getId());
         List<BoothAreaData> locationData = eventLayoutAreas.stream()
@@ -55,7 +79,6 @@ public class EventManagerService {
         return BoothManageData.of(booth, locationData);
     }
 
-
     private BoothStatus getBoothStatus(String status){
         return switch (status){
             case "waiting" -> BoothStatus.WAITING;
@@ -63,6 +86,12 @@ public class EventManagerService {
             case "rejected" -> BoothStatus.REJECT;
             default -> throw new OpenBookException(HttpStatus.BAD_REQUEST, "요청 값이 잘못되었습니다.");
         };
+    }
+
+    private void changeAreaStatus(List<EventLayoutArea> eventLayoutAreas, EventLayoutAreaStatus eventLayoutAreaStatus){
+        for(EventLayoutArea eventLayoutArea : eventLayoutAreas){
+            eventLayoutArea.updateStatus(eventLayoutAreaStatus);
+        }
     }
 
     private Event getEventOrException(Long id){
@@ -75,5 +104,9 @@ public class EventManagerService {
         return userRepository.findById(id).orElseThrow(() ->
                 new OpenBookException(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다.")
         );
+    }
+
+    private Booth getBoothOrException(Long id){
+        return boothRepository.findById(id).orElseThrow(() -> new OpenBookException(HttpStatus.NOT_FOUND, "일치하는 부스가 존재하지 않습니다."));
     }
 }

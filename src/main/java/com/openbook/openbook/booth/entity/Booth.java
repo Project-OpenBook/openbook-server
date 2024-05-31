@@ -64,6 +64,8 @@ public class Booth extends EntityBasicTime {
         this.status = BoothStatus.WAITING;
     }
 
+    public void updateStatus(BoothStatus status){ this.status = status; }
+
     @Builder
     public Booth(User manager, Event linkedEvent, String name, String description, String mainImageUrl,
                  String accountNumber, LocalDateTime openTime, LocalDateTime closeTime) {

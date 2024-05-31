@@ -62,7 +62,11 @@ public class EventManagerService {
         booth.updateStatus(boothStatus);
         List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(boothId);
 
-        changeAreaStatus(eventLayoutAreas, boothStatus);
+        if(boothStatus.equals(BoothStatus.APPROVE)){
+            changeAreaStatus(eventLayoutAreas, EventLayoutAreaStatus.COMPLETE);
+        } else if (boothStatus.equals(BoothStatus.REJECT)) {
+            changeAreaStatus(eventLayoutAreas, EventLayoutAreaStatus.EMPTY);
+        }
 
     }
 
@@ -84,15 +88,9 @@ public class EventManagerService {
         };
     }
 
-    private void changeAreaStatus(List<EventLayoutArea> eventLayoutAreas, BoothStatus boothStatus){
-        if(boothStatus.equals(BoothStatus.APPROVE)){
-            for(EventLayoutArea eventLayoutArea : eventLayoutAreas){
-                eventLayoutArea.updateStatus(EventLayoutAreaStatus.COMPLETE);
-            }
-        } else if (boothStatus.equals(BoothStatus.REJECT)) {
-            for(EventLayoutArea eventLayoutArea : eventLayoutAreas){
-                eventLayoutArea.updateStatus(EventLayoutAreaStatus.EMPTY);
-            }
+    private void changeAreaStatus(List<EventLayoutArea> eventLayoutAreas, EventLayoutAreaStatus eventLayoutAreaStatus){
+        for(EventLayoutArea eventLayoutArea : eventLayoutAreas){
+            eventLayoutArea.updateStatus(eventLayoutAreaStatus);
         }
     }
 

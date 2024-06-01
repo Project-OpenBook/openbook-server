@@ -1,6 +1,8 @@
 package com.openbook.openbook.basicuser.service;
 
 import com.openbook.openbook.basicuser.dto.request.BoothRegistrationRequest;
+import com.openbook.openbook.basicuser.dto.response.BoothBasicData;
+import com.openbook.openbook.booth.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.repository.BoothRepository;
 import com.openbook.openbook.event.entity.Event;
@@ -10,6 +12,8 @@ import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.repository.UserRepository;
 import com.openbook.openbook.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +62,16 @@ public class UserBoothService {
             boothRepository.save(booth);
             userEventLayoutAreaService.requestBoothLocation(request.layoutAreas(), booth);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<BoothBasicData> getBoothBasicData(Pageable pageable){
+        Slice<Booth> booths = boothRepository.findAllByStatus(BoothStatus.APPROVE, pageable);
+
+        return booths.map(booth -> {
+            Event event = eventRepository.findById(booth.getLinkedEvent().getId()).get();
+            return BoothBasicData.of(booth, event);
+        });
     }
 
     private void dateTimePeriodCheck(LocalDateTime open, LocalDateTime close, Event event){

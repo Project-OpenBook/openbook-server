@@ -69,8 +69,7 @@ public class UserBoothService {
         Slice<Booth> booths = boothRepository.findAllByStatus(BoothStatus.APPROVE, pageable);
 
         return booths.map(booth -> {
-            Event event = eventRepository.findById(booth.getLinkedEvent().getId()).get();
-            return BoothBasicData.of(booth, event);
+            return BoothBasicData.of(booth, booth.getLinkedEvent());
         });
     }
 

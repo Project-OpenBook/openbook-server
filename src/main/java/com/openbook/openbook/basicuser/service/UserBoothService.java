@@ -60,6 +60,10 @@ public class UserBoothService {
         }
     }
 
+    public int getBoothCountByLinkedEvent(Event event) {
+        return boothRepository.countByLinkedEvent(event);
+    }
+
     private void dateTimePeriodCheck(LocalDateTime open, LocalDateTime close, Event event){
         LocalTime openTime = open.toLocalTime();
         LocalTime closeTime = close.toLocalTime();

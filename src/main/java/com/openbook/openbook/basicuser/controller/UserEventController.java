@@ -2,6 +2,7 @@ package com.openbook.openbook.basicuser.controller;
 
 
 import com.openbook.openbook.basicuser.dto.response.EventBasicData;
+import com.openbook.openbook.basicuser.dto.response.EventDetail;
 import com.openbook.openbook.basicuser.dto.response.EventLayoutStatus;
 import com.openbook.openbook.basicuser.service.UserEventService;
 import com.openbook.openbook.basicuser.dto.request.EventRegistrationRequest;
@@ -45,4 +46,10 @@ public class UserEventController {
                                                                    @PageableDefault(size = 6) Pageable pageable) {
         return ResponseEntity.ok(SliceResponse.of(userEventService.getEventBasicData(pageable, progress)));
     }
+
+    @GetMapping("/events/{eventId}")
+    public ResponseEntity<EventDetail> getEvent(Authentication authentication, @PathVariable Long eventId) {
+        return ResponseEntity.ok(userEventService.getEventDetail(Long.valueOf(authentication.getName()), eventId));
+    }
+
 }

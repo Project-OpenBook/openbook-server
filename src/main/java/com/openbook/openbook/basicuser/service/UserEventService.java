@@ -5,6 +5,7 @@ import com.openbook.openbook.basicuser.dto.request.EventRegistrationRequest;
 import com.openbook.openbook.basicuser.dto.EventLayoutCreateData;
 import com.openbook.openbook.basicuser.dto.LayoutAreaCreateData;
 import com.openbook.openbook.basicuser.dto.response.EventBasicData;
+import com.openbook.openbook.basicuser.dto.response.EventDetail;
 import com.openbook.openbook.basicuser.dto.response.EventLayoutStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayout;
@@ -15,6 +16,7 @@ import com.openbook.openbook.user.repository.UserRepository;
 import com.openbook.openbook.user.entity.User;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class UserEventService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final UserEventLayoutService userEventLayoutService;
+    private final UserBoothService userBoothService;
     private final S3Service s3Service;
 
     @Transactional
@@ -72,6 +75,13 @@ public class UserEventService {
             default -> throw new OpenBookException(HttpStatus.BAD_REQUEST, "요청 값이 잘못되었습니다.");
         };
         return events.map(EventBasicData::of);
+    }
+
+    @Transactional(readOnly = true)
+    public EventDetail getEventDetail(final Long userId, final Long eventId) {
+        Event event = getEventOrException(eventId);
+        int boothCount = userBoothService.getBoothCountByLinkedEvent(event);
+        return EventDetail.of(event, boothCount, Objects.equals(event.getManager().getId(), userId));
     }
 
     @Transactional(readOnly = true)

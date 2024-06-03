@@ -1,5 +1,7 @@
 package com.openbook.openbook.basicuser.service;
 
+import static com.openbook.openbook.global.util.JsonService.convertJsonToList;
+
 import com.google.gson.Gson;
 import com.nimbusds.jose.shaded.gson.reflect.TypeToken;
 import com.openbook.openbook.basicuser.dto.EventLayoutCreateData;
@@ -45,10 +47,7 @@ public class UserEventLayoutService {
 
     public EventLayoutStatus getLayoutStatus(EventLayout eventLayout) {
         Map<String, List<LayoutAreaStatusData>> areas = layoutAreaService.getAreaStatus(eventLayout);
-        Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<String>>(){}.getType();
-        ArrayList<String> imageUrlList = gson.fromJson(eventLayout.getImageUrl(), type);
-        return new EventLayoutStatus(imageUrlList, eventLayout.getType(), areas);
+        return new EventLayoutStatus(convertJsonToList(eventLayout.getImageUrl()), eventLayout.getType(), areas);
     }
 
     private List<String> getImageUrlList(List<MultipartFile> layoutImages) {

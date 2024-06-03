@@ -3,6 +3,7 @@ package com.openbook.openbook.booth.repository;
 import com.openbook.openbook.basicuser.dto.response.BoothBasicData;
 import com.openbook.openbook.booth.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
+import com.openbook.openbook.event.entity.Event;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -23,4 +24,6 @@ public interface BoothRepository extends JpaRepository<Booth, Long> {
 
     @Query("SELECT b FROM Booth b WHERE b.status=:boothStatus")
     Slice<Booth> findAllByStatus(BoothStatus boothStatus, Pageable pageable);
+
+    int countByLinkedEvent(Event linkedEvent);
 }

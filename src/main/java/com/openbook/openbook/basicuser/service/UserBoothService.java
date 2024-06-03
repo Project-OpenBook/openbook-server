@@ -65,12 +65,16 @@ public class UserBoothService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<BoothBasicData> getBoothBasicData(Pageable pageable){
+    public Slice<BoothBasicData> getBoothBasicData(Pageable pageable) {
         Slice<Booth> booths = boothRepository.findAllByStatus(BoothStatus.APPROVE, pageable);
 
         return booths.map(booth -> {
             return BoothBasicData.of(booth, booth.getLinkedEvent());
         });
+    }
+
+    public int getBoothCountByLinkedEvent(Event event) {
+        return boothRepository.countByLinkedEvent(event);
     }
 
     private void dateTimePeriodCheck(LocalDateTime open, LocalDateTime close, Event event){

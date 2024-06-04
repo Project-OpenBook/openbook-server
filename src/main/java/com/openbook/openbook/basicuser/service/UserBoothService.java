@@ -2,6 +2,7 @@ package com.openbook.openbook.basicuser.service;
 
 import com.openbook.openbook.basicuser.dto.request.BoothRegistrationRequest;
 import com.openbook.openbook.basicuser.dto.response.BoothBasicData;
+import com.openbook.openbook.basicuser.dto.response.BoothDetail;
 import com.openbook.openbook.booth.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.repository.BoothRepository;
@@ -73,6 +74,13 @@ public class UserBoothService {
         });
     }
 
+    @Transactional(readOnly = true)
+    public BoothDetail getBoothDetail(Long boothId){
+        Booth booth = getBoothOrException(boothId);
+
+        return BoothDetail.of(booth, booth.getLinkedEvent());
+    }
+
     public int getBoothCountByLinkedEvent(Event event) {
         return boothRepository.countByLinkedEvent(event);
     }
@@ -117,5 +125,10 @@ public class UserBoothService {
     private User getUserOrException(Long userId) {
         return userRepository.findById(userId).orElseThrow(() ->
                 new OpenBookException(HttpStatus.NOT_FOUND, "유저 정보를 찾을 수 없습니다."));
+    }
+
+    private Booth getBoothOrException(Long boothId){
+        return boothRepository.findById(boothId).orElseThrow(() ->
+                new OpenBookException(HttpStatus.NOT_FOUND, "부스 정보를 찾을 수 없습니다."));
     }
 }

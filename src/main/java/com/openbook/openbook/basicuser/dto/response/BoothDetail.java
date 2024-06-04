@@ -10,6 +10,7 @@ public record BoothDetail(
         String name,
         String openDate,
         String closeDate,
+        String description,
         String mainImageUrl
 ) {
     public static BoothDetail of(Booth booth, Event event){
@@ -18,6 +19,7 @@ public record BoothDetail(
                 booth.getName(),
                 getFormattingDate(event.getOpenDate().atStartOfDay()),
                 getFormattingDate(event.getCloseDate().atStartOfDay()),
+                booth.getDescription(),
                 booth.getMainImageUrl()
         );
     }

@@ -78,7 +78,11 @@ public class UserBoothService {
     public BoothDetail getBoothDetail(Long boothId){
         Booth booth = getBoothOrException(boothId);
 
+        if(!booth.getStatus().equals(BoothStatus.APPROVE)){
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "승인 처리 된 부스가 아닙니다.");
+        }
         return BoothDetail.of(booth, booth.getLinkedEvent());
+
     }
 
     public int getBoothCountByLinkedEvent(Event event) {

@@ -11,7 +11,7 @@ public class Formatter {
     }
 
     public static String getFormattingTime(LocalDateTime dateTime){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm");
         return dateTime.format(formatter);
     }
 }

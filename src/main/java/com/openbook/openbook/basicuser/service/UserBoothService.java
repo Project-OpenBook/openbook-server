@@ -7,7 +7,10 @@ import com.openbook.openbook.booth.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.repository.BoothRepository;
 import com.openbook.openbook.event.entity.Event;
+import com.openbook.openbook.event.entity.EventLayoutArea;
+import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
 import com.openbook.openbook.event.repository.EventRepository;
+import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.repository.UserRepository;
@@ -24,7 +27,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +40,7 @@ public class UserBoothService {
     private final UserEventLayoutAreaService userEventLayoutAreaService;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final EventLayoutAreaRepository eventLayoutAreaRepository;
     private final S3Service s3Service;
     @Transactional
     public void boothRegistration(Long userId, BoothRegistrationRequest request){
@@ -77,11 +83,15 @@ public class UserBoothService {
     @Transactional(readOnly = true)
     public BoothDetail getBoothDetail(Long boothId){
         Booth booth = getBoothOrException(boothId);
+        List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(boothId);
+        List<BoothAreaData> boothAreaData = eventLayoutAreas.stream()
+                .map(BoothAreaData::of)
+                .collect(Collectors.toList());
 
         if(!booth.getStatus().equals(BoothStatus.APPROVE)){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "승인 처리 된 부스가 아닙니다.");
         }
-        return BoothDetail.of(booth, booth.getLinkedEvent());
+        return BoothDetail.of(booth, boothAreaData);
 
     }
 

@@ -9,4 +9,9 @@ public class Formatter {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
         return dateTime.format(formatter);
     }
+
+    public static String getFormattingTime(LocalDateTime dateTime){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm");
+        return dateTime.format(formatter);
+    }
 }

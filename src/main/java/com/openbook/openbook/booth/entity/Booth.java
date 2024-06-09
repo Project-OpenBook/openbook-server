@@ -42,6 +42,7 @@ public class Booth extends EntityBasicTime {
     private String description;
 
     private String mainImageUrl;
+    private String bank;
 
     private String accountNumber;
 
@@ -68,12 +69,13 @@ public class Booth extends EntityBasicTime {
 
     @Builder
     public Booth(User manager, Event linkedEvent, String name, String description, String mainImageUrl,
-                 String accountNumber, LocalDateTime openTime, LocalDateTime closeTime) {
+                 String bank, String accountNumber, LocalDateTime openTime, LocalDateTime closeTime) {
         this.manager = manager;
         this.linkedEvent = linkedEvent;
         this.name = name;
         this.description = description;
         this.mainImageUrl = mainImageUrl;
+        this.bank = bank;
         this.accountNumber = accountNumber;
         this.openTime = openTime;
         this.closeTime = closeTime;

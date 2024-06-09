@@ -15,7 +15,7 @@ public record BoothRegistrationRequest(
         @NotNull MultipartFile mainImage,
         @NotNull @Size(min = 1, max = 3) List<Long> layoutAreas,
         @NotBlank String description,
-        String bank,
+        String bankName,
         String accountNumber
 
         ) {

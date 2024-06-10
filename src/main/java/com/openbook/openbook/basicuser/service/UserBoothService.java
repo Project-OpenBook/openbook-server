@@ -62,7 +62,7 @@ public class UserBoothService {
                     .description(request.description())
                     .mainImageUrl(uploadAndGetS3ImageUrl(request.mainImage()))
                     .bankName(request.bankName())
-                    .accountNumber(request.accountNumber())
+                    .bankAccount(request.bankAccount())
                     .openTime(open)
                     .closeTime(close)
                     .build();

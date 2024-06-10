@@ -16,7 +16,7 @@ public record BoothRegistrationRequest(
         @NotNull @Size(min = 1, max = 3) List<Long> layoutAreas,
         @NotBlank String description,
         String bankName,
-        String accountNumber
+        String bankAccount
 
         ) {
 }

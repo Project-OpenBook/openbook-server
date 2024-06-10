@@ -61,6 +61,7 @@ public class UserBoothService {
                     .name(request.name())
                     .description(request.description())
                     .mainImageUrl(uploadAndGetS3ImageUrl(request.mainImage()))
+                    .accountBankName(request.accountBankName())
                     .accountNumber(request.accountNumber())
                     .openTime(open)
                     .closeTime(close)

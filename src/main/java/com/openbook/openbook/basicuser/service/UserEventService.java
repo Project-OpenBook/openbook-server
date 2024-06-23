@@ -55,7 +55,7 @@ public class UserEventService {
                 .name(request.name())
                 .location(request.location())
                 .description(request.description())
-                .mainImageUrl(uploadAndGetS3ImageUrl(request.mainImage()))
+                .mainImageUrl(s3Service.uploadFileAndGetUrl(request.mainImage()))
                 .layout(layout)
                 .openDate(request.openDate())
                 .closeDate(request.closeDate())
@@ -113,12 +113,6 @@ public class UserEventService {
                 .toList();
     }
 
-    private String uploadAndGetS3ImageUrl(MultipartFile image) {
-        String imageName = getRandomFileName(image);
-        s3Service.uploadFileToS3(image, imageName);
-        return s3Service.getFileUrlFromS3(imageName);
-    }
-
     private User getUserOrException(Long id) {
         return userRepository.findById(id).orElseThrow(() ->
                 new OpenBookException(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다.")
@@ -129,11 +123,6 @@ public class UserEventService {
         return eventRepository.findById(id).orElseThrow(() ->
                 new OpenBookException(HttpStatus.NOT_FOUND, "행사가 존재하지 않습니다.")
         );
-    }
-
-    private String getRandomFileName(MultipartFile file) {
-        String randomUUID = UUID.randomUUID().toString();
-        return randomUUID + file.getOriginalFilename();
     }
 
 }

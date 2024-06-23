@@ -53,15 +53,9 @@ public class UserEventLayoutService {
     private List<String> getImageUrlList(List<MultipartFile> layoutImages) {
         ArrayList<String> imageUrlList = new ArrayList<>(layoutImages.size());
         for (MultipartFile image : layoutImages) {
-            String randomImageName = getRandomFileName(image);
-            s3Service.uploadFileToS3(image, randomImageName);
-            imageUrlList.add(s3Service.getFileUrlFromS3(randomImageName));
+            imageUrlList.add(s3Service.uploadFileAndGetUrl(image));
         }
         return imageUrlList;
     }
 
-    private String getRandomFileName(MultipartFile file) {
-        String randomUUID = UUID.randomUUID().toString();
-        return randomUUID + file.getOriginalFilename();
-    }
 }

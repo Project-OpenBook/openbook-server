@@ -60,7 +60,7 @@ public class UserBoothService {
                     .manager(user)
                     .name(request.name())
                     .description(request.description())
-                    .mainImageUrl(uploadAndGetS3ImageUrl(request.mainImage()))
+                    .mainImageUrl(s3Service.uploadFileAndGetUrl(request.mainImage()))
                     .accountBankName(request.accountBankName())
                     .accountNumber(request.accountNumber())
                     .openTime(open)
@@ -118,18 +118,6 @@ public class UserBoothService {
         String dateTime = date.toString() + " " + time;
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return LocalDateTime.parse(dateTime, dateTimeFormatter);
-    }
-
-
-    private String uploadAndGetS3ImageUrl(MultipartFile image) {
-        String imageName = getRandomFileName(image);
-        s3Service.uploadFileToS3(image, imageName);
-        return s3Service.getFileUrlFromS3(imageName);
-    }
-
-    private String getRandomFileName(MultipartFile file) {
-        String randomUUID = UUID.randomUUID().toString();
-        return randomUUID + file.getOriginalFilename();
     }
 
     private Event getEventOrException(Long eventId) {

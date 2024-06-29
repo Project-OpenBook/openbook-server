@@ -33,7 +33,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             + "AND current_date BETWEEN e.boothRecruitmentStartDate AND e.boothRecruitmentEndDate")
     Slice<Event> findAllRecruiting(Pageable pageable);
 
-    @Query("SELECT e FROM Event e WHERE e.status = 'APPROVE' AND e.closeDate <= current_date")
+    @Query("SELECT e FROM Event e WHERE e.status = 'APPROVE' AND e.closeDate < current_date")
     Slice<Event> findAllTerminated(Pageable pageable);
 
 }

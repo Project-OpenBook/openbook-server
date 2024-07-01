@@ -7,6 +7,7 @@ import com.openbook.openbook.basicuser.dto.LayoutAreaCreateData;
 import com.openbook.openbook.basicuser.dto.response.EventBasicData;
 import com.openbook.openbook.basicuser.dto.response.EventDetail;
 import com.openbook.openbook.basicuser.dto.response.EventLayoutStatus;
+import com.openbook.openbook.event.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.repository.EventRepository;
@@ -80,6 +81,9 @@ public class UserEventService {
     @Transactional(readOnly = true)
     public EventDetail getEventDetail(final Long userId, final Long eventId) {
         Event event = getEventOrException(eventId);
+        if(!event.getStatus().equals(EventStatus.APPROVE)) {
+            throw new OpenBookException(HttpStatus.UNAUTHORIZED, "권한이 존재하지 않습니다.");
+        }
         int boothCount = userBoothService.getBoothCountByLinkedEvent(event);
         return EventDetail.of(event, boothCount, Objects.equals(event.getManager().getId(), userId));
     }

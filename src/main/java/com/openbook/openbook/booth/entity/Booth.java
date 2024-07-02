@@ -55,9 +55,6 @@ public class Booth extends EntityBasicTime {
     private BoothStatus status;
 
     @OneToMany(mappedBy = "booth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<BoothLocation> locations = new ArrayList<>();
-
-    @OneToMany(mappedBy = "booth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BoothTagDetail> tagDetails = new ArrayList<>();
 
     @Override

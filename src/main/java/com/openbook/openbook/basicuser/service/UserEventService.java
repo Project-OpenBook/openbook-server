@@ -16,6 +16,7 @@ import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.repository.UserRepository;
 import com.openbook.openbook.user.entity.User;
+import com.openbook.openbook.user.service.UserService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserEventService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final EventService eventService;
     private final UserEventLayoutService userEventLayoutService;
     private final UserBoothService userBoothService;
@@ -39,7 +40,7 @@ public class UserEventService {
 
     @Transactional
     public void eventRegistration(final Long userId, final EventRegistrationRequest request) {
-        User user = getUserOrException(userId);
+        User user = userService.getUserOrException(userId);
 
         dateValidityCheck(request.openDate(), request.closeDate());
         dateValidityCheck(request.boothRecruitmentStartDate(), request.boothRecruitmentEndDate());
@@ -108,12 +109,6 @@ public class UserEventService {
         return IntStream.range(0, classifications.size())
                 .mapToObj( i -> new LayoutAreaCreateData(classifications.get(i), maxNumbers.get(i)))
                 .toList();
-    }
-
-    private User getUserOrException(Long id) {
-        return userRepository.findById(id).orElseThrow(() ->
-                new OpenBookException(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다.")
-        );
     }
 
 }

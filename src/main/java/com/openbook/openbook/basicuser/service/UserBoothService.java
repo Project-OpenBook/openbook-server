@@ -15,6 +15,7 @@ import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.repository.UserRepository;
 import com.openbook.openbook.user.entity.User;
+import com.openbook.openbook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -39,12 +40,13 @@ public class UserBoothService {
     private final BoothRepository boothRepository;
     private final UserEventLayoutAreaService userEventLayoutAreaService;
     private final EventRepository eventRepository;
-    private final UserRepository userRepository;
+    
+    private final UserService userService;
     private final EventLayoutAreaRepository eventLayoutAreaRepository;
     private final S3Service s3Service;
     @Transactional
     public void boothRegistration(Long userId, BoothRegistrationRequest request){
-        User user = getUserOrException(userId);
+        User user = userService.getUserOrException(userId);
         Event event = getEventOrException(request.linkedEvent());
         
         LocalDateTime open = timeFormat(request.openTime(), event.getOpenDate());
@@ -123,11 +125,6 @@ public class UserBoothService {
     private Event getEventOrException(Long eventId) {
         return eventRepository.findById(eventId).orElseThrow(() ->
                 new OpenBookException(HttpStatus.NOT_FOUND, "행사 정보를 찾을 수 없습니다."));
-    }
-
-    private User getUserOrException(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() ->
-                new OpenBookException(HttpStatus.NOT_FOUND, "유저 정보를 찾을 수 없습니다."));
     }
 
     private Booth getBoothOrException(Long boothId){

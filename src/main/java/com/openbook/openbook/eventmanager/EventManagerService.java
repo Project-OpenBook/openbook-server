@@ -8,6 +8,7 @@ import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
 import com.openbook.openbook.event.repository.EventRepository;
+import com.openbook.openbook.event.service.EventService;
 import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 import com.openbook.openbook.eventmanager.dto.BoothManageData;
 import com.openbook.openbook.global.exception.OpenBookException;
@@ -29,12 +30,12 @@ public class EventManagerService {
 
     private final BoothRepository boothRepository;
     private final EventLayoutAreaRepository eventLayoutAreaRepository;
-    private final EventRepository eventRepository;
+    private final EventService eventService;
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public Page<BoothManageData> getBoothManageData(String status, Long eventId, Pageable pageable, Long userId){
-        Event event = getEventOrException(eventId);
+        Event event = eventService.getEventOrException(eventId);
         User user = getUserOrException(userId);
 
         if(!event.getManager().equals(user)){
@@ -92,12 +93,6 @@ public class EventManagerService {
         for(EventLayoutArea eventLayoutArea : eventLayoutAreas){
             eventLayoutArea.updateStatus(eventLayoutAreaStatus);
         }
-    }
-
-    private Event getEventOrException(Long id){
-        return eventRepository.findById(id).orElseThrow(() ->
-                new OpenBookException(HttpStatus.NOT_FOUND, "행사가 존재하지 않습니다.")
-        );
     }
 
     private User getUserOrException(Long id){

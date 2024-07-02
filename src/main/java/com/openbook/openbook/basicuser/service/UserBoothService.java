@@ -10,6 +10,7 @@ import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
 import com.openbook.openbook.event.repository.EventRepository;
+import com.openbook.openbook.event.service.EventService;
 import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
@@ -39,15 +40,15 @@ public class UserBoothService {
 
     private final BoothRepository boothRepository;
     private final UserEventLayoutAreaService userEventLayoutAreaService;
-    private final EventRepository eventRepository;
-    
+    private final EventService eventService;
+
     private final UserService userService;
     private final EventLayoutAreaRepository eventLayoutAreaRepository;
     private final S3Service s3Service;
     @Transactional
     public void boothRegistration(Long userId, BoothRegistrationRequest request){
         User user = userService.getUserOrException(userId);
-        Event event = getEventOrException(request.linkedEvent());
+        Event event = eventService.getEventOrException(request.linkedEvent());
         
         LocalDateTime open = timeFormat(request.openTime(), event.getOpenDate());
         LocalDateTime close = timeFormat(request.closeTime(), event.getCloseDate());
@@ -120,11 +121,6 @@ public class UserBoothService {
         String dateTime = date.toString() + " " + time;
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return LocalDateTime.parse(dateTime, dateTimeFormatter);
-    }
-
-    private Event getEventOrException(Long eventId) {
-        return eventRepository.findById(eventId).orElseThrow(() ->
-                new OpenBookException(HttpStatus.NOT_FOUND, "행사 정보를 찾을 수 없습니다."));
     }
 
     private Booth getBoothOrException(Long boothId){

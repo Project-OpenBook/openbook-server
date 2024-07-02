@@ -7,6 +7,7 @@ import com.openbook.openbook.basicuser.dto.LayoutAreaCreateData;
 import com.openbook.openbook.basicuser.dto.response.EventBasicData;
 import com.openbook.openbook.basicuser.dto.response.EventDetail;
 import com.openbook.openbook.basicuser.dto.response.EventLayoutStatus;
+import com.openbook.openbook.booth.service.BoothService;
 import com.openbook.openbook.event.dto.EventDTO;
 import com.openbook.openbook.event.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
@@ -35,7 +36,7 @@ public class UserEventService {
     private final UserService userService;
     private final EventService eventService;
     private final UserEventLayoutService userEventLayoutService;
-    private final UserBoothService userBoothService;
+    private final BoothService boothService;
     private final S3Service s3Service;
 
     @Transactional
@@ -78,7 +79,7 @@ public class UserEventService {
         if(!event.getStatus().equals(EventStatus.APPROVE)) {
             throw new OpenBookException(HttpStatus.UNAUTHORIZED, "권한이 존재하지 않습니다.");
         }
-        int boothCount = userBoothService.getBoothCountByLinkedEvent(event);
+        int boothCount = boothService.getBoothCountByEvent(event);
         return EventDetail.of(event, boothCount, Objects.equals(event.getManager().getId(), userId));
     }
 

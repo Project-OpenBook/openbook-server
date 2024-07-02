@@ -3,18 +3,17 @@ package com.openbook.openbook.basicuser.service;
 import com.openbook.openbook.basicuser.dto.request.BoothRegistrationRequest;
 import com.openbook.openbook.basicuser.dto.response.BoothBasicData;
 import com.openbook.openbook.basicuser.dto.response.BoothDetail;
+import com.openbook.openbook.booth.dto.BoothDTO;
 import com.openbook.openbook.booth.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
-import com.openbook.openbook.booth.repository.BoothRepository;
+import com.openbook.openbook.booth.service.BoothService;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
-import com.openbook.openbook.event.repository.EventRepository;
 import com.openbook.openbook.event.service.EventService;
 import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
-import com.openbook.openbook.user.repository.UserRepository;
 import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +22,11 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +34,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class UserBoothService {
 
-    private final BoothRepository boothRepository;
+    private final BoothService boothService;
     private final UserEventLayoutAreaService userEventLayoutAreaService;
     private final EventService eventService;
 
@@ -57,36 +53,34 @@ public class UserBoothService {
 
         if(userEventLayoutAreaService.hasReservationData(request.layoutAreas())){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 예약된 자리 입니다.");
-        }else{
-            Booth booth = Booth.builder()
-                    .linkedEvent(event)
-                    .manager(user)
-                    .name(request.name())
-                    .description(request.description())
-                    .mainImageUrl(s3Service.uploadFileAndGetUrl(request.mainImage()))
-                    .accountBankName(request.accountBankName())
-                    .accountNumber(request.accountNumber())
-                    .openTime(open)
-                    .closeTime(close)
-                    .build();
-
-            boothRepository.save(booth);
-            userEventLayoutAreaService.requestBoothLocation(request.layoutAreas(), booth);
         }
+
+        BoothDTO booth = BoothDTO.builder()
+                .linkedEvent(event)
+                .manager(user)
+                .name(request.name())
+                .description(request.description())
+                .mainImageUrl(s3Service.uploadFileAndGetUrl(request.mainImage()))
+                .accountBankName(request.accountBankName())
+                .accountNumber(request.accountNumber())
+                .openTime(open)
+                .closeTime(close)
+                .build();
+        boothService.createBooth(booth);
+
+        userEventLayoutAreaService.requestBoothLocation(request.layoutAreas(), booth);
     }
 
     @Transactional(readOnly = true)
     public Slice<BoothBasicData> getBoothBasicData(Pageable pageable) {
-        Slice<Booth> booths = boothRepository.findAllByStatus(BoothStatus.APPROVE, pageable);
-
-        return booths.map(booth -> {
-            return BoothBasicData.of(booth, booth.getLinkedEvent());
-        });
+        return boothService.getBoothsByStatus(pageable, BoothStatus.APPROVE).map(
+                booth -> BoothBasicData.of(booth, booth.getLinkedEvent())
+        );
     }
 
     @Transactional(readOnly = true)
     public BoothDetail getBoothDetail(Long boothId){
-        Booth booth = getBoothOrException(boothId);
+        Booth booth = boothService.getBoothOrException(boothId);
         List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(boothId);
         List<BoothAreaData> boothAreaData = eventLayoutAreas.stream()
                 .map(BoothAreaData::of)
@@ -97,10 +91,6 @@ public class UserBoothService {
         }
         return BoothDetail.of(booth, boothAreaData);
 
-    }
-
-    public int getBoothCountByLinkedEvent(Event event) {
-        return boothRepository.countByLinkedEvent(event);
     }
 
     private void dateTimePeriodCheck(LocalDateTime open, LocalDateTime close, Event event){
@@ -123,8 +113,4 @@ public class UserBoothService {
         return LocalDateTime.parse(dateTime, dateTimeFormatter);
     }
 
-    private Booth getBoothOrException(Long boothId){
-        return boothRepository.findById(boothId).orElseThrow(() ->
-                new OpenBookException(HttpStatus.NOT_FOUND, "부스 정보를 찾을 수 없습니다."));
-    }
 }

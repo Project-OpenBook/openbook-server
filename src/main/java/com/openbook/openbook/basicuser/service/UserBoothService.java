@@ -83,17 +83,14 @@ public class UserBoothService {
     @Transactional(readOnly = true)
     public BoothDetail getBoothDetail(Long boothId){
         Booth booth = boothService.getBoothOrException(boothId);
-
+        if(!booth.getStatus().equals(BoothStatus.APPROVE)){
+            throw new OpenBookException(HttpStatus.BAD_REQUEST, "승인 처리 된 부스가 아닙니다.");
+        }
         List<BoothAreaData> boothAreaData = layoutAreaService.getLayoutAreasByBoothId(boothId)
                 .stream()
                 .map(BoothAreaData::of)
                 .collect(Collectors.toList());
-
-        if(!booth.getStatus().equals(BoothStatus.APPROVE)){
-            throw new OpenBookException(HttpStatus.BAD_REQUEST, "승인 처리 된 부스가 아닙니다.");
-        }
         return BoothDetail.of(booth, boothAreaData);
-
     }
 
     private boolean hasReservationData(List<Long> eventLayoutAreaList){
@@ -107,9 +104,7 @@ public class UserBoothService {
     }
 
     private void dateTimePeriodCheck(LocalDateTime open, LocalDateTime close, Event event){
-        LocalTime openTime = open.toLocalTime();
-        LocalTime closeTime = close.toLocalTime();
-        if(openTime.isAfter(closeTime)){
+        if(open.isAfter(close)){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "시간 입력 오류");
         }
         LocalDate now = LocalDate.now();
@@ -117,6 +112,5 @@ public class UserBoothService {
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "모집 기간이 아닙니다.");
         }
     }
-
 
 }

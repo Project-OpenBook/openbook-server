@@ -10,6 +10,7 @@ import com.openbook.openbook.basicuser.dto.LayoutAreaStatusData;
 import com.openbook.openbook.basicuser.dto.response.EventLayoutStatus;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.repository.EventLayoutRepository;
+import com.openbook.openbook.event.service.LayoutAreaService;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.global.util.S3Service;
 import java.lang.reflect.Type;
@@ -28,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserEventLayoutService {
 
     private final EventLayoutRepository eventLayoutRepository;
-    private final UserEventLayoutAreaService layoutAreaService;
+    private final LayoutAreaService layoutAreaService;
     private final S3Service s3Service;
 
     @Transactional
@@ -38,15 +39,17 @@ public class UserEventLayoutService {
                 .type(layoutData.type())
                 .imageUrl(imagesJson)
                 .build();
-        for(LayoutAreaCreateData areaLine : layoutData.areas()) {
-            layoutAreaService.createLayoutArea(eventLayout, areaLine);
+        for(LayoutAreaCreateData areaData : layoutData.areas()) {
+            layoutAreaService.createLayoutArea(eventLayout, areaData.classification(), areaData.maxNumber());
         }
         eventLayoutRepository.save(eventLayout);
         return eventLayout;
     }
 
+
+
     public EventLayoutStatus getLayoutStatus(EventLayout eventLayout) {
-        Map<String, List<LayoutAreaStatusData>> areas = layoutAreaService.getAreaStatus(eventLayout);
+        Map<String, List<LayoutAreaStatusData>> areas = layoutAreaService.getLayoutAreaProgress(eventLayout);
         return new EventLayoutStatus(convertJsonToList(eventLayout.getImageUrl()), eventLayout.getType(), areas);
     }
 

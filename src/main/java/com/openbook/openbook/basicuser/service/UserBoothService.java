@@ -7,10 +7,12 @@ import com.openbook.openbook.booth.dto.BoothDTO;
 import com.openbook.openbook.booth.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.service.BoothService;
+import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
 import com.openbook.openbook.event.service.EventService;
+import com.openbook.openbook.event.service.LayoutAreaService;
 import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
@@ -35,12 +37,12 @@ import java.util.stream.Collectors;
 public class UserBoothService {
 
     private final BoothService boothService;
-    private final UserEventLayoutAreaService userEventLayoutAreaService;
     private final EventService eventService;
-
+    private final LayoutAreaService layoutAreaService;
     private final UserService userService;
-    private final EventLayoutAreaRepository eventLayoutAreaRepository;
+
     private final S3Service s3Service;
+
     @Transactional
     public void boothRegistration(Long userId, BoothRegistrationRequest request){
         User user = userService.getUserOrException(userId);
@@ -51,11 +53,11 @@ public class UserBoothService {
 
         dateTimePeriodCheck(open, close, event);
 
-        if(userEventLayoutAreaService.hasReservationData(request.layoutAreas())){
+        if(hasReservationData(request.layoutAreas())){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 예약된 자리 입니다.");
         }
 
-        BoothDTO booth = BoothDTO.builder()
+        BoothDTO boothDTO = BoothDTO.builder()
                 .linkedEvent(event)
                 .manager(user)
                 .name(request.name())
@@ -66,10 +68,11 @@ public class UserBoothService {
                 .openTime(open)
                 .closeTime(close)
                 .build();
-        boothService.createBooth(booth);
+        Booth booth = boothService.createBooth(boothDTO);
+        layoutAreaService.setBoothLocation(request.layoutAreas(), booth);
 
-        userEventLayoutAreaService.requestBoothLocation(request.layoutAreas(), booth);
     }
+
 
     @Transactional(readOnly = true)
     public Slice<BoothBasicData> getBoothBasicData(Pageable pageable) {
@@ -81,8 +84,8 @@ public class UserBoothService {
     @Transactional(readOnly = true)
     public BoothDetail getBoothDetail(Long boothId){
         Booth booth = boothService.getBoothOrException(boothId);
-        List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(boothId);
-        List<BoothAreaData> boothAreaData = eventLayoutAreas.stream()
+        List<BoothAreaData> boothAreaData = layoutAreaService.getLayoutAreasByBoothId(boothId)
+                .stream()
                 .map(BoothAreaData::of)
                 .collect(Collectors.toList());
 
@@ -93,15 +96,23 @@ public class UserBoothService {
 
     }
 
+    private boolean hasReservationData(List<Long> eventLayoutAreaList){
+        for(Long id : eventLayoutAreaList){
+            EventLayoutArea eventLayoutArea = layoutAreaService.getAreaOrException(id);
+            if(!eventLayoutArea.getStatus().equals(EventLayoutAreaStatus.EMPTY)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void dateTimePeriodCheck(LocalDateTime open, LocalDateTime close, Event event){
         LocalTime openTime = open.toLocalTime();
         LocalTime closeTime = close.toLocalTime();
         if(openTime.isAfter(closeTime)){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "시간 입력 오류");
         }
-
         LocalDate now = LocalDate.now();
-
         if(now.isBefore(event.getBoothRecruitmentStartDate()) || now.isAfter(event.getBoothRecruitmentEndDate())){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "모집 기간이 아닙니다.");
         }

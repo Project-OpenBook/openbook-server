@@ -24,8 +24,8 @@ public class BoothService {
                 new OpenBookException(HttpStatus.NOT_FOUND, "부스 정보를 찾을 수 없습니다."));
     }
 
-    public void createBooth(BoothDTO booth) {
-        boothRepository.save(
+    public Booth createBooth(BoothDTO booth) {
+        return boothRepository.save(
           Booth.builder()
                   .linkedEvent(booth.linkedEvent())
                   .manager(booth.manager())

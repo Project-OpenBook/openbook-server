@@ -9,6 +9,7 @@ import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
 import com.openbook.openbook.event.repository.EventRepository;
 import com.openbook.openbook.event.service.EventService;
+import com.openbook.openbook.event.service.LayoutAreaService;
 import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 import com.openbook.openbook.eventmanager.dto.BoothManageData;
 import com.openbook.openbook.global.exception.OpenBookException;
@@ -29,8 +30,8 @@ import java.util.stream.Collectors;
 public class EventManagerService {
 
     private final BoothRepository boothRepository;
-    private final EventLayoutAreaRepository eventLayoutAreaRepository;
     private final EventService eventService;
+    private final LayoutAreaService layoutAreaService;
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
@@ -61,7 +62,7 @@ public class EventManagerService {
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 처리된 상태입니다.");
         }
         booth.updateStatus(boothStatus);
-        List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(boothId);
+        List<EventLayoutArea> eventLayoutAreas = layoutAreaService.getLayoutAreasByBoothId(boothId);
 
         if(boothStatus.equals(BoothStatus.APPROVE)){
             changeAreaStatus(eventLayoutAreas, EventLayoutAreaStatus.COMPLETE);
@@ -72,7 +73,7 @@ public class EventManagerService {
     }
 
     private BoothManageData convertToBoothManageData(Booth booth) {
-        List<EventLayoutArea> eventLayoutAreas = eventLayoutAreaRepository.findAllByLinkedBoothId(booth.getId());
+        List<EventLayoutArea> eventLayoutAreas = layoutAreaService.getLayoutAreasByBoothId(booth.getId());
         List<BoothAreaData> locationData = eventLayoutAreas.stream()
                 .map(BoothAreaData::of)
                 .collect(Collectors.toList());

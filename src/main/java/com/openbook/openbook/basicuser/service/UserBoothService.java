@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,16 +45,12 @@ public class UserBoothService {
     public void boothRegistration(Long userId, BoothRegistrationRequest request){
         User user = userService.getUserOrException(userId);
         Event event = eventService.getEventOrException(request.linkedEvent());
-        
         LocalDateTime open = getDateTime(event.getOpenDate() + request.openTime());
         LocalDateTime close = getDateTime(event.getCloseDate() + request.closeTime());
-
         dateTimePeriodCheck(open, close, event);
-
         if(hasReservationData(request.layoutAreas())){
             throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 예약된 자리 입니다.");
         }
-
         BoothDTO boothDTO = BoothDTO.builder()
                 .linkedEvent(event)
                 .manager(user)
@@ -69,7 +64,6 @@ public class UserBoothService {
                 .build();
         Booth booth = boothService.createBooth(boothDTO);
         layoutAreaService.setBoothLocation(request.layoutAreas(), booth);
-
     }
 
 

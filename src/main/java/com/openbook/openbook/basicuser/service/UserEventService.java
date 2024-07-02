@@ -15,7 +15,6 @@ import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.service.EventService;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
-import com.openbook.openbook.user.repository.UserRepository;
 import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.UserService;
 import java.time.LocalDate;

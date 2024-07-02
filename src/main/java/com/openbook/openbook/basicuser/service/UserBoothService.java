@@ -1,5 +1,7 @@
 package com.openbook.openbook.basicuser.service;
 
+import static com.openbook.openbook.global.util.Formatter.getDateTime;
+
 import com.openbook.openbook.basicuser.dto.request.BoothRegistrationRequest;
 import com.openbook.openbook.basicuser.dto.response.BoothBasicData;
 import com.openbook.openbook.basicuser.dto.response.BoothDetail;
@@ -26,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,6 @@ public class UserBoothService {
     private final EventService eventService;
     private final LayoutAreaService layoutAreaService;
     private final UserService userService;
-
     private final S3Service s3Service;
 
     @Transactional
@@ -47,8 +47,8 @@ public class UserBoothService {
         User user = userService.getUserOrException(userId);
         Event event = eventService.getEventOrException(request.linkedEvent());
         
-        LocalDateTime open = timeFormat(request.openTime(), event.getOpenDate());
-        LocalDateTime close = timeFormat(request.closeTime(), event.getCloseDate());
+        LocalDateTime open = getDateTime(event.getOpenDate() + request.openTime());
+        LocalDateTime close = getDateTime(event.getCloseDate() + request.closeTime());
 
         dateTimePeriodCheck(open, close, event);
 
@@ -83,6 +83,7 @@ public class UserBoothService {
     @Transactional(readOnly = true)
     public BoothDetail getBoothDetail(Long boothId){
         Booth booth = boothService.getBoothOrException(boothId);
+
         List<BoothAreaData> boothAreaData = layoutAreaService.getLayoutAreasByBoothId(boothId)
                 .stream()
                 .map(BoothAreaData::of)
@@ -117,10 +118,5 @@ public class UserBoothService {
         }
     }
 
-    private LocalDateTime timeFormat(String time, LocalDate date){
-        String dateTime = date.toString() + " " + time;
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return LocalDateTime.parse(dateTime, dateTimeFormatter);
-    }
 
 }

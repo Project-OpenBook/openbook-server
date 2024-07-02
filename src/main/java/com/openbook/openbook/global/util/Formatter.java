@@ -14,4 +14,10 @@ public class Formatter {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm");
         return dateTime.format(formatter);
     }
+
+    public static LocalDateTime getDateTime(String dateTime) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(dateTime, dateTimeFormatter);
+    }
+
 }

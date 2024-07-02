@@ -20,7 +20,6 @@ public class BasicUserService {
 
     private final JwtUtils jwtUtils;
     private final PasswordEncoder encoder;
-
     private final UserService userService;
 
     @Transactional

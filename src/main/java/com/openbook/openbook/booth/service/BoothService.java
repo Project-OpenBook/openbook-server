@@ -8,6 +8,7 @@ import com.openbook.openbook.booth.repository.BoothRepository;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.global.exception.OpenBookException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,14 @@ public class BoothService {
 
     public Slice<Booth> getBoothsByStatus(Pageable pageable, BoothStatus status) {
         return boothRepository.findAllByStatus(pageable, status);
+    }
+
+    public Page<Booth> getBoothsByEvent(Pageable pageable, Long eventId) {
+        return boothRepository.findAllBoothByEventId(pageable, eventId);
+    }
+
+    public Page<Booth> getBoothsByEventAndStatus(Pageable pageable, Long eventId, BoothStatus status) {
+        return boothRepository.findAllBoothByEventIdAndStatus(pageable, eventId, status);
     }
 
     public int getBoothCountByEvent(Event event) {

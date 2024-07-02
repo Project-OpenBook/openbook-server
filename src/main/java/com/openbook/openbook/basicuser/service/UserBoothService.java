@@ -10,7 +10,6 @@ import com.openbook.openbook.booth.service.BoothService;
 import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayoutArea;
-import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
 import com.openbook.openbook.event.service.EventService;
 import com.openbook.openbook.event.service.LayoutAreaService;
 import com.openbook.openbook.eventmanager.dto.BoothAreaData;

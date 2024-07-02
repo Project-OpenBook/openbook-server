@@ -90,7 +90,7 @@ public class UserBoothService {
                 .collect(Collectors.toList());
 
         if(!booth.getStatus().equals(BoothStatus.APPROVE)){
-            throw new OpenBookException(HttpStatus.BAD_REQUEST, "권한이 존재하지 않습니다.");
+            throw new OpenBookException(HttpStatus.FORBIDDEN, "권한이 존재하지 않습니다.");
         }
         return BoothDetail.of(booth, boothAreaData);
 

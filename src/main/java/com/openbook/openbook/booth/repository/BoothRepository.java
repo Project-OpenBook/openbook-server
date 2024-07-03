@@ -22,7 +22,7 @@ public interface BoothRepository extends JpaRepository<Booth, Long> {
     Page<Booth> findAllBoothByEventIdAndStatus(Pageable pageable, Long eventId, BoothStatus boothStatus);
 
     @Query("SELECT b FROM Booth b WHERE b.status=:boothStatus")
-    Slice<Booth> findAllByStatus(BoothStatus boothStatus, Pageable pageable);
+    Slice<Booth> findAllByStatus(Pageable pageable, BoothStatus boothStatus);
     
     int countByLinkedEvent(Event linkedEvent);
 }

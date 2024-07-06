@@ -4,6 +4,7 @@ package com.openbook.openbook.global.util;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import java.io.IOException;
 import java.net.URL;
@@ -31,7 +32,7 @@ public class S3Service {
                     new PutObjectRequest(bucket, fileName, file.getInputStream(), metadata)
             );
         } catch (IOException e) {
-            throw new OpenBookException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 에러");
+            throw new OpenBookException(ErrorCode.FIlE_UPLOAD_FAILED);
         }
         return getFileUrlFromS3(fileName);
     }

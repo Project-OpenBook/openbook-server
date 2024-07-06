@@ -30,4 +30,11 @@ public enum ErrorCode {
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "행사 정보를 찾을 수 없습니다."),
     BOOTH_NOT_FOUND(HttpStatus.NOT_FOUND, "부스 정보를 찾을 수 없습니다."),
     AREA_NOT_FOUND(HttpStatus.NOT_FOUND, "구역 정보를 찾을 수 없습니다."),
+
+    // INTERNET SERVER ERROR
+    FIlE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.")
+
+    ;
+    private final HttpStatus httpStatus;
+    private final String message;
 }

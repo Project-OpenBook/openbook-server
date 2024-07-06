@@ -39,7 +39,7 @@ public class EventService {
             case "ongoing" -> eventRepository.findAllOngoing(pageable);
             case "recruiting" -> eventRepository.findAllRecruiting(pageable);
             case "terminated" -> eventRepository.findAllTerminated(pageable);
-            default -> throw new OpenBookException(HttpStatus.BAD_REQUEST, "요청 값이 잘못되었습니다.");
+            default -> throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
         };
     }
 

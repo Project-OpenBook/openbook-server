@@ -13,6 +13,10 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "접근 권한이 존재하지 않습니다."),
+
+    // BAD REQUEST
+    INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "요청 값이 유효하지 않습니다."),
+
     // CONFLICT
     ALREADY_PROCESSED(HttpStatus.CONFLICT, "이미 처리된 요청입니다."),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),

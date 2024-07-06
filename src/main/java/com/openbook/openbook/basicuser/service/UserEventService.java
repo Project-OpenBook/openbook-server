@@ -79,7 +79,7 @@ public class UserEventService {
     public EventDetail getEventDetail(final Long userId, final Long eventId) {
         Event event = eventService.getEventOrException(eventId);
         if(!event.getStatus().equals(EventStatus.APPROVE)) {
-            throw new OpenBookException(HttpStatus.UNAUTHORIZED, "권한이 존재하지 않습니다.");
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
         int boothCount = boothService.getBoothCountByEvent(event);
         return EventDetail.of(event, boothCount, Objects.equals(event.getManager().getId(), userId));

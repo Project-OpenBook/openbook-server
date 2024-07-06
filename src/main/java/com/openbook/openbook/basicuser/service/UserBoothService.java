@@ -78,7 +78,7 @@ public class UserBoothService {
     public BoothDetail getBoothDetail(Long boothId){
         Booth booth = boothService.getBoothOrException(boothId);
         if(!booth.getStatus().equals(BoothStatus.APPROVE)){
-            throw new OpenBookException(HttpStatus.FORBIDDEN, "권한이 존재하지 않습니다.");
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
         List<BoothAreaData> boothAreaData = layoutAreaService.getLayoutAreasByBoothId(boothId)
                 .stream()

@@ -6,6 +6,7 @@ import com.openbook.openbook.booth.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.repository.BoothRepository;
 import com.openbook.openbook.event.entity.Event;
+import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,8 @@ public class BoothService {
 
     public Booth getBoothOrException(Long boothId){
         return boothRepository.findById(boothId).orElseThrow(() ->
-                new OpenBookException(HttpStatus.NOT_FOUND, "부스 정보를 찾을 수 없습니다."));
+                new OpenBookException(ErrorCode.BOOTH_NOT_FOUND)
+        );
     }
 
     public Booth createBooth(BoothDTO booth) {

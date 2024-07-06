@@ -7,6 +7,7 @@ import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.repository.EventLayoutAreaRepository;
+import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,8 @@ public class LayoutAreaService {
 
     public EventLayoutArea getAreaOrException(Long areaId){
         return layoutAreaRepository.findById(areaId).orElseThrow(() ->
-                new OpenBookException(HttpStatus.NOT_FOUND, "존재하지 않습니다."));
+                new OpenBookException(ErrorCode.AREA_NOT_FOUND)
+        );
     }
 
     public void createLayoutArea(EventLayout layout, String classification, int lineMax) {

@@ -15,6 +15,7 @@ import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.event.service.EventService;
 import com.openbook.openbook.event.service.LayoutAreaService;
 import com.openbook.openbook.eventmanager.dto.BoothAreaData;
+import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.entity.User;
@@ -22,7 +23,6 @@ import com.openbook.openbook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
@@ -49,7 +49,7 @@ public class UserBoothService {
         LocalDateTime close = getDateTime(event.getCloseDate() + request.closeTime());
         dateTimePeriodCheck(open, close, event);
         if(hasReservationData(request.layoutAreas())){
-            throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 예약된 자리 입니다.");
+            throw new OpenBookException(ErrorCode.ALREADY_RESERVED_AREA);
         }
         BoothDTO boothDTO = BoothDTO.builder()
                 .linkedEvent(event)
@@ -99,11 +99,11 @@ public class UserBoothService {
 
     private void dateTimePeriodCheck(LocalDateTime open, LocalDateTime close, Event event){
         if(open.isAfter(close)){
-            throw new OpenBookException(HttpStatus.BAD_REQUEST, "시간 입력 오류");
+            throw new OpenBookException(ErrorCode.INVALID_DATE_ENTRY);
         }
         LocalDate now = LocalDate.now();
         if(now.isBefore(event.getBoothRecruitmentStartDate()) || now.isAfter(event.getBoothRecruitmentEndDate())){
-            throw new OpenBookException(HttpStatus.BAD_REQUEST, "모집 기간이 아닙니다.");
+            throw new OpenBookException(ErrorCode.INACCESSIBLE_PERIOD);
         }
     }
 

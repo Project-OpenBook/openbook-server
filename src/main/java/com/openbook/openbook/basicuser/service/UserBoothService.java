@@ -99,7 +99,7 @@ public class UserBoothService {
 
     private void dateTimePeriodCheck(LocalDateTime open, LocalDateTime close, Event event){
         if(open.isAfter(close)){
-            throw new OpenBookException(ErrorCode.INVALID_DATE_ENTRY);
+            throw new OpenBookException(ErrorCode.INVALID_DATE_RANGE);
         }
         LocalDate now = LocalDate.now();
         if(now.isBefore(event.getBoothRecruitmentStartDate()) || now.isAfter(event.getBoothRecruitmentEndDate())){

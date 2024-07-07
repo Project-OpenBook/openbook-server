@@ -96,7 +96,7 @@ public class UserEventService {
 
     private void dateValidityCheck(LocalDate startDate, LocalDate endDate) {
         if(startDate.isAfter(endDate)) {
-            throw new OpenBookException(ErrorCode.INVALID_DATE_ENTRY);
+            throw new OpenBookException(ErrorCode.INVALID_DATE_RANGE);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.openbook.openbook.configuration;
 
+import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.util.JwtUtils;
 import com.openbook.openbook.global.exception.OpenBookException;
 import jakarta.servlet.FilterChain;
@@ -11,7 +12,6 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -35,10 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             final String token = getTokenFromRequest(request);
             if(token == null) {
-                throw new OpenBookException(HttpStatus.BAD_REQUEST, "토큰 정보가 잘못되었습니다.");
+                filterChain.doFilter(request,response);
+                return;
             }
             if(jwtUtils.isExpired(token)) {
-                throw new OpenBookException(HttpStatus.BAD_REQUEST, "만료된 토큰입니다.");
+                throw new OpenBookException(ErrorCode.INVALID_TOKEN);
             }
             Long userId = jwtUtils.getUserIdFromJwt(token);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(

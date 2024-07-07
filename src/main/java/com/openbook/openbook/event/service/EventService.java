@@ -4,6 +4,7 @@ import com.openbook.openbook.event.dto.EventDTO;
 import com.openbook.openbook.event.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.repository.EventRepository;
+import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ public class EventService {
 
     public Event getEventOrException(final Long eventId) {
         return eventRepository.findById(eventId).orElseThrow(() ->
-                new OpenBookException(HttpStatus.NOT_FOUND, "행사가 존재하지 않습니다.")
+                new OpenBookException(ErrorCode.EVENT_NOT_FOUND)
         );
     }
 
@@ -38,7 +39,7 @@ public class EventService {
             case "ongoing" -> eventRepository.findAllOngoing(pageable);
             case "recruiting" -> eventRepository.findAllRecruiting(pageable);
             case "terminated" -> eventRepository.findAllTerminated(pageable);
-            default -> throw new OpenBookException(HttpStatus.BAD_REQUEST, "요청 값이 잘못되었습니다.");
+            default -> throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
         };
     }
 

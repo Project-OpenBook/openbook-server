@@ -10,13 +10,13 @@ import com.openbook.openbook.event.service.EventService;
 import com.openbook.openbook.event.service.LayoutAreaService;
 import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 import com.openbook.openbook.eventmanager.dto.BoothManageData;
+import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +38,7 @@ public class EventManagerService {
         User user = userService.getUserOrException(userId);
 
         if(!event.getManager().equals(user)){
-            throw new OpenBookException(HttpStatus.BAD_REQUEST, "권한이 존재하지 않습니다.");
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
 
         if(status.equals("all")) {
@@ -55,12 +55,12 @@ public class EventManagerService {
         User user = userService.getUserOrException(userId);
 
         if(!booth.getLinkedEvent().getManager().equals(user)){
-            throw new OpenBookException(HttpStatus.BAD_REQUEST, "권한이 존재하지 않습니다.");
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        if(booth.getStatus().equals(boothStatus)){
+            throw new OpenBookException(ErrorCode.ALREADY_PROCESSED);
         }
 
-        if(booth.getStatus().equals(boothStatus)){
-            throw new OpenBookException(HttpStatus.BAD_REQUEST, "이미 처리된 상태입니다.");
-        }
         booth.updateStatus(boothStatus);
         List<EventLayoutArea> eventLayoutAreas = layoutAreaService.getLayoutAreasByBoothId(boothId);
 
@@ -86,7 +86,7 @@ public class EventManagerService {
             case "waiting" -> BoothStatus.WAITING;
             case "approved" -> BoothStatus.APPROVE;
             case "rejected" -> BoothStatus.REJECT;
-            default -> throw new OpenBookException(HttpStatus.BAD_REQUEST, "요청 값이 잘못되었습니다.");
+            default -> throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
         };
     }
 

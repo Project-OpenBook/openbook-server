@@ -13,6 +13,7 @@ import com.openbook.openbook.event.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.service.EventService;
+import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.entity.User;
@@ -22,11 +23,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Service
 @RequiredArgsConstructor
@@ -76,7 +79,7 @@ public class UserEventService {
     public EventDetail getEventDetail(final Long userId, final Long eventId) {
         Event event = eventService.getEventOrException(eventId);
         if(!event.getStatus().equals(EventStatus.APPROVE)) {
-            throw new OpenBookException(HttpStatus.UNAUTHORIZED, "권한이 존재하지 않습니다.");
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
         int boothCount = boothService.getBoothCountByEvent(event);
         return EventDetail.of(event, boothCount, Objects.equals(event.getManager().getId(), userId));
@@ -86,14 +89,14 @@ public class UserEventService {
     public EventLayoutStatus getEventLayoutStatus(Long eventId) {
         Event event = eventService.getEventOrException(eventId);
         if(isNotRecruitmentPeriod(event.getBoothRecruitmentStartDate(), event.getBoothRecruitmentEndDate())) {
-            throw new OpenBookException(HttpStatus.BAD_REQUEST, "확인 가능한 기간이 아닙니다.");
+            throw new OpenBookException(ErrorCode.INACCESSIBLE_PERIOD);
         }
         return userEventLayoutService.getLayoutStatus(event.getLayout());
     }
 
     private void dateValidityCheck(LocalDate startDate, LocalDate endDate) {
         if(startDate.isAfter(endDate)) {
-            throw new OpenBookException(HttpStatus.BAD_REQUEST, "날짜 입력 오류");
+            throw new OpenBookException(ErrorCode.INVALID_DATE_RANGE);
         }
     }
 
@@ -104,7 +107,7 @@ public class UserEventService {
 
     private List<LayoutAreaCreateData> getLayoutAreaList(List<String> classifications, List<Integer> maxNumbers) {
         if(classifications.size()!=maxNumbers.size()) {
-            throw new OpenBookException(HttpStatus.BAD_REQUEST, "배치도 구역 입력 오류");
+            throw new OpenBookException(ErrorCode.INVALID_LAYOUT_ENTRY);
         }
         return IntStream.range(0, classifications.size())
                 .mapToObj( i -> new LayoutAreaCreateData(classifications.get(i), maxNumbers.get(i)))

@@ -8,8 +8,8 @@ public class OpenBookException extends RuntimeException{
     private final HttpStatus httpStatus;
     private final String message;
 
-    public OpenBookException(HttpStatus httpStatus, String message) {
-        this.httpStatus = httpStatus;
-        this.message = message;
+    public OpenBookException(ErrorCode errorCode) {
+        this.httpStatus = errorCode.getHttpStatus();
+        this.message = errorCode.getMessage();
     }
 }

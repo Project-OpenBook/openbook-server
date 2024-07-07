@@ -6,6 +6,7 @@ import com.openbook.openbook.event.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.repository.EventRepository;
 import com.openbook.openbook.event.service.EventService;
+import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -40,7 +41,7 @@ public class AdminEventService {
             case "waiting" -> EventStatus.WAITING;
             case "approved" -> EventStatus.APPROVE;
             case "rejected" -> EventStatus.REJECT;
-            default -> throw new OpenBookException(HttpStatus.BAD_REQUEST, "요청 값이 잘못되었습니다.");
+            default -> throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
         };
     }
 

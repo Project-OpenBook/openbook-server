@@ -20,8 +20,9 @@ public class AlarmService {
                 Alarm.builder()
                         .sender(sender)
                         .receiver(receiver)
-                        .alarmType(type)
+                        .alarmType(type.toString())
                         .content(content)
+                        .message(type.getMessage())
                         .build()
         );
     }

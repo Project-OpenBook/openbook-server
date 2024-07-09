@@ -22,6 +22,12 @@ public class UserService {
         );
     }
 
+    public User getAdminOrException() {
+        return userRepository.findByRole(UserRole.ADMIN).orElseThrow(() ->
+                new OpenBookException(ErrorCode.USER_NOT_FOUND)
+        );
+    }
+
     public Optional<User> getUserByEmail(final String email) {
         return userRepository.findByEmail(email);
     }

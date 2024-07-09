@@ -18,7 +18,9 @@ import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.user.dto.AlarmType;
 import com.openbook.openbook.user.entity.User;
+import com.openbook.openbook.user.service.AlarmService;
 import com.openbook.openbook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +41,7 @@ public class UserBoothService {
     private final EventService eventService;
     private final LayoutAreaService layoutAreaService;
     private final UserService userService;
+    private final AlarmService alarmService;
     private final S3Service s3Service;
 
     @Transactional
@@ -64,6 +67,7 @@ public class UserBoothService {
                 .build();
         Booth booth = boothService.createBooth(boothDTO);
         layoutAreaService.setBoothLocation(request.layoutAreas(), booth);
+        alarmService.createAlarm(user, event.getManager(), AlarmType.BOOTH_REQUEST, booth.getName());
     }
 
 

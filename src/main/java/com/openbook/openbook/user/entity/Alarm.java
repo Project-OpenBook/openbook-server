@@ -30,18 +30,16 @@ public class Alarm extends EntityBasicTime {
     private User sender;
 
     @Enumerated(EnumType.STRING)
-    private AlarmType type;
+    private AlarmType alarmType;
 
     private String content;
 
-    private String message;
 
     @Builder
-    public Alarm(User receiver, User sender, AlarmType type, String content, String message) {
+    public Alarm(User receiver, User sender, AlarmType alarmType, String content) {
         this.receiver = receiver;
         this.sender = sender;
-        this.type = type;
+        this.alarmType = alarmType;
         this.content = content;
-        this.message = message;
     }
 }

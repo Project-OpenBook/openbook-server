@@ -1,7 +1,6 @@
 package com.openbook.openbook.user.service;
 
 
-import com.openbook.openbook.user.dto.AlarmDTO;
 import com.openbook.openbook.user.dto.AlarmType;
 import com.openbook.openbook.user.entity.Alarm;
 import com.openbook.openbook.user.entity.User;

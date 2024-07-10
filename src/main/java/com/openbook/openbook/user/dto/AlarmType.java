@@ -14,7 +14,7 @@ public enum AlarmType {
     EVENT_REJECTED("행사 등록이 거부되었습니다."),
 
     BOOTH_APPROVED("부스 등록이 승인되었습니다."),
-    BOOTH_REJECTED("부스 등록이 거절되었습니다.")
+    BOOTH_REJECTED("부스 등록이 거부되었습니다.")
 
     ;
 

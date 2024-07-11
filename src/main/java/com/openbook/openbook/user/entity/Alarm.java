@@ -29,18 +29,17 @@ public class Alarm extends EntityBasicTime {
     @ManyToOne(fetch = FetchType.LAZY)
     private User sender;
 
-    @Enumerated(EnumType.STRING)
-    private AlarmType type;
+    private String alarmType;
 
     private String content;
 
     private String message;
 
     @Builder
-    public Alarm(User receiver, User sender, AlarmType type, String content, String message) {
+    public Alarm(User receiver, User sender, String alarmType, String content, String message) {
         this.receiver = receiver;
         this.sender = sender;
-        this.type = type;
+        this.alarmType = alarmType;
         this.content = content;
         this.message = message;
     }

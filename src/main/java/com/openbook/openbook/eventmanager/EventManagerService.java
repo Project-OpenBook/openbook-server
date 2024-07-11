@@ -12,7 +12,9 @@ import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 import com.openbook.openbook.eventmanager.dto.BoothManageData;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.user.dto.AlarmType;
 import com.openbook.openbook.user.entity.User;
+import com.openbook.openbook.user.service.AlarmService;
 import com.openbook.openbook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,6 +33,7 @@ public class EventManagerService {
     private final EventService eventService;
     private final LayoutAreaService layoutAreaService;
     private final BoothService boothService;
+    private final AlarmService alarmService;
 
     @Transactional(readOnly = true)
     public Page<BoothManageData> getBoothManageData(String status, Long eventId, Pageable pageable, Long userId){
@@ -66,8 +69,10 @@ public class EventManagerService {
 
         if(boothStatus.equals(BoothStatus.APPROVE)){
             changeAreaStatus(eventLayoutAreas, EventLayoutAreaStatus.COMPLETE);
+            alarmService.createAlarm(user, booth.getManager(), AlarmType.BOOTH_APPROVED, booth.getName());
         } else if (boothStatus.equals(BoothStatus.REJECT)) {
             changeAreaStatus(eventLayoutAreas, EventLayoutAreaStatus.EMPTY);
+            alarmService.createAlarm(user, booth.getManager(), AlarmType.BOOTH_REJECTED, booth.getName());
         }
 
     }

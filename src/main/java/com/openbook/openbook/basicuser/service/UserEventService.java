@@ -16,20 +16,19 @@ import com.openbook.openbook.event.service.EventService;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.user.dto.AlarmType;
 import com.openbook.openbook.user.entity.User;
+import com.openbook.openbook.user.service.AlarmService;
 import com.openbook.openbook.user.service.UserService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +38,7 @@ public class UserEventService {
     private final EventService eventService;
     private final UserEventLayoutService userEventLayoutService;
     private final BoothService boothService;
+    private final AlarmService alarmService;
     private final S3Service s3Service;
 
     @Transactional
@@ -65,8 +65,8 @@ public class UserEventService {
                 .b_RecruitmentStartDate(request.boothRecruitmentStartDate())
                 .b_RecruitmentEndDate(request.boothRecruitmentEndDate())
                 .build();
-
         eventService.createEvent(event);
+        alarmService.createAlarm(user, userService.getAdminOrException(), AlarmType.EVENT_REQUEST, event.name());
     }
 
     @Transactional(readOnly = true)

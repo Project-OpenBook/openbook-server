@@ -7,8 +7,10 @@ import com.openbook.openbook.basicuser.dto.response.BoothBasicData;
 import com.openbook.openbook.basicuser.dto.response.BoothDetail;
 import com.openbook.openbook.booth.dto.BoothDTO;
 import com.openbook.openbook.booth.dto.BoothStatus;
+import com.openbook.openbook.booth.dto.BoothTagDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.service.BoothService;
+import com.openbook.openbook.booth.service.BoothTagService;
 import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayoutArea;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +41,7 @@ import java.util.stream.Collectors;
 public class UserBoothService {
 
     private final BoothService boothService;
+    private final BoothTagService boothTagService;
     private final EventService eventService;
     private final LayoutAreaService layoutAreaService;
     private final UserService userService;
@@ -48,8 +52,8 @@ public class UserBoothService {
     public void boothRegistration(Long userId, BoothRegistrationRequest request){
         User user = userService.getUserOrException(userId);
         Event event = eventService.getEventOrException(request.linkedEvent());
-        LocalDateTime open = getDateTime(event.getOpenDate() + request.openTime());
-        LocalDateTime close = getDateTime(event.getCloseDate() + request.closeTime());
+        LocalDateTime open = getDateTime(event.getOpenDate() + " " + request.openTime());
+        LocalDateTime close = getDateTime(event.getCloseDate() + " " + request.closeTime());
         dateTimePeriodCheck(open, close, event);
         if(hasReservationData(request.layoutAreas())){
             throw new OpenBookException(ErrorCode.ALREADY_RESERVED_AREA);
@@ -65,8 +69,16 @@ public class UserBoothService {
                 .openTime(open)
                 .closeTime(close)
                 .build();
+
         Booth booth = boothService.createBooth(boothDTO);
         layoutAreaService.setBoothLocation(request.layoutAreas(), booth);
+        BoothTagDTO boothTagDTO = BoothTagDTO.builder()
+                .content(request.boothTag())
+                .booth(booth)
+                .build();
+
+        boothTagService.createBoothTag(boothTagDTO);
+      
         alarmService.createAlarm(user, event.getManager(), AlarmType.BOOTH_REQUEST, booth.getName());
     }
 

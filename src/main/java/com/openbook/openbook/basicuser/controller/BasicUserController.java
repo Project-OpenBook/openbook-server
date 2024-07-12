@@ -38,11 +38,11 @@ public class BasicUserController {
     }
 
     @GetMapping("/alarms")
-    public ResponseEntity<SliceResponse<AlarmData>> alarmList(@PageableDefault(size = 5) Pageable pageable,
+    public ResponseEntity<SliceResponse<AlarmData>> getAlarms(@PageableDefault(size = 5) Pageable pageable,
                                                               Authentication authentication) {
         return ResponseEntity.ok(
                 SliceResponse.of(
-                        basicUserService.getAlarm(pageable, Long.valueOf(authentication.getName()))
+                        basicUserService.getAlarmData(pageable, Long.valueOf(authentication.getName()))
                 )
         );
     }

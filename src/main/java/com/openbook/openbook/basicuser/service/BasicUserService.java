@@ -52,7 +52,7 @@ public class BasicUserService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<AlarmData> getAlarm(Pageable pageable, final Long id) {
+    public Slice<AlarmData> getAlarmData(Pageable pageable, final Long id) {
         User user = userService.getUserOrException(id);
         return alarmService.getUserReceivedAlarm(pageable, user).map(AlarmData::of);
     }

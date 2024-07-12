@@ -3,8 +3,11 @@ package com.openbook.openbook.global.exception;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.openbook.openbook.global.dto.ResponseMessage;
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,6 +22,12 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ResponseMessage> applicationException(final OpenBookException e){
         log.error(String.format(ERROR_LOG, e.getHttpStatus(), e.getMessage()));
         return ResponseEntity.status(e.getHttpStatus()).body(new ResponseMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    ResponseEntity<ResponseMessage> httpReqMethodNotSupportException(final HttpRequestMethodNotSupportedException e){
+        log.error(String.format(ERROR_LOG, e.getMessage(), Arrays.toString(e.getSupportedMethods())));
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(new ResponseMessage("지원하지 않는 요청 방법입니다."));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

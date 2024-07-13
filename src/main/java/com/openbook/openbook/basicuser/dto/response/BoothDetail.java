@@ -1,10 +1,8 @@
 package com.openbook.openbook.basicuser.dto.response;
 
 import com.openbook.openbook.booth.entity.Booth;
-import com.openbook.openbook.event.entity.EventLayoutArea;
 import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.openbook.openbook.global.util.Formatter.getFormattingTime;

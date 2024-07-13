@@ -1,6 +1,7 @@
 package com.openbook.openbook.basicuser.service;
 
 
+import com.openbook.openbook.basicuser.dto.response.AlarmData;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.util.JwtUtils;
 import com.openbook.openbook.global.exception.OpenBookException;
@@ -8,8 +9,11 @@ import com.openbook.openbook.user.dto.UserDTO;
 import com.openbook.openbook.basicuser.dto.request.LoginRequest;
 import com.openbook.openbook.basicuser.dto.request.SignUpRequest;
 import com.openbook.openbook.user.entity.User;
+import com.openbook.openbook.user.service.AlarmService;
 import com.openbook.openbook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +25,7 @@ public class BasicUserService {
     private final JwtUtils jwtUtils;
     private final PasswordEncoder encoder;
     private final UserService userService;
+    private final AlarmService alarmService;
 
     @Transactional
     public void signup(final SignUpRequest request) {
@@ -45,4 +50,11 @@ public class BasicUserService {
         }
         return jwtUtils.generateToken(user.getId());
     }
+
+    @Transactional(readOnly = true)
+    public Slice<AlarmData> getAlarmData(Pageable pageable, final Long id) {
+        User user = userService.getUserOrException(id);
+        return alarmService.getUserReceivedAlarm(pageable, user).map(AlarmData::of);
+    }
+
 }

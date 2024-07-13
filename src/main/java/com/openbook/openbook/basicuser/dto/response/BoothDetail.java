@@ -12,6 +12,7 @@ import static com.openbook.openbook.global.util.Formatter.getFormattingTime;
 public record BoothDetail(
         Long id,
         String name,
+        Long eventId,
         String eventName,
         String openTime,
         String closeTime,
@@ -23,6 +24,7 @@ public record BoothDetail(
         return new BoothDetail(
                 booth.getId(),
                 booth.getName(),
+                booth.getLinkedEvent().getId(),
                 booth.getLinkedEvent().getName(),
                 getFormattingTime(booth.getOpenTime()),
                 getFormattingTime(booth.getCloseTime()),

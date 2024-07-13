@@ -6,7 +6,10 @@ import com.openbook.openbook.user.entity.Alarm;
 import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.repository.AlarmRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,5 +27,9 @@ public class AlarmService {
                         .message(type.getMessage())
                         .build()
         );
+    }
+
+    public Slice<Alarm> getUserReceivedAlarm(Pageable pageable, User receiver) {
+        return alarmRepository.findAllByReceiver(pageable, receiver);
     }
 }

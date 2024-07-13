@@ -8,6 +8,7 @@ import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.dto.UserDTO;
 import com.openbook.openbook.basicuser.dto.request.LoginRequest;
 import com.openbook.openbook.basicuser.dto.request.SignUpRequest;
+import com.openbook.openbook.user.entity.Alarm;
 import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.AlarmService;
 import com.openbook.openbook.user.service.UserService;
@@ -55,6 +56,15 @@ public class BasicUserService {
     public Slice<AlarmData> getAlarmData(Pageable pageable, final Long id) {
         User user = userService.getUserOrException(id);
         return alarmService.getUserReceivedAlarm(pageable, user).map(AlarmData::of);
+    }
+
+    @Transactional
+    public void deleteAlarm(final Long userId, final Long alarmId) {
+        Alarm alarm = alarmService.getAlarmOrException(alarmId);
+        if(alarm.getReceiver().getId()!=userId) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        alarmService.deleteAlarm(alarm);
     }
 
 }

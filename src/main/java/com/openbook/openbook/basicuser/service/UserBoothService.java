@@ -9,6 +9,7 @@ import com.openbook.openbook.booth.dto.BoothDTO;
 import com.openbook.openbook.booth.dto.BoothStatus;
 import com.openbook.openbook.booth.dto.BoothTagDTO;
 import com.openbook.openbook.booth.entity.Booth;
+import com.openbook.openbook.booth.entity.BoothTag;
 import com.openbook.openbook.booth.service.BoothService;
 import com.openbook.openbook.booth.service.BoothTagService;
 import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
@@ -72,13 +73,16 @@ public class UserBoothService {
 
         Booth booth = boothService.createBooth(boothDTO);
         layoutAreaService.setBoothLocation(request.layoutAreas(), booth);
-        BoothTagDTO boothTagDTO = BoothTagDTO.builder()
-                .content(request.boothTag())
-                .booth(booth)
-                .build();
 
-        boothTagService.createBoothTag(boothTagDTO);
-      
+        for(String boothTag : request.boothTag()){
+            BoothTagDTO boothTagDTO = BoothTagDTO.builder()
+                    .content(boothTag)
+                    .booth(booth)
+                    .build();
+
+            boothTagService.createBoothTag(boothTagDTO);
+        }
+
         alarmService.createAlarm(user, event.getManager(), AlarmType.BOOTH_REQUEST, booth.getName());
     }
 

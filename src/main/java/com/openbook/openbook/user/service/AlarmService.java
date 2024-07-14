@@ -1,6 +1,8 @@
 package com.openbook.openbook.user.service;
 
 
+import com.openbook.openbook.global.exception.ErrorCode;
+import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.dto.AlarmType;
 import com.openbook.openbook.user.entity.Alarm;
 import com.openbook.openbook.user.entity.User;
@@ -17,6 +19,12 @@ public class AlarmService {
 
     private final AlarmRepository alarmRepository;
 
+    public Alarm getAlarmOrException(Long id) {
+        return alarmRepository.findById(id).orElseThrow(()->
+                new OpenBookException(ErrorCode.ALARM_NOT_FOUND)
+        );
+    }
+
     public void createAlarm(User sender, User receiver, AlarmType type, String content) {
         alarmRepository.save(
                 Alarm.builder()
@@ -31,5 +39,9 @@ public class AlarmService {
 
     public Slice<Alarm> getUserReceivedAlarm(Pageable pageable, User receiver) {
         return alarmRepository.findAllByReceiver(pageable, receiver);
+    }
+
+    public void deleteAlarm(Alarm alarm) {
+        alarmRepository.delete(alarm);
     }
 }

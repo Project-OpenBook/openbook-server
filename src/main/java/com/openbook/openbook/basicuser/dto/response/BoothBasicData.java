@@ -8,6 +8,7 @@ import static com.openbook.openbook.global.util.Formatter.getFormattingDate;
 public record BoothBasicData(
         Long id,
         String name,
+        String eventName,
         String openDate,
         String closeDate,
         String mainImageUrl
@@ -16,6 +17,7 @@ public record BoothBasicData(
         return new BoothBasicData(
                 booth.getId(),
                 booth.getName(),
+                event.getName(),
                 getFormattingDate(event.getOpenDate().atStartOfDay()),
                 getFormattingDate(event.getCloseDate().atStartOfDay()),
                 booth.getMainImageUrl()

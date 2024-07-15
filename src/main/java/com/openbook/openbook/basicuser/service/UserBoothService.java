@@ -74,6 +74,10 @@ public class UserBoothService {
         Booth booth = boothService.createBooth(boothDTO);
         layoutAreaService.setBoothLocation(request.layoutAreas(), booth);
 
+        if(request.boothTag().size() != request.boothTag().stream().distinct().count()){
+            throw new OpenBookException(ErrorCode.ALREADY_TAG_DATA);
+        }
+
         for(String boothTag : request.boothTag()){
             BoothTagDTO boothTagDTO = BoothTagDTO.builder()
                     .content(boothTag)

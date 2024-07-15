@@ -24,6 +24,7 @@ public enum ErrorCode {
     ALREADY_RESERVED_AREA(HttpStatus.CONFLICT, "선택 가능한 구역이 아닙니다."),
     INVALID_DATE_RANGE(HttpStatus.CONFLICT, "입력된 날짜 범위가 유효하지 않습니다."),
     INVALID_LAYOUT_ENTRY(HttpStatus.CONFLICT, "입력된 배치도 형식에 오류가 있습니다."),
+    ALREADY_TAG_DATA(HttpStatus.CONFLICT, "중복 되는 태그 데이터가 있습니다."),
 
     // NOT FOUND
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저 정보를 찾을 수 없습니다."),

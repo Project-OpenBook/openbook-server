@@ -13,6 +13,7 @@ import com.openbook.openbook.event.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.service.EventService;
+import com.openbook.openbook.event.service.EventTagService;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
@@ -36,6 +37,7 @@ public class UserEventService {
 
     private final UserService userService;
     private final EventService eventService;
+    private final EventTagService eventTagService;
     private final UserEventLayoutService userEventLayoutService;
     private final BoothService boothService;
     private final AlarmService alarmService;
@@ -48,12 +50,14 @@ public class UserEventService {
         dateValidityCheck(request.openDate(), request.closeDate());
         dateValidityCheck(request.boothRecruitmentStartDate(), request.boothRecruitmentEndDate());
         dateValidityCheck(request.boothRecruitmentEndDate(),request.openDate());
-
+        if(request.tags().size() != request.tags().stream().distinct().count()){
+            throw new OpenBookException(ErrorCode.ALREADY_TAG_DATA);
+        }
         List<LayoutAreaCreateData> areaData = getLayoutAreaList(request.areaClassifications(), request.areaMaxNumbers());
         EventLayoutCreateData layoutData = new EventLayoutCreateData(request.layoutType(),request.layoutImages(), areaData);
         EventLayout layout = userEventLayoutService.createEventLayout(layoutData);
 
-        EventDTO event = EventDTO.builder()
+        EventDTO eventDto = EventDTO.builder()
                 .manager(user)
                 .name(request.name())
                 .location(request.location())
@@ -65,8 +69,11 @@ public class UserEventService {
                 .b_RecruitmentStartDate(request.boothRecruitmentStartDate())
                 .b_RecruitmentEndDate(request.boothRecruitmentEndDate())
                 .build();
-        eventService.createEvent(event);
-        alarmService.createAlarm(user, userService.getAdminOrException(), AlarmType.EVENT_REQUEST, event.name());
+        Event event = eventService.createEvent(eventDto);
+        for(String tag : request.tags()) {
+            eventTagService.createEventTag(tag, event);
+        }
+        alarmService.createAlarm(user, userService.getAdminOrException(), AlarmType.EVENT_REQUEST, eventDto.name());
     }
 
     @Transactional(readOnly = true)

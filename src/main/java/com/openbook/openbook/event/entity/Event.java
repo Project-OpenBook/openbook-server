@@ -56,8 +56,8 @@ public class Event extends EntityBasicTime {
     @Enumerated(EnumType.STRING)
     private EventStatus status;
 
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<EventTagDetail> tagDetails = new ArrayList<>();
+    @OneToMany(mappedBy = "linkedEvent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<EventTag> tagDetails = new ArrayList<>();
 
     @Override
     public void setPrePersist() {

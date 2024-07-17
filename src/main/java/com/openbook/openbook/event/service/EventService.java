@@ -43,8 +43,8 @@ public class EventService {
         };
     }
 
-    public void createEvent(EventDTO event) {
-        eventRepository.save(
+    public Event createEvent(EventDTO event) {
+        return eventRepository.save(
                 Event.builder()
                         .manager(event.manager())
                         .layout(event.layout())

@@ -111,6 +111,11 @@ public class UserBoothService {
         return BoothDetail.of(booth, boothAreaData);
     }
 
+    @Transactional(readOnly = true)
+    public Slice<BoothBasicData> searchByBoothTag(Pageable pageable, String boothTag){
+        return boothTagService.getBoothByTag(pageable, boothTag).map(booth -> BoothBasicData.of(booth, booth.getLinkedEvent()));
+    }
+
     private boolean hasReservationData(List<Long> eventLayoutAreaList){
         for(Long id : eventLayoutAreaList){
             EventLayoutArea eventLayoutArea = layoutAreaService.getAreaOrException(id);

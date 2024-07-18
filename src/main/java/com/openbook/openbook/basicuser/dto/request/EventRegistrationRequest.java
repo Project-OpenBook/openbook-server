@@ -23,6 +23,7 @@ public record EventRegistrationRequest(
         @NotNull EventLayoutType layoutType,
         @NotNull @Size(max = 3) List<MultipartFile> layoutImages,
         @NotNull List<String> areaClassifications,
-        @NotNull List<Integer> areaMaxNumbers
+        @NotNull List<Integer> areaMaxNumbers,
+        @Size(max = 5) List<String> tags
 ) {
 }

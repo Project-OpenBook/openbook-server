@@ -40,4 +40,10 @@ public class UserBoothController {
     public ResponseEntity<BoothDetail> getBooth(@PathVariable Long boothId){
         return ResponseEntity.ok(userBoothService.getBoothDetail(boothId));
     }
+
+    @GetMapping("/search/tag")
+    public ResponseEntity<SliceResponse<BoothBasicData>> searchBoothTag(@PageableDefault(size = 6)Pageable pageable,
+                                                                        @RequestParam(value = "query") String query){
+        return ResponseEntity.ok(SliceResponse.of(userBoothService.searchByBoothTag(pageable, query)));
+    }
 }

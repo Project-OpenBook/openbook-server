@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
 public interface BoothTagRepository extends JpaRepository<BoothTag, Long> {
 
     @Query("SELECT bt.booth FROM BoothTag bt WHERE bt.content LIKE :content")
-    Slice<Booth> findBoothIdByBoothContent(Pageable pageable, @Param(value = "content") String content);
+    Slice<Booth> findBoothIdByContent(Pageable pageable, @Param(value = "content") String content);
 }

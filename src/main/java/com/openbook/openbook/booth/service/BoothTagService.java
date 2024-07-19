@@ -24,6 +24,6 @@ public class BoothTagService {
     }
 
     public Slice<Booth> getBoothByTag(Pageable pageable, String boothTag){
-        return boothTagRepository.findBoothIdByBoothContent(pageable, boothTag);
+        return boothTagRepository.findBoothIdByContent(pageable, boothTag);
     }
 }

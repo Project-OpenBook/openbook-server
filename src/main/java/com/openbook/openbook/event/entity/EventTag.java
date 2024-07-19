@@ -20,14 +20,14 @@ public class EventTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String content;
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Event linkedEvent;
 
     @Builder
-    public EventTag(String content, Event linkedEvent) {
-        this.content = content;
+    public EventTag(String name, Event linkedEvent) {
+        this.name = name;
         this.linkedEvent = linkedEvent;
     }
 }

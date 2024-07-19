@@ -13,14 +13,14 @@ public class BoothTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String content;
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Booth booth;
 
     @Builder
-    public BoothTag(String content, Booth booth){
-        this.content = content;
+    public BoothTag(String name, Booth booth){
+        this.name = name;
         this.booth = booth;
     }
 

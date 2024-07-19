@@ -13,10 +13,10 @@ public class EventTagService {
 
     private final EventTagRepository eventTagRepository;
 
-    public void createEventTag(String content, Event event) {
+    public void createEventTag(String name, Event event) {
         eventTagRepository.save(
                 EventTag.builder()
-                        .content(content)
+                        .name(name)
                         .linkedEvent(event)
                         .build()
         );

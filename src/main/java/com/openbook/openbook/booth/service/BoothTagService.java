@@ -17,13 +17,13 @@ public class BoothTagService {
     public BoothTag createBoothTag(BoothTagDTO boothTag){
         return boothTagRepository.save(
                 BoothTag.builder()
-                        .content(boothTag.content())
+                        .name(boothTag.content())
                         .booth(boothTag.booth())
                         .build()
             );
     }
 
     public Slice<Booth> getBoothByTag(Pageable pageable, String boothTag){
-        return boothTagRepository.findBoothByContent(pageable, boothTag);
+        return boothTagRepository.findBoothByName(pageable, boothTag);
     }
 }

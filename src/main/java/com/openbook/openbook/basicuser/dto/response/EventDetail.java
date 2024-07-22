@@ -14,11 +14,12 @@ public record EventDetail(
         String description,
         String openDate,
         String closeDate,
+        List<String> tags,
         List<String> layoutImageUrls,
         int boothCount,
         boolean isUserManager
 ) {
-    public static EventDetail of(Event event, int boothCount, boolean isUserManager) {
+    public static EventDetail of(Event event, List<String> tags, int boothCount, boolean isUserManager) {
         return new EventDetail(
                 event.getId(),
                 event.getName(),
@@ -27,6 +28,7 @@ public record EventDetail(
                 event.getDescription(),
                 getFormattingDate(event.getOpenDate().atStartOfDay()),
                 getFormattingDate(event.getCloseDate().atStartOfDay()),
+                tags,
                 convertJsonToList(event.getLayout().getImageUrl()),
                 boothCount,
                 isUserManager

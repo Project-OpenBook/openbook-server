@@ -3,6 +3,8 @@ package com.openbook.openbook.basicuser.dto.response;
 import static com.openbook.openbook.global.util.Formatter.getFormattingDate;
 
 import com.openbook.openbook.event.entity.Event;
+import com.openbook.openbook.event.entity.EventTag;
+import java.util.List;
 
 public record EventBasicData(
         Long id,
@@ -11,9 +13,10 @@ public record EventBasicData(
         String openDate,
         String closeDate,
         String recruitStartDate,
-        String recruitEndDate
+        String recruitEndDate,
+        List<String> tags
 ) {
-    public static EventBasicData of(Event event) {
+    public static EventBasicData of(Event event, List<String> tags) {
         return new EventBasicData(
                 event.getId(),
                 event.getName(),
@@ -21,7 +24,8 @@ public record EventBasicData(
                 getFormattingDate(event.getOpenDate().atStartOfDay()),
                 getFormattingDate(event.getCloseDate().atStartOfDay()),
                 getFormattingDate(event.getBoothRecruitmentStartDate().atStartOfDay()),
-                getFormattingDate(event.getBoothRecruitmentEndDate().atStartOfDay())
+                getFormattingDate(event.getBoothRecruitmentEndDate().atStartOfDay()),
+                tags
         );
     }
 }

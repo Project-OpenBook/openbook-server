@@ -81,11 +81,7 @@ public class UserEventService {
     public Slice<EventBasicData> getEventBasicData(Pageable pageable, String eventProgress) {
         Slice<Event> events = eventService.getEventsWithProgress(pageable, eventProgress);
         return events.map(
-                event -> EventBasicData.of(
-                        event, eventTagService.getEventTags(event.getId())
-                                .stream()
-                                .map(EventTag::getName)
-                                .toList())
+                event -> EventBasicData.of(event, eventTagService.getEventTags(event.getId()))
         );
     }
 
@@ -95,9 +91,9 @@ public class UserEventService {
         if(!event.getStatus().equals(EventStatus.APPROVE)) {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
-        List<String> tags = eventTagService.getEventTags(event.getId()).stream().map(EventTag::getName).toList();
+        List<EventTag> tags = eventTagService.getEventTags(event.getId());
         int boothCount = boothService.getBoothCountByEvent(event);
-        return EventDetail.of(event, tags, boothCount, Objects.equals(event.getManager().getId(), userId));
+        return EventDetail.of(event, userId, tags, boothCount);
     }
 
     @Transactional(readOnly = true)

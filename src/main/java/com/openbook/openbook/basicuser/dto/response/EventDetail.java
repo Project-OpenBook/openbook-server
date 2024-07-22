@@ -4,7 +4,9 @@ import static com.openbook.openbook.global.util.Formatter.getFormattingDate;
 import static com.openbook.openbook.global.util.JsonService.convertJsonToList;
 
 import com.openbook.openbook.event.entity.Event;
+import com.openbook.openbook.event.entity.EventTag;
 import java.util.List;
+import java.util.Objects;
 
 public record EventDetail(
         Long id,
@@ -19,7 +21,7 @@ public record EventDetail(
         int boothCount,
         boolean isUserManager
 ) {
-    public static EventDetail of(Event event, List<String> tags, int boothCount, boolean isUserManager) {
+    public static EventDetail of(Event event, Long userId, List<EventTag> tags, int boothCount) {
         return new EventDetail(
                 event.getId(),
                 event.getName(),
@@ -28,10 +30,10 @@ public record EventDetail(
                 event.getDescription(),
                 getFormattingDate(event.getOpenDate().atStartOfDay()),
                 getFormattingDate(event.getCloseDate().atStartOfDay()),
-                tags,
+                tags.stream().map(EventTag::getName).toList(),
                 convertJsonToList(event.getLayout().getImageUrl()),
                 boothCount,
-                isUserManager
+                Objects.equals(event.getManager().getId(), userId)
         );
     }
 }

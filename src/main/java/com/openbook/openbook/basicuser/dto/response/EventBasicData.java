@@ -16,7 +16,7 @@ public record EventBasicData(
         String recruitEndDate,
         List<String> tags
 ) {
-    public static EventBasicData of(Event event, List<String> tags) {
+    public static EventBasicData of(Event event, List<EventTag> tags) {
         return new EventBasicData(
                 event.getId(),
                 event.getName(),
@@ -25,7 +25,7 @@ public record EventBasicData(
                 getFormattingDate(event.getCloseDate().atStartOfDay()),
                 getFormattingDate(event.getBoothRecruitmentStartDate().atStartOfDay()),
                 getFormattingDate(event.getBoothRecruitmentEndDate().atStartOfDay()),
-                tags
+                tags.stream().map(EventTag::getName).toList()
         );
     }
 }

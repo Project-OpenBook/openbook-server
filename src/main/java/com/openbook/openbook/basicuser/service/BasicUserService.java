@@ -67,4 +67,10 @@ public class BasicUserService {
         alarmService.deleteAlarm(alarm);
     }
 
+    @Transactional
+    public void deleteAllAlarm(final Long userId) {
+        User user = userService.getUserOrException(userId);
+        alarmService.deleteAllReceiverAlarm(user.getId());
+    }
+
 }

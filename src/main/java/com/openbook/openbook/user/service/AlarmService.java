@@ -44,4 +44,8 @@ public class AlarmService {
     public void deleteAlarm(Alarm alarm) {
         alarmRepository.delete(alarm);
     }
+
+    public void deleteAllReceiverAlarm(Long id) {
+        alarmRepository.deleteAllByReceiverId(id);
+    }
 }

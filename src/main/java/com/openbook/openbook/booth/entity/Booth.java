@@ -54,7 +54,7 @@ public class Booth extends EntityBasicTime {
     @Enumerated(EnumType.STRING)
     private BoothStatus status;
 
-    @OneToMany(mappedBy = "booth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "linkedBooth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BoothTag> boothTags = new ArrayList<>();
 
     @Override

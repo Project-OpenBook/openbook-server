@@ -4,8 +4,8 @@ package com.openbook.openbook.administrator;
 import com.openbook.openbook.administrator.dto.AdminEventData;
 import com.openbook.openbook.event.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
-import com.openbook.openbook.event.repository.EventRepository;
 import com.openbook.openbook.event.service.EventService;
+import com.openbook.openbook.event.service.EventTagService;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.dto.AlarmType;
@@ -14,7 +14,6 @@ import com.openbook.openbook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,16 +22,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminEventService {
 
     private final EventService eventService;
+    private final EventTagService eventTagService;
     private final AlarmService alarmService;
     private final UserService userService;
 
     @Transactional(readOnly = true)
     public Page<AdminEventData> getRequestedEvents(Pageable pageable, String status) {
-        if(status.equals("all")) {
-            return eventService.getAllEvents(pageable).map(AdminEventData::of);
-        }
-        return eventService.getAllEventsWithStatus(pageable, getEventStatus(status))
-                .map(AdminEventData::of);
+        Page<Event> events = (status.equals("all"))
+                ? eventService.getAllEvents(pageable)
+                : eventService.getAllEventsWithStatus(pageable, getEventStatus(status));
+        return events.map(
+                event -> AdminEventData.of(event, eventTagService.getEventTags(event.getId()))
+        );
     }
 
     @Transactional

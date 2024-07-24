@@ -3,6 +3,7 @@ package com.openbook.openbook.eventmanager;
 import com.openbook.openbook.booth.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.service.BoothService;
+import com.openbook.openbook.booth.service.BoothTagService;
 import com.openbook.openbook.event.dto.EventLayoutAreaStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayoutArea;
@@ -33,6 +34,7 @@ public class EventManagerService {
     private final EventService eventService;
     private final LayoutAreaService layoutAreaService;
     private final BoothService boothService;
+    private final BoothTagService boothTagService;
     private final AlarmService alarmService;
 
     @Transactional(readOnly = true)
@@ -82,8 +84,7 @@ public class EventManagerService {
         List<BoothAreaData> locationData = eventLayoutAreas.stream()
                 .map(BoothAreaData::of)
                 .collect(Collectors.toList());
-
-        return BoothManageData.of(booth, locationData);
+        return BoothManageData.of(booth, locationData, boothTagService.getBoothTag(booth.getId()));
     }
 
     private BoothStatus getBoothStatus(String status){

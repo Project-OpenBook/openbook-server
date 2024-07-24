@@ -12,6 +12,7 @@ import com.openbook.openbook.event.dto.EventDTO;
 import com.openbook.openbook.event.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayout;
+import com.openbook.openbook.event.entity.EventTag;
 import com.openbook.openbook.event.service.EventService;
 import com.openbook.openbook.event.service.EventTagService;
 import com.openbook.openbook.global.exception.ErrorCode;
@@ -79,7 +80,9 @@ public class UserEventService {
     @Transactional(readOnly = true)
     public Slice<EventBasicData> getEventBasicData(Pageable pageable, String eventProgress) {
         Slice<Event> events = eventService.getEventsWithProgress(pageable, eventProgress);
-        return events.map(EventBasicData::of);
+        return events.map(
+                event -> EventBasicData.of(event, eventTagService.getEventTags(event.getId()))
+        );
     }
 
     @Transactional(readOnly = true)
@@ -88,8 +91,9 @@ public class UserEventService {
         if(!event.getStatus().equals(EventStatus.APPROVE)) {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
+        List<EventTag> tags = eventTagService.getEventTags(event.getId());
         int boothCount = boothService.getBoothCountByEvent(event);
-        return EventDetail.of(event, boothCount, Objects.equals(event.getManager().getId(), userId));
+        return EventDetail.of(event, userId, tags, boothCount);
     }
 
     @Transactional(readOnly = true)

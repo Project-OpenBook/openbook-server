@@ -37,8 +37,8 @@ public class UserBoothController {
     }
 
     @GetMapping("/{boothId}")
-    public ResponseEntity<BoothDetail> getBooth(@PathVariable Long boothId){
-        return ResponseEntity.ok(userBoothService.getBoothDetail(boothId));
+    public ResponseEntity<BoothDetail> getBooth(Authentication authentication, @PathVariable Long boothId){
+        return ResponseEntity.ok(userBoothService.getBoothDetail(Long.valueOf(authentication.getName()), boothId));
     }
 
     @GetMapping("/search/tag")

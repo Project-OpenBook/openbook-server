@@ -16,9 +16,10 @@ public record BoothDetail(
         String closeTime,
         List<BoothAreaData> location,
         String description,
-        String mainImageUrl
+        String mainImageUrl,
+        boolean isBoothManager
 ) {
-    public static BoothDetail of(Booth booth, List<BoothAreaData> boothAreaData){
+    public static BoothDetail of(Booth booth, List<BoothAreaData> boothAreaData, boolean isBoothManager){
         return new BoothDetail(
                 booth.getId(),
                 booth.getName(),
@@ -28,7 +29,8 @@ public record BoothDetail(
                 getFormattingTime(booth.getCloseTime()),
                 boothAreaData,
                 booth.getDescription(),
-                booth.getMainImageUrl()
+                booth.getMainImageUrl(),
+                isBoothManager
         );
     }
 }

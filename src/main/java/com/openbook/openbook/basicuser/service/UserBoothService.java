@@ -95,7 +95,8 @@ public class UserBoothService {
     @Transactional(readOnly = true)
     public Slice<BoothBasicData> getBoothBasicData(Pageable pageable) {
         return boothService.getBoothsByStatus(pageable, BoothStatus.APPROVE).map(
-                booth -> BoothBasicData.of(booth, booth.getLinkedEvent())
+                booth -> BoothBasicData.of(
+                        booth, booth.getLinkedEvent(), boothTagService.getBoothTag(booth.getId()))
         );
     }
 
@@ -109,12 +110,15 @@ public class UserBoothService {
                 .stream()
                 .map(BoothAreaData::of)
                 .collect(Collectors.toList());
-        return BoothDetail.of(booth, boothAreaData, Objects.equals(booth.getManager().getId(), userId));
+        return BoothDetail.of(booth, boothAreaData, boothTagService.getBoothTag(booth.getId()), Objects.equals(booth.getManager().getId(), userId));
     }
 
     @Transactional(readOnly = true)
     public Slice<BoothBasicData> searchByBoothTag(Pageable pageable, String boothTag){
-        return boothTagService.getBoothByTag(pageable, boothTag).map(booth -> BoothBasicData.of(booth, booth.getLinkedEvent()));
+        return boothTagService.getBoothByTag(pageable, boothTag).map(
+                booth -> BoothBasicData.of(
+                        booth, booth.getLinkedEvent(), boothTagService.getBoothTag(booth.getId()))
+        );
     }
 
     private boolean hasReservationData(List<Long> eventLayoutAreaList){

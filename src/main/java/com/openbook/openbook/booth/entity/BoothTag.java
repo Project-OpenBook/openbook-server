@@ -16,12 +16,12 @@ public class BoothTag {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Booth booth;
+    private Booth linkedBooth;
 
     @Builder
     public BoothTag(String name, Booth booth){
         this.name = name;
-        this.booth = booth;
+        this.linkedBooth = booth;
     }
 
 }

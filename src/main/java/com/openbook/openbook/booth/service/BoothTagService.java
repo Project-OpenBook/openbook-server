@@ -4,6 +4,7 @@ import com.openbook.openbook.booth.dto.BoothTagDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothTag;
 import com.openbook.openbook.booth.repository.BoothTagRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -21,6 +22,10 @@ public class BoothTagService {
                         .booth(boothTag.booth())
                         .build()
             );
+    }
+
+    public List<BoothTag> getBoothTag(Long id){
+        return boothTagRepository.findAllByLinkedBoothId(id);
     }
 
     public Slice<Booth> getBoothByTag(Pageable pageable, String boothTag){

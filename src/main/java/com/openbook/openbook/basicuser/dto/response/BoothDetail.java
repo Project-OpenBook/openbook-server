@@ -1,6 +1,7 @@
 package com.openbook.openbook.basicuser.dto.response;
 
 import com.openbook.openbook.booth.entity.Booth;
+import com.openbook.openbook.booth.entity.BoothTag;
 import com.openbook.openbook.eventmanager.dto.BoothAreaData;
 
 import java.util.List;
@@ -10,26 +11,29 @@ import static com.openbook.openbook.global.util.Formatter.getFormattingTime;
 public record BoothDetail(
         Long id,
         String name,
-        Long eventId,
-        String eventName,
+        String description,
+        String mainImageUrl,
         String openTime,
         String closeTime,
         List<BoothAreaData> location,
-        String description,
-        String mainImageUrl,
+        List<String> tags,
+        Long eventId,
+        String eventName,
         boolean isBoothManager
 ) {
-    public static BoothDetail of(Booth booth, List<BoothAreaData> boothAreaData, boolean isBoothManager){
+
+    public static BoothDetail of(Booth booth, List<BoothAreaData> boothAreas, List<BoothTag> tags, boolean isBoothManager){
         return new BoothDetail(
                 booth.getId(),
                 booth.getName(),
-                booth.getLinkedEvent().getId(),
-                booth.getLinkedEvent().getName(),
-                getFormattingTime(booth.getOpenTime()),
-                getFormattingTime(booth.getCloseTime()),
-                boothAreaData,
                 booth.getDescription(),
                 booth.getMainImageUrl(),
+                getFormattingTime(booth.getOpenTime()),
+                getFormattingTime(booth.getCloseTime()),
+                boothAreas,
+                tags.stream().map(BoothTag::getName).toList(),
+                booth.getLinkedEvent().getId(),
+                booth.getLinkedEvent().getName(),
                 isBoothManager
         );
     }

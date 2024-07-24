@@ -19,6 +19,10 @@ public class AlarmService {
 
     private final AlarmRepository alarmRepository;
 
+    public boolean userHasReceivedAlarms(Long receiverId) {
+        return alarmRepository.existsByReceiverId(receiverId);
+    }
+
     public Alarm getAlarmOrException(Long id) {
         return alarmRepository.findById(id).orElseThrow(()->
                 new OpenBookException(ErrorCode.ALARM_NOT_FOUND)
@@ -45,7 +49,7 @@ public class AlarmService {
         alarmRepository.delete(alarm);
     }
 
-    public void deleteAllReceiverAlarm(Long id) {
-        alarmRepository.deleteAllByReceiverId(id);
+    public void deleteAllReceiverAlarm(Long receiverId) {
+        alarmRepository.deleteAllByReceiverId(receiverId);
     }
 }

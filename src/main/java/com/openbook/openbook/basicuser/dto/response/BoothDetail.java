@@ -19,10 +19,10 @@ public record BoothDetail(
         List<String> tags,
         Long eventId,
         String eventName,
-        boolean isBoothManager
+        boolean isUserManager
 ) {
 
-    public static BoothDetail of(Booth booth, List<BoothAreaData> boothAreas, List<BoothTag> tags, boolean isBoothManager){
+    public static BoothDetail of(Booth booth, List<BoothAreaData> boothAreas, List<BoothTag> tags, boolean isUserManager){
         return new BoothDetail(
                 booth.getId(),
                 booth.getName(),
@@ -34,7 +34,7 @@ public record BoothDetail(
                 tags.stream().map(BoothTag::getName).toList(),
                 booth.getLinkedEvent().getId(),
                 booth.getLinkedEvent().getName(),
-                isBoothManager
+                isUserManager
         );
     }
 }

@@ -34,6 +34,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -100,7 +101,7 @@ public class UserBoothService {
     }
 
     @Transactional(readOnly = true)
-    public BoothDetail getBoothDetail(Long boothId){
+    public BoothDetail getBoothDetail(Long userId, Long boothId){
         Booth booth = boothService.getBoothOrException(boothId);
         if(!booth.getStatus().equals(BoothStatus.APPROVE)){
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
@@ -109,7 +110,7 @@ public class UserBoothService {
                 .stream()
                 .map(BoothAreaData::of)
                 .collect(Collectors.toList());
-        return BoothDetail.of(booth, boothAreaData, boothTagService.getBoothTag(booth.getId()));
+        return BoothDetail.of(booth, boothAreaData, boothTagService.getBoothTag(booth.getId()), Objects.equals(booth.getManager().getId(), userId));
     }
 
     @Transactional(readOnly = true)

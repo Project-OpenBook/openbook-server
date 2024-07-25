@@ -67,4 +67,13 @@ public class BasicUserService {
         alarmService.deleteAlarm(alarm);
     }
 
+    @Transactional
+    public void deleteAllAlarm(final Long userId) {
+        User user = userService.getUserOrException(userId);
+        if(!alarmService.userHasReceivedAlarms(userId)) {
+            throw new OpenBookException(ErrorCode.ALARM_NOT_FOUND);
+        }
+        alarmService.deleteAllReceiverAlarm(user.getId());
+    }
+
 }

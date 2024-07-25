@@ -49,9 +49,16 @@ public class BasicUserController {
         );
     }
 
+    @DeleteMapping("/alarms")
+    public ResponseEntity<ResponseMessage> deleteAllAlarm(Authentication authentication) {
+        basicUserService.deleteAllAlarm(Long.valueOf(authentication.getName()));
+        return ResponseEntity.ok(new ResponseMessage("전체 알림을 삭제했습니다."));
+    }
+
     @DeleteMapping("/alarms/{alarmId}")
     public ResponseEntity<ResponseMessage> deleteAlarm(Authentication authentication, @PathVariable Long alarmId) {
         basicUserService.deleteAlarm(Long.valueOf(authentication.getName()), alarmId);
         return ResponseEntity.ok(new ResponseMessage("알림을 삭제했습니다."));
     }
+
 }

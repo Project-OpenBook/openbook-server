@@ -19,17 +19,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BoothAreaService {
 
-    private final BoothAreaRepository layoutAreaRepository;
+    private final BoothAreaRepository boothAreaRepository;
 
-    public BoothArea getAreaOrException(Long areaId){
-        return layoutAreaRepository.findById(areaId).orElseThrow(() ->
+    public BoothArea getBoothAreaOrException(Long areaId){
+        return boothAreaRepository.findById(areaId).orElseThrow(() ->
                 new OpenBookException(ErrorCode.AREA_NOT_FOUND)
         );
     }
 
-    public void createLayoutArea(EventLayout layout, String classification, int lineMax) {
+    public void createBoothArea(EventLayout layout, String classification, int lineMax) {
         for(int number=1; number<=lineMax; number++) {
-            layoutAreaRepository.save(
+            boothAreaRepository.save(
                     BoothArea.builder()
                             .linkedEventLayout(layout)
                             .classification(classification)
@@ -39,19 +39,19 @@ public class BoothAreaService {
         }
     }
 
-    public void setBoothLocation(List<Long> layoutAreas, Booth booth){
-        for(Long layoutAreaId : layoutAreas){
-            BoothArea boothArea = getAreaOrException(layoutAreaId);
+    public void setBoothToArea(List<Long> boothAreas, Booth booth){
+        for(Long areaId : boothAreas){
+            BoothArea boothArea = getBoothAreaOrException(areaId);
             boothArea.updateBooth(BoothAreaStatus.WAITING, booth);
         }
     }
 
-    public List<BoothArea> getLayoutAreasByBoothId(Long boothId) {
-        return layoutAreaRepository.findAllByLinkedBoothId(boothId);
+    public List<BoothArea> getBoothAreasByBoothId(Long boothId) {
+        return boothAreaRepository.findAllByLinkedBoothId(boothId);
     }
 
-    public Map<String, List<BoothAreaStatusData>> getLayoutAreaProgress(EventLayout layout) {
-        List<BoothArea> areas = layoutAreaRepository.findAllByLinkedEventLayout(layout);
+    public Map<String, List<BoothAreaStatusData>> getBoothAreaProgress(EventLayout layout) {
+        List<BoothArea> areas = boothAreaRepository.findAllByLinkedEventLayout(layout);
         return areas.stream().collect(
                 Collectors.groupingBy(
                         BoothArea::getClassification,

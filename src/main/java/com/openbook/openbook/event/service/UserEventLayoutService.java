@@ -36,14 +36,14 @@ public class UserEventLayoutService {
                 .build();
         EventLayout eventLayout = eventLayoutService.createEventLayout(eventLayoutDTO);
         for(BoothAreaCreateData areaData : layoutData.areas()) {
-            boothAreaService.createLayoutArea(eventLayout, areaData.classification(), areaData.maxNumber());
+            boothAreaService.createBoothArea(eventLayout, areaData.classification(), areaData.maxNumber());
         }
         return eventLayout;
     }
 
 
     public EventLayoutStatus getLayoutStatus(EventLayout eventLayout) {
-        Map<String, List<BoothAreaStatusData>> areas = boothAreaService.getLayoutAreaProgress(eventLayout);
+        Map<String, List<BoothAreaStatusData>> areas = boothAreaService.getBoothAreaProgress(eventLayout);
         return new EventLayoutStatus(convertJsonToList(eventLayout.getImageUrl()), eventLayout.getType(), areas);
     }
 

@@ -67,7 +67,7 @@ public class EventManagerBoothService {
         }
 
         booth.updateStatus(boothStatus);
-        List<BoothArea> boothAreas = boothAreaService.getLayoutAreasByBoothId(boothId);
+        List<BoothArea> boothAreas = boothAreaService.getBoothAreasByBoothId(boothId);
 
         if(boothStatus.equals(BoothStatus.APPROVE)){
             changeAreaStatus(boothAreas, BoothAreaStatus.COMPLETE);
@@ -80,7 +80,7 @@ public class EventManagerBoothService {
     }
 
     private BoothManageData convertToBoothManageData(Booth booth) {
-        List<BoothArea> boothAreas = boothAreaService.getLayoutAreasByBoothId(booth.getId());
+        List<BoothArea> boothAreas = boothAreaService.getBoothAreasByBoothId(booth.getId());
         List<BoothAreaData> locationData = boothAreas.stream()
                 .map(BoothAreaData::of)
                 .collect(Collectors.toList());

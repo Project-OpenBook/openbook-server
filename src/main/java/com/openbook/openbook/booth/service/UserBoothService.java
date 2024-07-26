@@ -55,7 +55,7 @@ public class UserBoothService {
         LocalDateTime open = getDateTime(event.getOpenDate() + " " + request.openTime());
         LocalDateTime close = getDateTime(event.getCloseDate() + " " + request.closeTime());
         dateTimePeriodCheck(open, close, event);
-        if(hasReservationData(request.layoutAreas())){
+        if(hasReservationData(request.requestAreas())){
             throw new OpenBookException(ErrorCode.ALREADY_RESERVED_AREA);
         }
         BoothDTO boothDTO = BoothDTO.builder()
@@ -71,7 +71,7 @@ public class UserBoothService {
                 .build();
 
         Booth booth = boothService.createBooth(boothDTO);
-        boothAreaService.setBoothLocation(request.layoutAreas(), booth);
+        boothAreaService.setBoothToArea(request.requestAreas(), booth);
 
         if(request.boothTag().size() != request.boothTag().stream().distinct().count()){
             throw new OpenBookException(ErrorCode.ALREADY_TAG_DATA);
@@ -104,7 +104,7 @@ public class UserBoothService {
         if(!booth.getStatus().equals(BoothStatus.APPROVE)){
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
-        List<BoothAreaData> boothAreaData = boothAreaService.getLayoutAreasByBoothId(boothId)
+        List<BoothAreaData> boothAreaData = boothAreaService.getBoothAreasByBoothId(boothId)
                 .stream()
                 .map(BoothAreaData::of)
                 .collect(Collectors.toList());
@@ -121,7 +121,7 @@ public class UserBoothService {
 
     private boolean hasReservationData(List<Long> eventLayoutAreaList){
         for(Long id : eventLayoutAreaList){
-            BoothArea boothArea = boothAreaService.getAreaOrException(id);
+            BoothArea boothArea = boothAreaService.getBoothAreaOrException(id);
             if(!boothArea.getStatus().equals(BoothAreaStatus.EMPTY)){
                 return true;
             }

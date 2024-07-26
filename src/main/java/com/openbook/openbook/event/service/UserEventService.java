@@ -53,9 +53,11 @@ public class UserEventService {
         if(request.tags().size() != request.tags().stream().distinct().count()){
             throw new OpenBookException(ErrorCode.ALREADY_TAG_DATA);
         }
-        List<BoothAreaCreateData> areaData = getLayoutAreaList(request.areaClassifications(), request.areaMaxNumbers());
+
+        List<BoothAreaCreateData> areaData = getBoothAreaCreateList(request.areaClassifications(), request.areaMaxNumbers());
         EventLayoutCreateData layoutData = new EventLayoutCreateData(request.layoutType(),request.layoutImages(), areaData);
         EventLayout layout = userEventLayoutService.createEventLayout(layoutData);
+
 
         EventDTO eventDto = EventDTO.builder()
                 .manager(user)
@@ -115,7 +117,7 @@ public class UserEventService {
         return now.isBefore(startDate) || now.isAfter(endDate);
     }
 
-    private List<BoothAreaCreateData> getLayoutAreaList(List<String> classifications, List<Integer> maxNumbers) {
+    private List<BoothAreaCreateData> getBoothAreaCreateList(List<String> classifications, List<Integer> maxNumbers) {
         if(classifications.size()!=maxNumbers.size()) {
             throw new OpenBookException(ErrorCode.INVALID_LAYOUT_ENTRY);
         }

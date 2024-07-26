@@ -1,7 +1,7 @@
 package com.openbook.openbook.user.repository;
 
 
-import com.openbook.openbook.user.dto.UserRole;
+import com.openbook.openbook.user.entity.dto.UserRole;
 import com.openbook.openbook.user.entity.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

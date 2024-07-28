@@ -1,6 +1,6 @@
 package com.openbook.openbook.event.entity;
 
-import com.openbook.openbook.event.dto.EventStatus;
+import com.openbook.openbook.event.entity.dto.EventStatus;
 import com.openbook.openbook.global.util.EntityBasicTime;
 import com.openbook.openbook.user.entity.User;
 import jakarta.persistence.CascadeType;

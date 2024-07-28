@@ -1,6 +1,6 @@
 package com.openbook.openbook.booth.repository;
 
-import com.openbook.openbook.booth.dto.BoothStatus;
+import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.event.entity.Event;
 import org.springframework.data.domain.Page;

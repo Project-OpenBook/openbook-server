@@ -1,6 +1,6 @@
 package com.openbook.openbook.booth.entity;
 
-import com.openbook.openbook.booth.dto.BoothStatus;
+import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.global.util.EntityBasicTime;
 import com.openbook.openbook.user.entity.User;

@@ -3,7 +3,7 @@ package com.openbook.openbook.user.controller;
 
 import com.openbook.openbook.user.controller.response.AlarmData;
 import com.openbook.openbook.global.dto.ResponseMessage;
-import com.openbook.openbook.user.service.UserBasicService;
+import com.openbook.openbook.user.service.UserCommonService;
 import com.openbook.openbook.user.controller.request.LoginRequest;
 import com.openbook.openbook.user.controller.request.SignUpRequest;
 import com.openbook.openbook.global.dto.SliceResponse;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserBasicService basicUserService;
+    private final UserCommonService basicUserService;
 
     @PostMapping("/signup")
     public ResponseEntity<ResponseMessage> signup(@RequestBody @Valid final SignUpRequest request) {

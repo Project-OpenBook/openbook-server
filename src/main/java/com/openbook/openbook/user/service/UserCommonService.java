@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserBasicService {
+public class UserCommonService {
 
     private final JwtUtils jwtUtils;
     private final PasswordEncoder encoder;

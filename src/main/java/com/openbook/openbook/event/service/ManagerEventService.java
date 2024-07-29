@@ -25,7 +25,7 @@ public class ManagerEventService {
     @Transactional(readOnly = true)
     public Slice<ManagerEventData> getManagedEventList(Long managerId, Pageable pageable, String status) {
         userService.getUserOrException(managerId);
-        Slice<Event> events = (status.equals("all"))
+        Slice<Event> events = (status.equals("ALL"))
                 ? eventService.getAllManagedEvents(pageable, managerId)
                 : eventService.getAllManagedEventsWithStatus(pageable, managerId, EventStatus.valueOf(status));
         return events.map(

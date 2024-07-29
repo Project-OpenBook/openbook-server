@@ -2,7 +2,7 @@ package com.openbook.openbook.event.controller;
 
 
 import com.openbook.openbook.event.service.AdminEventService;
-import com.openbook.openbook.event.controller.response.AdminEventData;
+import com.openbook.openbook.event.controller.response.ManagerEventData;
 import com.openbook.openbook.event.controller.request.EventStatusUpdateRequest;
 import com.openbook.openbook.global.dto.PageResponse;
 import com.openbook.openbook.global.dto.ResponseMessage;
@@ -26,8 +26,8 @@ public class AdminEventController {
 
     @PreAuthorize("authentication.name == '1'")
     @GetMapping("/admin/events")
-    public ResponseEntity<PageResponse<AdminEventData>> getEventPage(@RequestParam(defaultValue = "all") String status,
-                                                                     @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<PageResponse<ManagerEventData>> getEventPage(@RequestParam(defaultValue = "all") String status,
+                                                                       @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(PageResponse.of(adminEventService.getRequestedEvents(pageable, status)));
     }
 

@@ -41,6 +41,12 @@ public class UserBoothController {
         return ResponseEntity.ok(userBoothService.getBoothDetail(Long.valueOf(authentication.getName()), boothId));
     }
 
+    @GetMapping("/search/boothName")
+    public ResponseEntity<SliceResponse<BoothBasicData>> searchBoothName(@PageableDefault(size = 6) Pageable pageable,
+                                                                         @RequestParam(value = "query") String query){
+        return ResponseEntity.ok(SliceResponse.of(userBoothService.searchByBoothName(pageable, query)));
+    }
+
     @GetMapping("/search/tag")
     public ResponseEntity<SliceResponse<BoothBasicData>> searchBoothTag(@PageableDefault(size = 6)Pageable pageable,
                                                                         @RequestParam(value = "query") String query){

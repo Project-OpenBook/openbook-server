@@ -3,20 +3,24 @@ package com.openbook.openbook.configuration;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.util.TokenProvider;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.user.dto.UserPublicData;
+import com.openbook.openbook.user.entity.User;
+import com.openbook.openbook.user.service.core.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 
@@ -25,40 +29,30 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final static String TOKEN_PREFIX = "Bearer ";
-    private final JwtUtils jwtUtils;
+    private final TokenProvider tokenProvider;
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request,
                                     @NotNull HttpServletResponse response,
                                     @NotNull FilterChain filterChain) throws ServletException, IOException {
         try {
-            final String token = getTokenFromRequest(request);
+            final String token = tokenProvider.getTokenFrom(request);
             if(token == null) {
                 filterChain.doFilter(request,response);
                 return;
             }
-            if(jwtUtils.isExpired(token)) {
+            if(tokenProvider.isExpired(token)) {
                 throw new OpenBookException(ErrorCode.INVALID_TOKEN);
             }
-            Long userId = jwtUtils.getUserIdFromJwt(token);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userId.toString(), null, null
-            );
+
+            UsernamePasswordAuthenticationToken authenticationToken = tokenProvider.getAuthentication(token);
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
         } catch (OpenBookException e) {
             log.error("[ERROR] {}", e.getMessage());
         }
         filterChain.doFilter(request,response);
-    }
-
-    private String getTokenFromRequest(HttpServletRequest request) {
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (StringUtils.hasText(header) && header.startsWith(TOKEN_PREFIX)) {
-            return header.substring(TOKEN_PREFIX.length());
-        }
-        return null;
     }
 
 }

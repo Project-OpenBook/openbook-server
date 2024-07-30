@@ -74,8 +74,8 @@ public class UserBoothService {
 
         Booth booth = boothService.createBooth(boothDTO);
         boothAreaService.setBoothToArea(request.requestAreas(), booth);
-        if (request.boothTag() != null) {
-            tagUtil.getValidTagsOrException(request.boothTag()).forEach(
+        if (request.tags() != null) {
+            tagUtil.getValidTagsOrException(request.tags()).forEach(
                     tag ->  boothTagService.createBoothTag(BoothTagDTO.builder()
                             .content(tag)
                             .booth(booth)

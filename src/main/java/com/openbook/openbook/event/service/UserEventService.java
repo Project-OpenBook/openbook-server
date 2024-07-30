@@ -4,7 +4,7 @@ package com.openbook.openbook.event.service;
 import com.openbook.openbook.event.controller.request.EventRegistrationRequest;
 import com.openbook.openbook.event.dto.EventLayoutCreateData;
 import com.openbook.openbook.booth.dto.BoothAreaCreateData;
-import com.openbook.openbook.event.controller.response.EventBasicData;
+import com.openbook.openbook.event.controller.response.UserEventData;
 import com.openbook.openbook.event.controller.response.EventDetail;
 import com.openbook.openbook.event.controller.response.EventLayoutStatus;
 import com.openbook.openbook.booth.service.core.BoothService;
@@ -79,10 +79,10 @@ public class UserEventService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<EventBasicData> getEventBasicData(Pageable pageable, String eventProgress) {
+    public Slice<UserEventData> getEventBasicData(Pageable pageable, String eventProgress) {
         Slice<Event> events = eventService.getEventsWithProgress(pageable, eventProgress);
         return events.map(
-                event -> EventBasicData.of(event, eventTagService.getEventTags(event.getId()))
+                event -> UserEventData.of(event, eventTagService.getEventTags(event.getId()))
         );
     }
 

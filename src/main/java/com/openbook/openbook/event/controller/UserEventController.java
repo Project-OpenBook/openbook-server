@@ -1,7 +1,7 @@
 package com.openbook.openbook.event.controller;
 
 
-import com.openbook.openbook.event.controller.response.EventBasicData;
+import com.openbook.openbook.event.controller.response.UserEventData;
 import com.openbook.openbook.event.controller.response.EventDetail;
 import com.openbook.openbook.event.controller.response.EventLayoutStatus;
 import com.openbook.openbook.event.service.UserEventService;
@@ -40,8 +40,8 @@ public class UserEventController {
     }
 
     @GetMapping("/events")
-    public ResponseEntity<SliceResponse<EventBasicData>> getEvents(@RequestParam(defaultValue = "all") String progress,
-                                                                   @PageableDefault(size = 6) Pageable pageable) {
+    public ResponseEntity<SliceResponse<UserEventData>> getEvents(@RequestParam(defaultValue = "all") String progress,
+                                                                  @PageableDefault(size = 6) Pageable pageable) {
         return ResponseEntity.ok(SliceResponse.of(userEventService.getEventBasicData(pageable, progress)));
     }
 

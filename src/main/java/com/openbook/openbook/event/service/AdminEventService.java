@@ -1,7 +1,7 @@
 package com.openbook.openbook.event.service;
 
 
-import com.openbook.openbook.event.controller.response.AdminEventData;
+import com.openbook.openbook.event.controller.response.ManagerEventData;
 import com.openbook.openbook.event.entity.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.service.core.EventService;
@@ -27,12 +27,12 @@ public class AdminEventService {
     private final UserService userService;
 
     @Transactional(readOnly = true)
-    public Page<AdminEventData> getRequestedEvents(Pageable pageable, String status) {
+    public Page<ManagerEventData> getRequestedEvents(Pageable pageable, String status) {
         Page<Event> events = (status.equals("all"))
                 ? eventService.getAllEvents(pageable)
                 : eventService.getAllEventsWithStatus(pageable, getEventStatus(status));
         return events.map(
-                event -> AdminEventData.of(event, eventTagService.getEventTags(event.getId()))
+                event -> ManagerEventData.of(event, eventTagService.getEventTags(event.getId()))
         );
     }
 

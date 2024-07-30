@@ -48,7 +48,6 @@ public class UserBoothService {
     private final UserService userService;
     private final AlarmService alarmService;
     private final S3Service s3Service;
-    private final TagUtil tagUtil;
 
     @Transactional
     public void boothRegistration(Long userId, BoothRegistrationRequest request){
@@ -75,7 +74,7 @@ public class UserBoothService {
         Booth booth = boothService.createBooth(boothDTO);
         boothAreaService.setBoothToArea(request.requestAreas(), booth);
         if (request.tags() != null) {
-            tagUtil.getValidTagsOrException(request.tags()).forEach(
+            TagUtil.getValidTagsOrException(request.tags()).forEach(
                     tag ->  boothTagService.createBoothTag(BoothTagDTO.builder()
                             .content(tag)
                             .booth(booth)

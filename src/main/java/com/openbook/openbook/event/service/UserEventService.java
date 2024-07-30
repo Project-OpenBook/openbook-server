@@ -43,7 +43,6 @@ public class UserEventService {
     private final BoothService boothService;
     private final AlarmService alarmService;
     private final S3Service s3Service;
-    private final TagUtil tagUtil;
 
     @Transactional
     public void eventRegistration(final Long userId, final EventRegistrationRequest request) {
@@ -73,7 +72,7 @@ public class UserEventService {
         Event event = eventService.createEvent(eventDto);
 
         if (request.tags() != null) {
-            tagUtil.getValidTagsOrException(request.tags()).forEach(
+            TagUtil.getValidTagsOrException(request.tags()).forEach(
                     tag ->  eventTagService.createEventTag(tag, event)
             );
         }

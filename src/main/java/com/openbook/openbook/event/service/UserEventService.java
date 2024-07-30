@@ -18,14 +18,13 @@ import com.openbook.openbook.event.service.core.EventTagService;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.global.util.TagUtil;
 import com.openbook.openbook.user.entity.dto.AlarmType;
 import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.core.AlarmService;
 import com.openbook.openbook.user.service.core.UserService;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -44,6 +43,7 @@ public class UserEventService {
     private final BoothService boothService;
     private final AlarmService alarmService;
     private final S3Service s3Service;
+    private final TagUtil tagUtil;
 
     @Transactional
     public void eventRegistration(final Long userId, final EventRegistrationRequest request) {
@@ -73,25 +73,12 @@ public class UserEventService {
         Event event = eventService.createEvent(eventDto);
 
         if (request.tags() != null) {
-            saveEventTags(request.tags(), event);
+            tagUtil.getValidTagsOrException(request.tags()).forEach(
+                    tag ->  eventTagService.createEventTag(tag, event)
+            );
         }
 
         alarmService.createAlarm(user, userService.getAdminOrException(), AlarmType.EVENT_REQUEST, eventDto.name());
-    }
-
-    private void saveEventTags(List<String> tags, Event event) {
-        Set<String> uniqueTags = new HashSet<>();
-        tags.stream()
-                .map(String::trim)
-                .forEach(tag -> {
-                    if (tag.isEmpty()) {
-                        throw new OpenBookException(ErrorCode.EMPTY_TAG_DATA);
-                    }
-                    if (!uniqueTags.add(tag)) {
-                        throw new OpenBookException(ErrorCode.ALREADY_TAG_DATA);
-                    }
-                });
-        uniqueTags.forEach(tag -> eventTagService.createEventTag(tag, event));
     }
 
     @Transactional(readOnly = true)

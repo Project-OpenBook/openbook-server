@@ -6,7 +6,7 @@ import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventTag;
 import java.util.List;
 
-public record EventBasicData(
+public record UserEventData(
         Long id,
         String name,
         String mainImageUrl,
@@ -16,8 +16,8 @@ public record EventBasicData(
         String recruitEndDate,
         List<String> tags
 ) {
-    public static EventBasicData of(Event event, List<EventTag> tags) {
-        return new EventBasicData(
+    public static UserEventData of(Event event, List<EventTag> tags) {
+        return new UserEventData(
                 event.getId(),
                 event.getName(),
                 event.getMainImageUrl(),

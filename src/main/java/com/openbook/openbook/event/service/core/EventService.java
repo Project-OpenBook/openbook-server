@@ -28,8 +28,16 @@ public class EventService {
         return eventRepository.findAllRequested(pageable);
     }
 
+    public Slice<Event> getAllManagedEvents(Pageable pageable, Long managerId) {
+        return eventRepository.findAllByManagerId(pageable, managerId);
+    }
+
     public Page<Event> getAllEventsWithStatus(Pageable pageable, EventStatus status) {
         return eventRepository.findAllRequestedByStatus(pageable, status);
+    }
+
+    public Slice<Event> getAllManagedEventsWithStatus(Pageable pageable, Long managerId, EventStatus status) {
+        return eventRepository.findAllByManagerIdAndStatus(pageable, managerId, status);
     }
 
     public Slice<Event> getEventsWithProgress(Pageable pageable, String progress) {

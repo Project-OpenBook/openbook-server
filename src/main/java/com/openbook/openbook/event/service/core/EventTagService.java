@@ -23,7 +23,7 @@ public class EventTagService {
         );
     }
 
-    public List<EventTag> getEventTags(Long id) {
-        return eventTagRepository.findAllByLinkedEventId(id);
+    public List<EventTag> getEventTags(Long eventId) {
+        return eventTagRepository.findAllByLinkedEventId(eventId);
     }
 }

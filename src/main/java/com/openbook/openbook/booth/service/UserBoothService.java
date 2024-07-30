@@ -112,8 +112,16 @@ public class UserBoothService {
     }
 
     @Transactional(readOnly = true)
+    public Slice<BoothBasicData> searchByBoothName(Pageable pageable, String boothName){
+        return boothService.getBoothByName(pageable, boothName, BoothStatus.APPROVE).map(
+                booth -> BoothBasicData.of(
+                        booth, booth.getLinkedEvent(), boothTagService.getBoothTag(booth.getId()))
+        );
+    }
+
+    @Transactional(readOnly = true)
     public Slice<BoothBasicData> searchByBoothTag(Pageable pageable, String boothTag){
-        return boothTagService.getBoothByTag(pageable, boothTag).map(
+        return boothTagService.getBoothByTag(pageable, boothTag, BoothStatus.APPROVE).map(
                 booth -> BoothBasicData.of(
                         booth, booth.getLinkedEvent(), boothTagService.getBoothTag(booth.getId()))
         );

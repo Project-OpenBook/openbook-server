@@ -25,4 +25,7 @@ public interface BoothRepository extends JpaRepository<Booth, Long> {
     Slice<Booth> findAllByStatus(Pageable pageable, BoothStatus boothStatus);
     
     int countByLinkedEvent(Event linkedEvent);
+
+    @Query("SELECT b FROM Booth b WHERE b.name LIKE %:boothName% AND b.status =:boothStatus")
+    Slice<Booth> findAllByNameAndStatus(Pageable pageable, String boothName, BoothStatus boothStatus);
 }

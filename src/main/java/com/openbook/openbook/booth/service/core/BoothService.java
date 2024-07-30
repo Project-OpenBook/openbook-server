@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BoothService {
@@ -56,5 +58,9 @@ public class BoothService {
 
     public int getBoothCountByEvent(Event event) {
         return boothRepository.countByLinkedEvent(event);
+    }
+
+    public Slice<Booth> getBoothByName(Pageable pageable, String boothName, BoothStatus status) {
+        return boothRepository.findAllByNameAndStatus(pageable, boothName, status);
     }
 }

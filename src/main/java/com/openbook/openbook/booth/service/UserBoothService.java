@@ -20,6 +20,7 @@ import com.openbook.openbook.booth.controller.response.BoothAreaData;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.global.util.TagUtil;
 import com.openbook.openbook.user.entity.dto.AlarmType;
 import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.core.AlarmService;
@@ -72,20 +73,14 @@ public class UserBoothService {
 
         Booth booth = boothService.createBooth(boothDTO);
         boothAreaService.setBoothToArea(request.requestAreas(), booth);
-
-        if(request.boothTag().size() != request.boothTag().stream().distinct().count()){
-            throw new OpenBookException(ErrorCode.ALREADY_TAG_DATA);
+        if (request.tags() != null) {
+            TagUtil.getValidTagsOrException(request.tags()).forEach(
+                    tag ->  boothTagService.createBoothTag(BoothTagDTO.builder()
+                            .content(tag)
+                            .booth(booth)
+                            .build())
+            );
         }
-
-        for(String boothTag : request.boothTag()){
-            BoothTagDTO boothTagDTO = BoothTagDTO.builder()
-                    .content(boothTag)
-                    .booth(booth)
-                    .build();
-
-            boothTagService.createBoothTag(boothTagDTO);
-        }
-
         alarmService.createAlarm(user, event.getManager(), AlarmType.BOOTH_REQUEST, booth.getName());
     }
 

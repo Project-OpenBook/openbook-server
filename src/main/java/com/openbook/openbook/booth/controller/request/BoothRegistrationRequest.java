@@ -15,7 +15,7 @@ public record BoothRegistrationRequest(
         @NotNull MultipartFile mainImage,
         @NotNull @Size(min = 1, max = 3) List<Long> requestAreas,
         @NotBlank String description,
-        @Size(max = 5) List<String> boothTag,
+        @Size(max = 5) List<String> tags,
         String accountBankName,
         String accountNumber
 

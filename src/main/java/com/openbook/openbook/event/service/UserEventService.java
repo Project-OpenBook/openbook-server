@@ -23,7 +23,9 @@ import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.core.AlarmService;
 import com.openbook.openbook.user.service.core.UserService;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -50,9 +52,6 @@ public class UserEventService {
         dateValidityCheck(request.openDate(), request.closeDate());
         dateValidityCheck(request.boothRecruitmentStartDate(), request.boothRecruitmentEndDate());
         dateValidityCheck(request.boothRecruitmentEndDate(),request.openDate());
-        if(request.tags().size() != request.tags().stream().distinct().count()){
-            throw new OpenBookException(ErrorCode.ALREADY_TAG_DATA);
-        }
 
         List<BoothAreaCreateData> areaData = getBoothAreaCreateList(request.areaClassifications(), request.areaMaxNumbers());
         EventLayoutCreateData layoutData = new EventLayoutCreateData(request.layoutType(),request.layoutImages(), areaData);
@@ -72,10 +71,27 @@ public class UserEventService {
                 .b_RecruitmentEndDate(request.boothRecruitmentEndDate())
                 .build();
         Event event = eventService.createEvent(eventDto);
-        for(String tag : request.tags()) {
-            eventTagService.createEventTag(tag, event);
+
+        if (request.tags() != null) {
+            saveEventTags(request.tags(), event);
         }
+
         alarmService.createAlarm(user, userService.getAdminOrException(), AlarmType.EVENT_REQUEST, eventDto.name());
+    }
+
+    private void saveEventTags(List<String> tags, Event event) {
+        Set<String> uniqueTags = new HashSet<>();
+        tags.stream()
+                .map(String::trim)
+                .forEach(tag -> {
+                    if (tag.isEmpty()) {
+                        throw new OpenBookException(ErrorCode.EMPTY_TAG_DATA);
+                    }
+                    if (!uniqueTags.add(tag)) {
+                        throw new OpenBookException(ErrorCode.ALREADY_TAG_DATA);
+                    }
+                });
+        uniqueTags.forEach(tag -> eventTagService.createEventTag(tag, event));
     }
 
     @Transactional(readOnly = true)

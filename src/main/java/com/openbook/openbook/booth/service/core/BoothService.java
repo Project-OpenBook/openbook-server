@@ -60,7 +60,7 @@ public class BoothService {
         return boothRepository.countByLinkedEvent(event);
     }
 
-    public Slice<Booth> getBoothByName(Pageable pageable, String boothName) {
-        return boothRepository.findAllByName(pageable, boothName);
+    public Slice<Booth> getBoothByName(Pageable pageable, String boothName, BoothStatus status) {
+        return boothRepository.findAllByNameAndStatus(pageable, boothName, status);
     }
 }

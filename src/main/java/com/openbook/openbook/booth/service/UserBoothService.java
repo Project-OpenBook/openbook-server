@@ -113,7 +113,7 @@ public class UserBoothService {
 
     @Transactional(readOnly = true)
     public Slice<BoothBasicData> searchByBoothName(Pageable pageable, String boothName){
-        return boothService.getBoothByName(pageable, boothName).map(
+        return boothService.getBoothByName(pageable, boothName, BoothStatus.APPROVE).map(
                 booth -> BoothBasicData.of(
                         booth, booth.getLinkedEvent(), boothTagService.getBoothTag(booth.getId()))
         );

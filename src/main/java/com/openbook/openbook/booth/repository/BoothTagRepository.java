@@ -3,13 +3,11 @@ package com.openbook.openbook.booth.repository;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothTag;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
-import com.openbook.openbook.event.entity.EventTag;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository

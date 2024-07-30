@@ -3,7 +3,7 @@ package com.openbook.openbook.user.service;
 
 import com.openbook.openbook.user.controller.response.AlarmData;
 import com.openbook.openbook.global.exception.ErrorCode;
-import com.openbook.openbook.global.util.JwtUtils;
+import com.openbook.openbook.global.util.TokenProvider;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.dto.UserDTO;
 import com.openbook.openbook.user.controller.request.LoginRequest;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserCommonService {
 
-    private final JwtUtils jwtUtils;
+    private final TokenProvider tokenProvider;
     private final PasswordEncoder encoder;
     private final UserService userService;
     private final AlarmService alarmService;
@@ -49,7 +49,7 @@ public class UserCommonService {
         if (!encoder.matches(request.password(), user.getPassword())) {
             throw new OpenBookException(ErrorCode.INVALID_PASSWORD);
         }
-        return jwtUtils.generateToken(user.getId());
+        return tokenProvider.generateToken(user.getId());
     }
 
     @Transactional(readOnly = true)

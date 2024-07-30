@@ -1,7 +1,7 @@
 package com.openbook.openbook.configuration;
 
 import com.openbook.openbook.global.exception.ErrorCode;
-import com.openbook.openbook.global.util.JwtUtils;
+import com.openbook.openbook.global.util.TokenProvider;
 import com.openbook.openbook.global.exception.OpenBookException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

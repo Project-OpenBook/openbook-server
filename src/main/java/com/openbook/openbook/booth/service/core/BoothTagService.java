@@ -3,6 +3,7 @@ package com.openbook.openbook.booth.service.core;
 import com.openbook.openbook.booth.dto.BoothTagDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothTag;
+import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.booth.repository.BoothTagRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class BoothTagService {
         return boothTagRepository.findAllByLinkedBoothId(id);
     }
 
-    public Slice<Booth> getBoothByTag(Pageable pageable, String boothTag){
-        return boothTagRepository.findBoothByName(pageable, boothTag);
+    public Slice<Booth> getBoothByTag(Pageable pageable, String boothTag, BoothStatus status){
+        return boothTagRepository.findBoothByName(pageable, boothTag, status);
     }
 }

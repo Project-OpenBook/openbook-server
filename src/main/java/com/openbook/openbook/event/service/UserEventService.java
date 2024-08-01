@@ -88,9 +88,6 @@ public class UserEventService {
             case "tagName" -> eventTagService.getEventsWithTagNameMatchBy(name, EventStatus.APPROVE, pageable);
             default -> throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
         };
-        if(events.isEmpty()) {
-            throw new OpenBookException(ErrorCode.SEARCH_RESULTS_NOT_FOUND);
-        }
         return events.map(
                 event -> UserEventData.of(event, eventTagService.getEventTags(event.getId()))
         );

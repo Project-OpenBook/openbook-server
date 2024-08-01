@@ -11,6 +11,7 @@ import com.openbook.openbook.global.dto.SliceResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,14 @@ public class UserEventController {
     @GetMapping("/events/{eventId}")
     public ResponseEntity<EventDetail> getEvent(Authentication authentication, @PathVariable Long eventId) {
         return ResponseEntity.ok(userEventService.getEventDetail(Long.valueOf(authentication.getName()), eventId));
+    }
+
+    @GetMapping("events/search")
+    public ResponseEntity<SliceResponse<UserEventData>> searchEvents(@PageableDefault(size = 6) Pageable pageable,
+                                             @RequestParam(value = "type", defaultValue = "eventName") String searchType,
+                                             @RequestParam(value = "query", defaultValue = "") String name) {
+        Slice<UserEventData> result = userEventService.getEventsSearchBy(pageable, searchType, name);
+        return ResponseEntity.ok(SliceResponse.of(result));
     }
 
 }

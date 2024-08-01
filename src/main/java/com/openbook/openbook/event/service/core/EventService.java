@@ -36,6 +36,10 @@ public class EventService {
         return eventRepository.findAllRequestedByStatus(pageable, status);
     }
 
+    public Slice<Event> getEventsWithNameMatchBy(String name, EventStatus status, Pageable pageable) {
+        return eventRepository.findAllByNameAndStatus(pageable, name, status);
+    }
+
     public Slice<Event> getAllManagedEventsWithStatus(Pageable pageable, Long managerId, EventStatus status) {
         return eventRepository.findAllByManagerIdAndStatus(pageable, managerId, status);
     }

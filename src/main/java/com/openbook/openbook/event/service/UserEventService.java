@@ -18,6 +18,7 @@ import com.openbook.openbook.event.service.core.EventTagService;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.global.util.TagUtil;
 import com.openbook.openbook.user.entity.dto.AlarmType;
 import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.core.AlarmService;
@@ -50,9 +51,6 @@ public class UserEventService {
         dateValidityCheck(request.openDate(), request.closeDate());
         dateValidityCheck(request.boothRecruitmentStartDate(), request.boothRecruitmentEndDate());
         dateValidityCheck(request.boothRecruitmentEndDate(),request.openDate());
-        if(request.tags().size() != request.tags().stream().distinct().count()){
-            throw new OpenBookException(ErrorCode.ALREADY_TAG_DATA);
-        }
 
         List<BoothAreaCreateData> areaData = getBoothAreaCreateList(request.areaClassifications(), request.areaMaxNumbers());
         EventLayoutCreateData layoutData = new EventLayoutCreateData(request.layoutType(),request.layoutImages(), areaData);
@@ -72,9 +70,13 @@ public class UserEventService {
                 .b_RecruitmentEndDate(request.boothRecruitmentEndDate())
                 .build();
         Event event = eventService.createEvent(eventDto);
-        for(String tag : request.tags()) {
-            eventTagService.createEventTag(tag, event);
+
+        if (request.tags() != null) {
+            TagUtil.getValidTagsOrException(request.tags()).forEach(
+                    tag ->  eventTagService.createEventTag(tag, event)
+            );
         }
+
         alarmService.createAlarm(user, userService.getAdminOrException(), AlarmType.EVENT_REQUEST, eventDto.name());
     }
 

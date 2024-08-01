@@ -16,13 +16,13 @@ import org.springframework.stereotype.Service;
 public class BoothTagService {
     private final BoothTagRepository boothTagRepository;
 
-    public BoothTag createBoothTag(BoothTagDTO boothTag){
-        return boothTagRepository.save(
+    public void createBoothTag(BoothTagDTO boothTag){
+        boothTagRepository.save(
                 BoothTag.builder()
                         .name(boothTag.content())
                         .booth(boothTag.booth())
                         .build()
-            );
+        );
     }
 
     public List<BoothTag> getBoothTag(Long id){

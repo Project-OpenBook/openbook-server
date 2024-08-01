@@ -20,7 +20,7 @@ public class ManagerBoothController {
     @GetMapping("manage/booths")
     public ResponseEntity<SliceResponse<BoothManageData>> getManagedBooth(Authentication authentication,
                                                                           @PageableDefault(size = 6)Pageable pageable,
-                                                                          @RequestParam(defaultValue = "all") String status){
+                                                                          @RequestParam(defaultValue = "ALL") String status){
         return ResponseEntity.ok(SliceResponse.of(managerBoothService.getManagedBoothList(Long.valueOf(authentication.getName()), pageable, status)));
     }
 }

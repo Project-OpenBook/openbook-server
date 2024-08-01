@@ -27,11 +27,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserEventService {
@@ -78,6 +80,17 @@ public class UserEventService {
         }
 
         alarmService.createAlarm(user, userService.getAdminOrException(), AlarmType.EVENT_REQUEST, eventDto.name());
+    }
+
+    public Slice<UserEventData> getEventsSearchBy(Pageable pageable, String searchType, String name) {
+        Slice<Event> events  = switch (searchType) {
+            case "eventName" -> eventService.getEventsWithNameMatchBy(name, EventStatus.APPROVE, pageable);
+            case "tagName" -> eventTagService.getEventsWithTagNameMatchBy(name, EventStatus.APPROVE, pageable);
+            default -> throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
+        };
+        return events.map(
+                event -> UserEventData.of(event, eventTagService.getEventTags(event.getId()))
+        );
     }
 
     @Transactional(readOnly = true)

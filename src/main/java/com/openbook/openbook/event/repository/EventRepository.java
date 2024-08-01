@@ -28,6 +28,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Slice<Event> findAllByManagerIdAndStatus(Pageable pageable, Long managerId, EventStatus status);
 
     // USER
+    @Query("SELECT e FROM Event e WHERE e.status = :status AND e.name LIKE %:name% ")
+    Slice<Event> findAllByNameAndStatus(Pageable pageable, String name, EventStatus status);
+
     @Query("SELECT e FROM Event e WHERE e.status = 'APPROVE'")
     Slice<Event> findAllApproved(Pageable pageable);
 

@@ -107,20 +107,17 @@ public class UserBoothService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<BoothBasicData> searchByBoothName(Pageable pageable, String boothName){
-        return boothService.getBoothByName(pageable, boothName, BoothStatus.APPROVE).map(
-                booth -> BoothBasicData.of(
-                        booth, booth.getLinkedEvent(), boothTagService.getBoothTag(booth.getId()))
+    public Slice<BoothBasicData> searchBoothBy(Pageable pageable, String searchType, String name){
+        Slice<Booth> booths = switch (searchType){
+            case "boothName" -> boothService.getBoothByName(pageable, name, BoothStatus.APPROVE);
+            case "tagName" -> boothTagService.getBoothByTag(pageable, name, BoothStatus.APPROVE);
+            default -> throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
+        };
+        return booths.map(
+                booth -> BoothBasicData.of(booth, booth.getLinkedEvent(), boothTagService.getBoothTag(booth.getId()))
         );
     }
 
-    @Transactional(readOnly = true)
-    public Slice<BoothBasicData> searchByBoothTag(Pageable pageable, String boothTag){
-        return boothTagService.getBoothByTag(pageable, boothTag, BoothStatus.APPROVE).map(
-                booth -> BoothBasicData.of(
-                        booth, booth.getLinkedEvent(), boothTagService.getBoothTag(booth.getId()))
-        );
-    }
 
     private boolean hasReservationData(List<Long> eventLayoutAreaList){
         for(Long id : eventLayoutAreaList){

@@ -13,6 +13,7 @@ import java.util.List;
 public record BoothManageData(
         Long id,
         String name,
+        String mainImageUrl,
         List<BoothAreaData> boothLocationData,
         String registrationDate,
         String description,
@@ -24,6 +25,7 @@ public record BoothManageData(
         return new BoothManageData(
                 booth.getId(),
                 booth.getName(),
+                booth.getMainImageUrl(),
                 boothAreas,
                 getFormattingDate(booth.getRegisteredAt()),
                 booth.getDescription(),

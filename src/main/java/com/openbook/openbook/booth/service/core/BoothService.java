@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -62,5 +61,13 @@ public class BoothService {
 
     public Slice<Booth> getBoothByName(Pageable pageable, String boothName, BoothStatus status) {
         return boothRepository.findAllByNameAndStatus(pageable, boothName, status);
+    }
+
+    public Slice<Booth> getAllManagedBooths(Pageable pageable){
+        return boothRepository.findAll(pageable);
+    }
+
+    public Slice<Booth> getAllManagedBoothsByStatus(Pageable pageable, Long managerId, BoothStatus boothStatus){
+        return boothRepository.findAllByManagerIdAndStatus(pageable, managerId, boothStatus);
     }
 }

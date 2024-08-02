@@ -28,4 +28,7 @@ public interface BoothRepository extends JpaRepository<Booth, Long> {
 
     @Query("SELECT b FROM Booth b WHERE b.name LIKE %:boothName% AND b.status =:boothStatus")
     Slice<Booth> findAllByNameAndStatus(Pageable pageable, String boothName, BoothStatus boothStatus);
+
+    @Query("SELECT b FROM Booth b WHERE b.manager.id=:managerId AND b.status=:boothStatus")
+    Slice<Booth> findAllByManagerIdAndStatus(Pageable pageable, Long managerId, BoothStatus boothStatus);
 }

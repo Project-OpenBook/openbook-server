@@ -15,11 +15,11 @@ import java.util.Optional;
 public interface EventRepository extends JpaRepository<Event, Long> {
     Optional<Event> findById(Long id);
 
-    @Query(value = "SELECT * FROM event ORDER BY FIELD(status, 'WAITING', 'APPROVE', 'REJECT'), registered_at", nativeQuery = true)
-    Page<Event> findAllRequested(Pageable pageable);
+    @Query("SELECT e FROM Event e")
+    Page<Event> findAll(Pageable pageable);
 
     @Query("SELECT e FROM Event e WHERE e.status=:status ORDER BY e.registeredAt")
-    Page<Event> findAllRequestedByStatus(Pageable pageable, EventStatus status);
+    Page<Event> findAllByStatus(Pageable pageable, EventStatus status);
 
     @Query("SELECT e FROM Event e WHERE e.manager.id=:managerId")
     Slice<Event> findAllByManagerId(Pageable pageable, Long managerId);
@@ -27,12 +27,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT e FROM Event e WHERE e.manager.id=:managerId AND e.status=:status")
     Slice<Event> findAllByManagerIdAndStatus(Pageable pageable, Long managerId, EventStatus status);
 
-    // USER
     @Query("SELECT e FROM Event e WHERE e.status = :status AND e.name LIKE %:name% ")
     Slice<Event> findAllByNameAndStatus(Pageable pageable, String name, EventStatus status);
-
-    @Query("SELECT e FROM Event e WHERE e.status = 'APPROVE'")
-    Slice<Event> findAllApproved(Pageable pageable);
 
     @Query("SELECT e FROM Event e WHERE e.status = 'APPROVE' AND current_date BETWEEN e.openDate AND e.closeDate")
     Slice<Event> findAllOngoing(Pageable pageable);

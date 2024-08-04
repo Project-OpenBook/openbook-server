@@ -25,7 +25,7 @@ public class EventService {
     }
 
     public Page<Event> getAllEvents(Pageable pageable) {
-        return eventRepository.findAllRequested(pageable);
+        return eventRepository.findAll(pageable);
     }
 
     public Slice<Event> getAllManagedEvents(Pageable pageable, Long managerId) {
@@ -33,7 +33,7 @@ public class EventService {
     }
 
     public Page<Event> getAllEventsWithStatus(Pageable pageable, EventStatus status) {
-        return eventRepository.findAllRequestedByStatus(pageable, status);
+        return eventRepository.findAllByStatus(pageable, status);
     }
 
     public Slice<Event> getEventsWithNameMatchBy(String name, EventStatus status, Pageable pageable) {
@@ -46,7 +46,7 @@ public class EventService {
 
     public Slice<Event> getEventsWithProgress(Pageable pageable, String progress) {
         return switch (progress) {
-            case "all" -> eventRepository.findAllApproved(pageable);
+            case "all" -> eventRepository.findAllByStatus(pageable, EventStatus.APPROVE);
             case "ongoing" -> eventRepository.findAllOngoing(pageable);
             case "recruiting" -> eventRepository.findAllRecruiting(pageable);
             case "terminated" -> eventRepository.findAllTerminated(pageable);

@@ -7,6 +7,9 @@ import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.booth.service.core.BoothAreaService;
 import com.openbook.openbook.booth.service.core.BoothService;
 import com.openbook.openbook.booth.service.core.BoothTagService;
+import com.openbook.openbook.global.exception.ErrorCode;
+import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.core.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +43,21 @@ public class ManagerBoothService {
                     .collect(Collectors.toList());
             return BoothManageData.of(booth, boothAreas, boothTagService.getBoothTag(booth.getId()));
         });
+    }
+
+    @Transactional
+    public void deleteBooth(Long userId, Long boothId){
+        User user = userService.getUserOrException(userId);
+        Booth booth = boothService.getBoothOrException(boothId);
+        checkUser(user, booth);
+
+        boothService.deleteBooth(booth);
+    }
+
+    private void checkUser(User user, Booth booth){
+        if(user != booth.getManager()){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
     }
 
 }

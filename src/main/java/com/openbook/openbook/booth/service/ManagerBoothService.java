@@ -3,6 +3,8 @@ package com.openbook.openbook.booth.service;
 import com.openbook.openbook.booth.controller.response.BoothAreaData;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
 import com.openbook.openbook.booth.entity.Booth;
+import com.openbook.openbook.booth.entity.BoothArea;
+import com.openbook.openbook.booth.entity.dto.BoothAreaStatus;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.booth.service.core.BoothAreaService;
 import com.openbook.openbook.booth.service.core.BoothService;
@@ -51,12 +53,21 @@ public class ManagerBoothService {
         Booth booth = boothService.getBoothOrException(boothId);
         checkUser(user, booth);
 
+        List<BoothArea> boothAreaList = boothAreaService.getBoothAreasByBoothId(boothId);
+        changeAreaStatus(boothAreaList);
+
         boothService.deleteBooth(booth);
     }
 
     private void checkUser(User user, Booth booth){
         if(user != booth.getManager()){
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+    }
+
+    private void changeAreaStatus(List<BoothArea> boothAreas){
+        for(BoothArea boothArea : boothAreas){
+            boothArea.deleteBooth(BoothAreaStatus.EMPTY);
         }
     }
 

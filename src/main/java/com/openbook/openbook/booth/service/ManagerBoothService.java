@@ -51,7 +51,7 @@ public class ManagerBoothService {
     public void deleteBooth(Long userId, Long boothId){
         User user = userService.getUserOrException(userId);
         Booth booth = boothService.getBoothOrException(boothId);
-        checkUser(user, booth);
+        sameUser(user, booth);
 
         List<BoothArea> boothAreaList = boothAreaService.getBoothAreasByBoothId(boothId);
         changeAreaStatus(boothAreaList);
@@ -59,7 +59,7 @@ public class ManagerBoothService {
         boothService.deleteBooth(booth);
     }
 
-    private void checkUser(User user, Booth booth){
+    private void sameUser(User user, Booth booth){
         if(user != booth.getManager()){
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }

@@ -62,4 +62,10 @@ public class BoothAreaService {
                 ));
     }
 
+    public void disconnectBooth(List<BoothArea> boothAreas){
+        for(BoothArea boothArea : boothAreas){
+            boothArea.updateBooth(BoothAreaStatus.EMPTY, null);
+        }
+    }
+
 }

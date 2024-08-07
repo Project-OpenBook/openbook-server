@@ -57,11 +57,6 @@ public class BoothArea {
         this.linkedBooth = booth;
     }
 
-    public void deleteBooth(BoothAreaStatus status){
-        this.status = status;
-        this.linkedBooth = null;
-    }
-
     public void updateStatus(BoothAreaStatus status){
         this.status = status;
     }

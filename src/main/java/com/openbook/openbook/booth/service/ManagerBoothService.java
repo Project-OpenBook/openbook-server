@@ -19,6 +19,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,12 @@ public class ManagerBoothService {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
 
+        if(booth.getStatus().equals(BoothStatus.APPROVE) && (booth.getLinkedEvent().getCloseDate().isAfter(LocalDate.now()))){
+            throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
+        }
+
         List<BoothArea> boothAreaList = boothAreaService.getBoothAreasByBoothId(boothId);
+
         boothService.deleteBooth(booth);
         boothAreaService.disconnectBooth(boothAreaList);
     }

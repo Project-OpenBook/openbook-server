@@ -43,6 +43,8 @@ public class BoothService {
         );
     }
 
+    public void deleteBooth(Booth booth){boothRepository.delete(booth);}
+
     public Slice<Booth> getBoothsByStatus(Pageable pageable, BoothStatus status) {
         return boothRepository.findAllByStatus(pageable, status);
     }

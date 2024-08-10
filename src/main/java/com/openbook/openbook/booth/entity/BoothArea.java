@@ -2,6 +2,7 @@ package com.openbook.openbook.booth.entity;
 
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.dto.BoothAreaStatus;
+import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.event.entity.EventLayout;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -59,5 +60,4 @@ public class BoothArea {
     public void updateStatus(BoothAreaStatus status){
         this.status = status;
     }
-
 }

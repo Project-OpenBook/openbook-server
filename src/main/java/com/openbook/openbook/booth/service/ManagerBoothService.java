@@ -3,10 +3,15 @@ package com.openbook.openbook.booth.service;
 import com.openbook.openbook.booth.controller.response.BoothAreaData;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
 import com.openbook.openbook.booth.entity.Booth;
+import com.openbook.openbook.booth.entity.BoothArea;
+import com.openbook.openbook.booth.entity.dto.BoothAreaStatus;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.booth.service.core.BoothAreaService;
 import com.openbook.openbook.booth.service.core.BoothService;
 import com.openbook.openbook.booth.service.core.BoothTagService;
+import com.openbook.openbook.global.exception.ErrorCode;
+import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.core.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +19,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,4 +48,21 @@ public class ManagerBoothService {
         });
     }
 
+    @Transactional
+    public void deleteBooth(Long userId, Long boothId){
+        User user = userService.getUserOrException(userId);
+        Booth booth = boothService.getBoothOrException(boothId);
+        if(user != booth.getManager()){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        if(booth.getStatus().equals(BoothStatus.APPROVE) && (booth.getLinkedEvent().getCloseDate().isAfter(LocalDate.now()))){
+            throw new OpenBookException(ErrorCode.UNDELETABLE_PERIOD);
+        }
+
+        List<BoothArea> boothAreaList = boothAreaService.getBoothAreasByBoothId(boothId);
+
+        boothService.deleteBooth(booth);
+        boothAreaService.disconnectBooth(boothAreaList);
+    }
 }

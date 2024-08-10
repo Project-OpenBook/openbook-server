@@ -57,7 +57,7 @@ public class ManagerBoothService {
         }
 
         if(booth.getStatus().equals(BoothStatus.APPROVE) && (booth.getLinkedEvent().getCloseDate().isAfter(LocalDate.now()))){
-            throw new OpenBookException(ErrorCode.DELETION_IMPOSSIBLE_PERIOD);
+            throw new OpenBookException(ErrorCode.UNDELETABLE_PERIOD);
         }
 
         List<BoothArea> boothAreaList = boothAreaService.getBoothAreasByBoothId(boothId);

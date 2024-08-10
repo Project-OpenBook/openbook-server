@@ -1,7 +1,7 @@
 package com.openbook.openbook.event.entity;
 
 
-import com.openbook.openbook.event.entity.dto.EventStatus;
+import com.openbook.openbook.event.entity.dto.EventBoardType;
 import com.openbook.openbook.global.util.EntityBasicTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,14 +27,16 @@ public class EventBoard extends EntityBasicTime {
 
     private String type;
 
+    private String content;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Event linkedEvent;
 
-
     @Builder
-    public EventBoard(String image, EventStatus type, Event linkedEvent) {
+    public EventBoard(String image, EventBoardType type, String content, Event linkedEvent) {
         this.image = image;
         this.type = type.name();
+        this.content = content;
         this.linkedEvent = linkedEvent;
     }
 }

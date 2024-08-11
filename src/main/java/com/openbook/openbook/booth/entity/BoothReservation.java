@@ -2,10 +2,9 @@ package com.openbook.openbook.booth.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -15,8 +14,14 @@ public class BoothReservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Booth booth;
+    private String content;
 
-    private LocalDate reserve_date;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Booth linkedBooth;
+
+    @Builder
+    public BoothReservation(Booth linkedBooth, String content){
+        this.content = content;
+        this.linkedBooth = linkedBooth;
+    }
 }

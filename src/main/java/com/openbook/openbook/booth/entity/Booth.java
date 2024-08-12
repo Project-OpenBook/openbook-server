@@ -57,6 +57,9 @@ public class Booth extends EntityBasicTime {
     @OneToMany(mappedBy = "linkedBooth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BoothTag> boothTags = new ArrayList<>();
 
+    @OneToMany(mappedBy = "linkedBooth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<BoothReservation> boothReservations = new ArrayList<>();
+
     @Override
     public void setPrePersist() {
         super.setPrePersist();

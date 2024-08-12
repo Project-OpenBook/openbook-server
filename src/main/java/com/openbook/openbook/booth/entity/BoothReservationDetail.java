@@ -21,7 +21,7 @@ public class BoothReservationDetail {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private BoothReservation boothReservation;
+    private BoothReservation linkedReservation;
 
     private String time;
 
@@ -36,7 +36,7 @@ public class BoothReservationDetail {
     @Builder
     public BoothReservationDetail(User user, BoothReservation boothReservation, String time){
         this.user = user;
-        this.boothReservation = boothReservation;
+        this.linkedReservation = boothReservation;
         this.time = time;
     }
 }

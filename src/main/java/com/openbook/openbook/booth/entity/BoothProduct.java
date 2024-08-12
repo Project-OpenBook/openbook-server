@@ -1,6 +1,8 @@
 package com.openbook.openbook.booth.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,26 +12,32 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoothProduct {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Booth booth;
-
     private String name;
-    private int supply;
-    private int price;
+
     private String description;
-    private String productImg;
+
+    private int stock;
+
+    private int price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Booth linkedBooth;
+
+    @OneToMany(mappedBy = "linkedBooth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<BoothProductImage> productImages = new ArrayList<>();
 
     @Builder
-    public BoothProduct(Booth booth, String name, int supply, int price, String description, String productImg){
-        this.booth = booth;
+    public BoothProduct(String name, String description, int stock, int price, Booth linkedBooth) {
         this.name = name;
-        this.supply = supply;
-        this.price = price;
         this.description = description;
-        this.productImg = productImg;
+        this.stock = stock;
+        this.price = price;
+        this.linkedBooth = linkedBooth;
     }
+
 }

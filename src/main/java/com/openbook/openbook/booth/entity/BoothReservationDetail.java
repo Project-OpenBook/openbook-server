@@ -1,13 +1,12 @@
 package com.openbook.openbook.booth.entity;
 
+import com.openbook.openbook.booth.entity.dto.BoothReservationStatus;
 import com.openbook.openbook.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,14 +21,22 @@ public class BoothReservationDetail {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private BoothReservation boothReservation;
+    private BoothReservation linkedReservation;
 
-    private LocalDateTime time;
+    private String time;
+
+    @Enumerated(EnumType.STRING)
+    private BoothReservationStatus status;
+
+    @PrePersist
+    public void setFirstReservationStatus() {
+        this.status = BoothReservationStatus.EMPTY;
+    }
 
     @Builder
-    public BoothReservationDetail(User user, BoothReservation boothReservation, LocalDateTime time){
+    public BoothReservationDetail(User user, BoothReservation boothReservation, String time){
         this.user = user;
-        this.boothReservation = boothReservation;
+        this.linkedReservation = boothReservation;
         this.time = time;
     }
 }

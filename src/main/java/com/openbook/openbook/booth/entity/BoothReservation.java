@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,6 +24,9 @@ public class BoothReservation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Booth linkedBooth;
+
+    @OneToMany(mappedBy = "linkedReservation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<BoothReservationDetail> boothReservationDetails = new ArrayList<>();
 
     @Builder
     public BoothReservation(Booth linkedBooth, String content, LocalDate date){

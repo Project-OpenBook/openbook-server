@@ -28,7 +28,7 @@ public class BoothProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     private Booth linkedBooth;
 
-    @OneToMany(mappedBy = "linkedBooth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "linkedProduct", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BoothProductImage> productImages = new ArrayList<>();
 
     @Builder

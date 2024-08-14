@@ -27,4 +27,14 @@ public class BoothProductService {
                         .build()
         );
     }
+
+    public void createBoothProductImage(final String imageUrl, final BoothProduct boothProduct) {
+        boothProductImageRepository.save(
+                BoothProductImage.builder()
+                        .imageUrl(imageUrl)
+                        .linkedProduct(boothProduct)
+                        .build()
+        );
+    }
+
 }

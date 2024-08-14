@@ -14,6 +14,7 @@ import com.openbook.openbook.booth.service.core.BoothService;
 import com.openbook.openbook.booth.service.core.BoothTagService;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.core.UserService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ManagerBoothService {
+    private final S3Service s3Service;
     private final UserService userService;
     private final BoothService boothService;
     private final BoothTagService boothTagService;
@@ -59,13 +61,10 @@ public class ManagerBoothService {
         if(user != booth.getManager()){
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
-
         if(booth.getStatus().equals(BoothStatus.APPROVE) && (booth.getLinkedEvent().getCloseDate().isAfter(LocalDate.now()))){
             throw new OpenBookException(ErrorCode.UNDELETABLE_PERIOD);
         }
-
         List<BoothArea> boothAreaList = boothAreaService.getBoothAreasByBoothId(boothId);
-
         boothService.deleteBooth(booth);
         boothAreaService.disconnectBooth(boothAreaList);
     }
@@ -83,5 +82,10 @@ public class ManagerBoothService {
         BoothProduct product = boothProductService.createBoothProduct(new BoothProductDto(
                 request.name(), request.description(), request.stock(), request.price(), booth)
         );
+        if(request.images() != null && !request.images().isEmpty()){
+            request.images().forEach(image -> {
+                boothProductService.createBoothProductImage(s3Service.uploadFileAndGetUrl(image), product);
+            });
+        }
     }
 }

@@ -21,7 +21,7 @@ public class ManagerEventController {
     @GetMapping("manage/events")
     public ResponseEntity<SliceResponse<ManagerEventData>> getManagedEvent(Authentication authentication,
                                                                    @PageableDefault(size = 6) Pageable pageable,
-                                                                   @RequestParam(defaultValue = "all") String status) {
+                                                                   @RequestParam(defaultValue = "ALL") String status) {
         return ResponseEntity.ok(SliceResponse.of(
                 managerEventService.getManagedEventList(Long.valueOf(authentication.getName()), pageable, status))
         );

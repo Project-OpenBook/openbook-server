@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -43,7 +44,7 @@ public class ManagerBoothController {
                                                       @PathVariable Long booth_id,
                                                       @Valid ProductRegistrationRequest request){
         managerBoothService.addBoothProduct(Long.valueOf(authentication.getName()), booth_id, request);
-        return ResponseEntity.ok(new ResponseMessage("상품 추가에 성공했습니다."));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("상품 추가에 성공했습니다."));
     }
 
 

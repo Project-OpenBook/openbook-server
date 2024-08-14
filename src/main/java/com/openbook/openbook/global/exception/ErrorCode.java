@@ -27,6 +27,7 @@ public enum ErrorCode {
     INVALID_LAYOUT_ENTRY(HttpStatus.CONFLICT, "입력된 배치도 형식에 오류가 있습니다."),
     EMPTY_TAG_DATA(HttpStatus.CONFLICT, "공백을 태그로 사용할 수 없습니다."),
     ALREADY_TAG_DATA(HttpStatus.CONFLICT, "중복 되는 태그 데이터가 있습니다."),
+    BOOTH_NOT_APPROVED(HttpStatus.CONFLICT, "승인되지 않은 부스입니다."),
 
     // NOT FOUND
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저 정보를 찾을 수 없습니다."),

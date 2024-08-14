@@ -1,14 +1,15 @@
 package com.openbook.openbook.booth.service;
 
+import com.openbook.openbook.booth.controller.request.ReservationRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothAreaData;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
+import com.openbook.openbook.booth.dto.BoothReservationDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothArea;
+import com.openbook.openbook.booth.entity.BoothReservation;
 import com.openbook.openbook.booth.entity.dto.BoothAreaStatus;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
-import com.openbook.openbook.booth.service.core.BoothAreaService;
-import com.openbook.openbook.booth.service.core.BoothService;
-import com.openbook.openbook.booth.service.core.BoothTagService;
+import com.openbook.openbook.booth.service.core.*;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.entity.User;
@@ -30,6 +31,8 @@ public class ManagerBoothService {
     private final BoothService boothService;
     private final BoothTagService boothTagService;
     private final BoothAreaService boothAreaService;
+    private final BoothReservationService boothReservationService;
+    private final BoothReservationDetailService boothReservationDetailService;
 
 
     @Transactional(readOnly = true)
@@ -64,5 +67,28 @@ public class ManagerBoothService {
 
         boothService.deleteBooth(booth);
         boothAreaService.disconnectBooth(boothAreaList);
+    }
+
+    @Transactional
+    public void registerReservation(Long userId, ReservationRegistrationRequest request, Long boothId){
+        User user = userService.getUserOrException(userId);
+        Booth booth = boothService.getBoothOrException(boothId);
+
+        if(user != booth.getManager()){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        if(!booth.getStatus().equals(BoothStatus.APPROVE)){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS); // 고치기
+        }
+
+        BoothReservationDTO boothReservationDTO = BoothReservationDTO.builder()
+                .content(request.content())
+                .date(request.date())
+                .build();
+
+        BoothReservation boothReservation = boothReservationService.createBoothReservation(boothReservationDTO, booth);
+        boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);
+
     }
 }

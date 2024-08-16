@@ -1,11 +1,16 @@
 package com.openbook.openbook.event.service;
 
+import com.openbook.openbook.event.controller.request.NoticeRegisterRequest;
 import com.openbook.openbook.event.controller.response.ManagerEventData;
+import com.openbook.openbook.event.dto.EventNoticeDto;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.dto.EventStatus;
+import com.openbook.openbook.event.service.core.EventNoticeService;
 import com.openbook.openbook.event.service.core.EventService;
 import com.openbook.openbook.event.service.core.EventTagService;
-import com.openbook.openbook.user.entity.User;
+import com.openbook.openbook.global.exception.ErrorCode;
+import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.user.service.core.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ManagerEventService {
 
+    private final S3Service service;
     private final UserService userService;
     private final EventService eventService;
     private final EventTagService eventTagService;
+    private final EventNoticeService eventNoticeService;
 
 
     @Transactional(readOnly = true)
@@ -30,6 +37,18 @@ public class ManagerEventService {
                 : eventService.getAllManagedEventsWithStatus(pageable, managerId, EventStatus.valueOf(status));
         return events.map(
                 event -> ManagerEventData.of(event, eventTagService.getEventTags(event.getId()))
+        );
+    }
+
+    @Transactional
+    public void registerEventNotice(Long userId, Long eventId, NoticeRegisterRequest request) {
+        Event event = eventService.getEventOrException(eventId);
+        if(!event.getManager().getId().equals(userId)) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        eventNoticeService.createEventNotice(new EventNoticeDto(
+                request.title(), request.content(), service.uploadFileAndGetUrl(request.image()),
+                request.noticeType(), event)
         );
     }
 

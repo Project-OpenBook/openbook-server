@@ -60,7 +60,7 @@ public class Event extends EntityBasicTime {
     private List<EventTag> eventTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "linkedEvent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<EventBoard> eventBoards = new ArrayList<>();
+    private List<EventNotice> eventNotices = new ArrayList<>();
 
     @Override
     public void setPrePersist() {

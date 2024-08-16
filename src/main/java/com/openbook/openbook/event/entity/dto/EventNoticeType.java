@@ -1,6 +1,6 @@
 package com.openbook.openbook.event.entity.dto;
 
-public enum EventBoardType {
-    NOTICE,
+public enum EventNoticeType {
+    BASIC,
     EVENT
 }

@@ -109,16 +109,18 @@ public class ManagerBoothService {
             throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
         }
 
-        BoothReservationDTO boothReservationDTO = BoothReservationDTO.builder()
-                .content(request.content())
-                .date(request.date())
-                .build();
-
         if (boothReservationService.isExistDate(request.date(), booth)) {
             BoothReservation boothReservation = boothReservationService.getReservationByBootAndDate(request.date(), booth);
+            if(boothReservationDetailService.isExistTime(request.reservationDetailLists(), boothReservation)){
+                throw new OpenBookException(ErrorCode.ALREADY_RESERVED_SERVICE);
+            }
             boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);
 
         } else {
+            BoothReservationDTO boothReservationDTO = BoothReservationDTO.builder()
+                    .content(request.content())
+                    .date(request.date())
+                    .build();
             BoothReservation boothReservation = boothReservationService.createBoothReservation(boothReservationDTO, booth);
             boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);
         }

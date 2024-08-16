@@ -22,4 +22,13 @@ public class BoothReservationDetailService {
             );
         }
     }
+
+    public boolean isExistTime(List<String> reservationDetails, BoothReservation boothReservation){
+        for(String time : reservationDetails){
+            if(boothReservationDetailRepository.existsByTimeAndLinkedReservation(time, boothReservation)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

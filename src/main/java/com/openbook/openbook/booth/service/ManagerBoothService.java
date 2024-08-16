@@ -106,7 +106,7 @@ public class ManagerBoothService {
         }
 
         if (!booth.getStatus().equals(BoothStatus.APPROVE)) {
-            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS); // 고치기
+            throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
         }
 
         BoothReservationDTO boothReservationDTO = BoothReservationDTO.builder()

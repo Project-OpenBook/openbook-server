@@ -48,10 +48,10 @@ public class ManagerBoothController {
     }
 
     @PostMapping("booths/{boothId}/reservation")
-    public ResponseEntity<ResponseMessage> registerReservation(Authentication authentication,
+    public ResponseEntity<ResponseMessage> addReservation(Authentication authentication,
                                                                @Valid ReservationRegistrationRequest request,
                                                                @PathVariable Long boothId){
         managerBoothService.registerReservation(Long.valueOf(authentication.getName()), request, boothId);
-        return ResponseEntity.ok(new ResponseMessage("예약 서비스가 신청었습니다."));
+        return ResponseEntity.ok(new ResponseMessage("예약 추가에 성공했습니다."));
     }
 }

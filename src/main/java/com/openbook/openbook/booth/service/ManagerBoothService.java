@@ -117,8 +117,7 @@ public class ManagerBoothService {
             if(boothReservationDetailService.hasExistTime(request.reservationDetailLists(), boothReservation)){
                 throw new OpenBookException(ErrorCode.ALREADY_RESERVED_SERVICE);
             }
-            boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);
-
+            throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
         } else {
             BoothReservation boothReservation = boothReservationService.createBoothReservation(
                     new BoothReservationDTO(request.content(), request.date()), booth);

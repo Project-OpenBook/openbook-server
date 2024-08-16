@@ -9,6 +9,6 @@ import java.time.LocalDate;
 
 @Repository
 public interface BoothReservationRepository extends JpaRepository<BoothReservation, Long> {
-    boolean existsBoothReservationByDateAndLinkedBooth(LocalDate date, Booth booth);
+    boolean existsByDateAndLinkedBooth(LocalDate date, Booth booth);
     BoothReservation findBoothReservationByDateAndLinkedBooth(LocalDate date, Booth booth);
 }

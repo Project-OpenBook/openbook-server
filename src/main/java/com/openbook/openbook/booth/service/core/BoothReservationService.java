@@ -23,8 +23,8 @@ public class BoothReservationService {
         );
     }
 
-    public boolean isExistDate(LocalDate date, Booth booth){
-        return boothReservationRepository.existsBoothReservationByDateAndLinkedBooth(date, booth);
+    public boolean hasExistDate(LocalDate date, Booth booth){
+        return boothReservationRepository.existsByDateAndLinkedBooth(date, booth);
     }
 
     public BoothReservation getReservationByBootAndDate(LocalDate date, Booth booth){

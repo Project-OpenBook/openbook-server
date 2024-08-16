@@ -112,9 +112,9 @@ public class ManagerBoothService {
 
         checkAvailableTime(request, booth);
 
-        if (boothReservationService.isExistDate(request.date(), booth)) {
+        if (boothReservationService.hasExistDate(request.date(), booth)) {
             BoothReservation boothReservation = boothReservationService.getReservationByBootAndDate(request.date(), booth);
-            if(boothReservationDetailService.isExistTime(request.reservationDetailLists(), boothReservation)){
+            if(boothReservationDetailService.hasExistTime(request.reservationDetailLists(), boothReservation)){
                 throw new OpenBookException(ErrorCode.ALREADY_RESERVED_SERVICE);
             }
             boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);

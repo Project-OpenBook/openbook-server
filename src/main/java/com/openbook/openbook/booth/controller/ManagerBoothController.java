@@ -1,6 +1,7 @@
 package com.openbook.openbook.booth.controller;
 
 import com.openbook.openbook.booth.controller.request.ReservationRegistrationRequest;
+import com.openbook.openbook.booth.controller.request.ProductRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
 import com.openbook.openbook.booth.service.ManagerBoothService;
 import com.openbook.openbook.global.dto.ResponseMessage;
@@ -9,12 +10,17 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class ManagerBoothController {
     private final ManagerBoothService managerBoothService;
@@ -31,6 +37,14 @@ public class ManagerBoothController {
     public ResponseEntity<ResponseMessage> deleteBooth(Authentication authentication, @PathVariable Long boothId){
         managerBoothService.deleteBooth(Long.valueOf(authentication.getName()), boothId);
         return ResponseEntity.ok(new ResponseMessage("부스를 삭제했습니다."));
+    }
+
+    @PostMapping("/booths/{booth_id}/products")
+    public ResponseEntity<ResponseMessage> addProduct(Authentication authentication,
+                                                      @PathVariable Long booth_id,
+                                                      @Valid ProductRegistrationRequest request){
+        managerBoothService.addBoothProduct(Long.valueOf(authentication.getName()), booth_id, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("상품 추가에 성공했습니다."));
     }
 
     @PostMapping("booths/{boothId}/reservation")

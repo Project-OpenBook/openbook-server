@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,6 +109,14 @@ public class ManagerBoothService {
         if (!booth.getStatus().equals(BoothStatus.APPROVE)) {
             throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
         }
+
+        for(String time : request.reservationDetailLists()){
+            if(booth.getOpenTime().toLocalTime().isAfter(LocalTime.parse(time))
+                    || booth.getCloseTime().toLocalTime().isBefore(LocalTime.parse(time))){
+                throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
+            }
+        }
+
 
         if (boothReservationService.isExistDate(request.date(), booth)) {
             BoothReservation boothReservation = boothReservationService.getReservationByBootAndDate(request.date(), booth);

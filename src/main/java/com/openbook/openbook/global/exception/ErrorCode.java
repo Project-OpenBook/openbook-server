@@ -29,6 +29,7 @@ public enum ErrorCode {
     ALREADY_TAG_DATA(HttpStatus.CONFLICT, "중복 되는 태그 데이터가 있습니다."),
     BOOTH_NOT_APPROVED(HttpStatus.CONFLICT, "승인되지 않은 부스입니다."),
     ALREADY_RESERVED_SERVICE(HttpStatus.CONFLICT, "이미 존재하는 예약 서비스 입니다."),
+    UNAVAILABLE_RESERVED_TIME(HttpStatus.CONFLICT, "예약 가능 시간이 아닙니다."),
 
     // NOT FOUND
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저 정보를 찾을 수 없습니다."),

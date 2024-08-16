@@ -1,6 +1,6 @@
 package com.openbook.openbook.booth.controller;
 
-import com.openbook.openbook.booth.controller.request.ReservationRegistrationRequest;
+import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
 import com.openbook.openbook.booth.controller.request.ProductRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
 import com.openbook.openbook.booth.service.ManagerBoothService;
@@ -49,9 +49,9 @@ public class ManagerBoothController {
 
     @PostMapping("booths/{boothId}/reservation")
     public ResponseEntity<ResponseMessage> addReservation(Authentication authentication,
-                                                               @Valid ReservationRegistrationRequest request,
+                                                               @Valid ReserveRegistrationRequest request,
                                                                @PathVariable Long boothId){
-        managerBoothService.registerReservation(Long.valueOf(authentication.getName()), request, boothId);
+        managerBoothService.addReservation(Long.valueOf(authentication.getName()), request, boothId);
         return ResponseEntity.ok(new ResponseMessage("예약 추가에 성공했습니다."));
     }
 }

@@ -1,13 +1,12 @@
 package com.openbook.openbook.booth.service;
 
-import com.openbook.openbook.booth.controller.request.ReservationRegistrationRequest;
+import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothAreaData;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
 import com.openbook.openbook.booth.dto.BoothReservationDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothArea;
 import com.openbook.openbook.booth.entity.BoothReservation;
-import com.openbook.openbook.booth.entity.dto.BoothAreaStatus;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.booth.service.core.*;
 import com.openbook.openbook.booth.controller.request.ProductRegistrationRequest;
@@ -98,7 +97,7 @@ public class ManagerBoothService {
     }
 
     @Transactional
-    public void registerReservation(Long userId, ReservationRegistrationRequest request, Long boothId) {
+    public void addReservation(Long userId, ReserveRegistrationRequest request, Long boothId) {
         User user = userService.getUserOrException(userId);
         Booth booth = boothService.getBoothOrException(boothId);
 
@@ -113,20 +112,20 @@ public class ManagerBoothService {
         checkAvailableTime(request, booth);
 
         if (boothReservationService.hasExistDate(request.date(), booth)) {
-            BoothReservation boothReservation = boothReservationService.getReservationByBootAndDate(request.date(), booth);
-            if(boothReservationDetailService.hasExistTime(request.reservationDetailLists(), boothReservation)){
+            BoothReservation boothReservation = boothReservationService.getReserveByBoothAndDate(request.date(), booth);
+            if(boothReservationDetailService.hasExistTime(request.times(), boothReservation)){
                 throw new OpenBookException(ErrorCode.ALREADY_RESERVED_SERVICE);
             }
             throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
         } else {
             BoothReservation boothReservation = boothReservationService.createBoothReservation(
                     new BoothReservationDTO(request.content(), request.date()), booth);
-            boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);
+            boothReservationDetailService.createReservationDetail(request.times(), boothReservation);
         }
     }
 
-    private void checkAvailableTime(ReservationRegistrationRequest request, Booth booth){
-        for(String time : request.reservationDetailLists()){
+    private void checkAvailableTime(ReserveRegistrationRequest request, Booth booth){
+        for(String time : request.times()){
             if(booth.getOpenTime().toLocalTime().isAfter(LocalTime.parse(time))
                     || booth.getCloseTime().toLocalTime().isBefore(LocalTime.parse(time))){
                 throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);

@@ -27,7 +27,7 @@ public class BoothReservationService {
         return boothReservationRepository.existsByDateAndLinkedBooth(date, booth);
     }
 
-    public BoothReservation getReservationByBootAndDate(LocalDate date, Booth booth){
+    public BoothReservation getReserveByBoothAndDate(LocalDate date, Booth booth){
         return boothReservationRepository.findBoothReservationByDateAndLinkedBooth(date, booth);
     }
 }

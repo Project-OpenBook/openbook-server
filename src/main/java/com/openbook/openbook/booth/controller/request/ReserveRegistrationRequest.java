@@ -7,9 +7,9 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
-public record ReservationRegistrationRequest(
+public record ReserveRegistrationRequest(
         @NotBlank String content,
         @NotNull LocalDate date,
-        @NotEmpty List<String> reservationDetailLists
+        @NotEmpty List<String> times
         ) {
 }

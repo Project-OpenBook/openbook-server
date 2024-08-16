@@ -120,11 +120,8 @@ public class ManagerBoothService {
             boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);
 
         } else {
-            BoothReservationDTO boothReservationDTO = BoothReservationDTO.builder()
-                    .content(request.content())
-                    .date(request.date())
-                    .build();
-            BoothReservation boothReservation = boothReservationService.createBoothReservation(boothReservationDTO, booth);
+            BoothReservation boothReservation = boothReservationService.createBoothReservation(
+                    new BoothReservationDTO(request.content(), request.date()), booth);
             boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);
         }
     }

@@ -110,13 +110,7 @@ public class ManagerBoothService {
             throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
         }
 
-        for(String time : request.reservationDetailLists()){
-            if(booth.getOpenTime().toLocalTime().isAfter(LocalTime.parse(time))
-                    || booth.getCloseTime().toLocalTime().isBefore(LocalTime.parse(time))){
-                throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
-            }
-        }
-
+        checkAvailableTime(request, booth);
 
         if (boothReservationService.isExistDate(request.date(), booth)) {
             BoothReservation boothReservation = boothReservationService.getReservationByBootAndDate(request.date(), booth);
@@ -132,6 +126,15 @@ public class ManagerBoothService {
                     .build();
             BoothReservation boothReservation = boothReservationService.createBoothReservation(boothReservationDTO, booth);
             boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);
+        }
+    }
+
+    private void checkAvailableTime(ReservationRegistrationRequest request, Booth booth){
+        for(String time : request.reservationDetailLists()){
+            if(booth.getOpenTime().toLocalTime().isAfter(LocalTime.parse(time))
+                    || booth.getCloseTime().toLocalTime().isBefore(LocalTime.parse(time))){
+                throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
+            }
         }
     }
 }

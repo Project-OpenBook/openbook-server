@@ -82,13 +82,19 @@ public class ManagerBoothService {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS); // 고치기
         }
 
-        BoothReservationDTO boothReservationDTO = BoothReservationDTO.builder()
+       BoothReservationDTO boothReservationDTO = BoothReservationDTO.builder()
                 .content(request.content())
                 .date(request.date())
                 .build();
 
-        BoothReservation boothReservation = boothReservationService.createBoothReservation(boothReservationDTO, booth);
-        boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);
+        if(boothReservationService.isExistDate(request.date(), booth)){
+            BoothReservation boothReservation = boothReservationService.getReservationByBootAndDate(request.date(), booth);
+            boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);
+
+        }else{
+            BoothReservation boothReservation = boothReservationService.createBoothReservation(boothReservationDTO, booth);
+            boothReservationDetailService.createReservationDetail(request.reservationDetailLists(), boothReservation);
+        }
 
     }
 }

@@ -7,6 +7,8 @@ import com.openbook.openbook.booth.repository.BoothReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class BoothReservationService {
@@ -19,5 +21,13 @@ public class BoothReservationService {
                         .linkedBooth(booth)
                         .build()
         );
+    }
+
+    public boolean isExistDate(LocalDate date, Booth booth){
+        return boothReservationRepository.existsBoothReservationByDateAndLinkedBooth(date, booth);
+    }
+
+    public BoothReservation getReservationByBootAndDate(LocalDate date, Booth booth){
+        return boothReservationRepository.findBoothReservationByDateAndLinkedBooth(date, booth);
     }
 }

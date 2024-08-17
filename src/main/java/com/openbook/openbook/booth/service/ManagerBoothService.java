@@ -116,7 +116,7 @@ public class ManagerBoothService {
         }
 
         checkAvailableTime(request, booth);
-        getValidTimesOrException(request.times());
+        checkDuplicateTimes(request.times());
 
         BoothReservation boothReservation = boothReservationService.createBoothReservation(
                 new BoothReservationDTO(request.content(), request.date()), booth);
@@ -132,7 +132,7 @@ public class ManagerBoothService {
         }
     }
 
-    private void getValidTimesOrException(List<String> times) {
+    private void checkDuplicateTimes(List<String> times) {
         Set<String> validTimes = new HashSet<>();
         times.stream()
                 .map(String::trim)

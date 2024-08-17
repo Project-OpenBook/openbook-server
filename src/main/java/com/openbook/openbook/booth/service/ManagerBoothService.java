@@ -30,7 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,16 +114,13 @@ public class ManagerBoothService {
         checkAvailableTime(request, booth);
 
         if (boothReservationService.hasExistDate(request.date(), booth)) {
-            BoothReservation boothReservation = boothReservationService.getReserveByBoothAndDate(request.date(), booth);
-            if(boothReservationDetailService.hasExistTime(request.times(), boothReservation)){
-                throw new OpenBookException(ErrorCode.ALREADY_RESERVED_SERVICE);
-            }
             throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
-        } else {
-            BoothReservation boothReservation = boothReservationService.createBoothReservation(
-                    new BoothReservationDTO(request.content(), request.date()), booth);
-            boothReservationDetailService.createReservationDetail(request.times(), boothReservation);
         }
+        getValidTimesOrException(request.times());
+
+        BoothReservation boothReservation = boothReservationService.createBoothReservation(
+                new BoothReservationDTO(request.content(), request.date()), booth);
+        boothReservationDetailService.createReservationDetail(request.times(), boothReservation);
     }
 
     private void checkAvailableTime(ReserveRegistrationRequest request, Booth booth){
@@ -131,5 +130,17 @@ public class ManagerBoothService {
                 throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
             }
         }
+    }
+
+    private Set<String> getValidTimesOrException(List<String> times) {
+        Set<String> validTimes = new HashSet<>();
+        times.stream()
+                .map(String::trim)
+                .forEach(time -> {
+                    if (!validTimes.add(time)) {
+                        throw new OpenBookException(ErrorCode.DUPLICATE_RESERVED_TIME);
+                    }
+                });
+        return validTimes;
     }
 }

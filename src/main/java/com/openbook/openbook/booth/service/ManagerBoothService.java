@@ -111,11 +111,11 @@ public class ManagerBoothService {
             throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
         }
 
-        checkAvailableTime(request, booth);
-
         if (boothReservationService.hasExistDate(request.date(), booth)) {
             throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
         }
+
+        checkAvailableTime(request, booth);
         getValidTimesOrException(request.times());
 
         BoothReservation boothReservation = boothReservationService.createBoothReservation(
@@ -132,7 +132,7 @@ public class ManagerBoothService {
         }
     }
 
-    private Set<String> getValidTimesOrException(List<String> times) {
+    private void getValidTimesOrException(List<String> times) {
         Set<String> validTimes = new HashSet<>();
         times.stream()
                 .map(String::trim)
@@ -141,6 +141,5 @@ public class ManagerBoothService {
                         throw new OpenBookException(ErrorCode.DUPLICATE_RESERVED_TIME);
                     }
                 });
-        return validTimes;
     }
 }

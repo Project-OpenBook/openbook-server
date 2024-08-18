@@ -1,5 +1,6 @@
 package com.openbook.openbook.booth.controller;
 
+import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
 import com.openbook.openbook.booth.controller.request.ProductRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
 import com.openbook.openbook.booth.service.ManagerBoothService;
@@ -12,7 +13,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,5 +47,11 @@ public class ManagerBoothController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("상품 추가에 성공했습니다."));
     }
 
-
+    @PostMapping("booths/{boothId}/reservation")
+    public ResponseEntity<ResponseMessage> addReservation(Authentication authentication,
+                                                               @Valid ReserveRegistrationRequest request,
+                                                               @PathVariable Long boothId){
+        managerBoothService.addReservation(Long.valueOf(authentication.getName()), request, boothId);
+        return ResponseEntity.ok(new ResponseMessage("예약 추가에 성공했습니다."));
+    }
 }

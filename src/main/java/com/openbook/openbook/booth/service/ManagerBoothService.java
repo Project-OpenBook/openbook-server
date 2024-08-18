@@ -1,13 +1,18 @@
 package com.openbook.openbook.booth.service;
 
-import com.openbook.openbook.booth.controller.request.ProductRegistrationRequest;
+import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothAreaData;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
-import com.openbook.openbook.booth.dto.BoothProductDto;
+import com.openbook.openbook.booth.dto.BoothReservationDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothArea;
-import com.openbook.openbook.booth.entity.BoothProduct;
+import com.openbook.openbook.booth.entity.BoothReservation;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
+import com.openbook.openbook.booth.service.core.*;
+import com.openbook.openbook.booth.controller.request.ProductRegistrationRequest;
+
+import com.openbook.openbook.booth.dto.BoothProductDto;
+import com.openbook.openbook.booth.entity.BoothProduct;
 import com.openbook.openbook.booth.service.core.BoothAreaService;
 import com.openbook.openbook.booth.service.core.BoothProductService;
 import com.openbook.openbook.booth.service.core.BoothService;
@@ -24,7 +29,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +43,8 @@ public class ManagerBoothService {
     private final BoothService boothService;
     private final BoothTagService boothTagService;
     private final BoothAreaService boothAreaService;
+    private final BoothReservationService boothReservationService;
+    private final BoothReservationDetailService boothReservationDetailService;
     private final BoothProductService boothProductService;
 
 
@@ -69,7 +79,6 @@ public class ManagerBoothService {
         boothAreaService.disconnectBooth(boothAreaList);
     }
 
-    @Transactional
     public void addBoothProduct(Long userId, Long boothId, ProductRegistrationRequest request) {
         User user = userService.getUserOrException(userId);
         Booth booth = boothService.getBoothOrException(boothId);
@@ -87,5 +96,50 @@ public class ManagerBoothService {
                 boothProductService.createBoothProductImage(s3Service.uploadFileAndGetUrl(image), product);
             });
         }
+    }
+
+    @Transactional
+    public void addReservation(Long userId, ReserveRegistrationRequest request, Long boothId) {
+        User user = userService.getUserOrException(userId);
+        Booth booth = boothService.getBoothOrException(boothId);
+
+        if (user != booth.getManager()) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        if (!booth.getStatus().equals(BoothStatus.APPROVE)) {
+            throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
+        }
+
+        if (boothReservationService.hasExistDate(request.date(), booth)) {
+            throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
+        }
+
+        checkAvailableTime(request, booth);
+        checkDuplicateTimes(request.times());
+
+        BoothReservation boothReservation = boothReservationService.createBoothReservation(
+                new BoothReservationDTO(request.content(), request.date()), booth);
+        boothReservationDetailService.createReservationDetail(request.times(), boothReservation);
+    }
+
+    private void checkAvailableTime(ReserveRegistrationRequest request, Booth booth){
+        for(String time : request.times()){
+            if(booth.getOpenTime().toLocalTime().isAfter(LocalTime.parse(time))
+                    || booth.getCloseTime().toLocalTime().isBefore(LocalTime.parse(time))){
+                throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
+            }
+        }
+    }
+
+    private void checkDuplicateTimes(List<String> times) {
+        Set<String> validTimes = new HashSet<>();
+        times.stream()
+                .map(String::trim)
+                .forEach(time -> {
+                    if (!validTimes.add(time)) {
+                        throw new OpenBookException(ErrorCode.DUPLICATE_RESERVED_TIME);
+                    }
+                });
     }
 }

@@ -2,6 +2,7 @@ package com.openbook.openbook.event.service;
 
 
 import com.openbook.openbook.event.controller.request.EventRegistrationRequest;
+import com.openbook.openbook.event.controller.response.EventNoticeData;
 import com.openbook.openbook.event.dto.EventLayoutCreateData;
 import com.openbook.openbook.booth.dto.BoothAreaCreateData;
 import com.openbook.openbook.event.controller.response.UserEventData;
@@ -9,10 +10,12 @@ import com.openbook.openbook.event.controller.response.EventDetail;
 import com.openbook.openbook.event.controller.response.EventLayoutStatus;
 import com.openbook.openbook.booth.service.core.BoothService;
 import com.openbook.openbook.event.dto.EventDTO;
+import com.openbook.openbook.event.dto.EventNoticeDto;
 import com.openbook.openbook.event.entity.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.entity.EventTag;
+import com.openbook.openbook.event.service.core.EventNoticeService;
 import com.openbook.openbook.event.service.core.EventService;
 import com.openbook.openbook.event.service.core.EventTagService;
 import com.openbook.openbook.global.exception.ErrorCode;
@@ -36,12 +39,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserEventService {
+public class EventCommonService {
 
     private final UserService userService;
     private final EventService eventService;
     private final EventTagService eventTagService;
-    private final UserEventLayoutService userEventLayoutService;
+    private final EventNoticeService eventNoticeService;
+    private final EventLayoutCommonService eventLayoutCommonService;
     private final BoothService boothService;
     private final AlarmService alarmService;
     private final S3Service s3Service;
@@ -56,8 +60,7 @@ public class UserEventService {
 
         List<BoothAreaCreateData> areaData = getBoothAreaCreateList(request.areaClassifications(), request.areaMaxNumbers());
         EventLayoutCreateData layoutData = new EventLayoutCreateData(request.layoutType(),request.layoutImages(), areaData);
-        EventLayout layout = userEventLayoutService.createEventLayout(layoutData);
-
+        EventLayout layout = eventLayoutCommonService.createEventLayout(layoutData);
 
         EventDTO eventDto = EventDTO.builder()
                 .manager(user)

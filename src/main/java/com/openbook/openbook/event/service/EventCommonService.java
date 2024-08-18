@@ -110,29 +110,21 @@ public class EventCommonService {
         if(!event.getStatus().equals(EventStatus.APPROVE)) {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
-        List<EventTag> tags = eventTagService.getEventTags(event.getId());
         int boothCount = boothService.getBoothCountByEvent(event);
-        return EventDetail.of(event, userId, tags, boothCount);
+        return EventDetail.of(event, userId, eventTagService.getEventTags(event.getId()), boothCount);
     }
 
     @Transactional(readOnly = true)
-    public EventLayoutStatus getEventLayoutStatus(Long eventId) {
+    public Slice<EventNoticeData> getEventNotice(final Long eventId, Pageable pageable) {
         Event event = eventService.getEventOrException(eventId);
-        if(isNotRecruitmentPeriod(event.getBoothRecruitmentStartDate(), event.getBoothRecruitmentEndDate())) {
-            throw new OpenBookException(ErrorCode.INACCESSIBLE_PERIOD);
-        }
-        return userEventLayoutService.getLayoutStatus(event.getLayout());
+        return eventNoticeService.getNotices(event, pageable).map(EventNoticeData::of);
     }
+
 
     private void dateValidityCheck(LocalDate startDate, LocalDate endDate) {
         if(startDate.isAfter(endDate)) {
             throw new OpenBookException(ErrorCode.INVALID_DATE_RANGE);
         }
-    }
-
-    private boolean isNotRecruitmentPeriod(LocalDate startDate, LocalDate endDate) {
-        LocalDate now = LocalDate.now();
-        return now.isBefore(startDate) || now.isAfter(endDate);
     }
 
     private List<BoothAreaCreateData> getBoothAreaCreateList(List<String> classifications, List<Integer> maxNumbers) {

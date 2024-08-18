@@ -2,9 +2,12 @@ package com.openbook.openbook.event.service.core;
 
 
 import com.openbook.openbook.event.dto.EventNoticeDto;
+import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventNotice;
 import com.openbook.openbook.event.repository.EventNoticeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,4 +27,9 @@ public class EventNoticeService {
                         .build()
         );
     }
+
+    public Slice<EventNotice> getNotices(Event event, Pageable pageable) {
+        return eventNoticeRepository.findByLinkedEventId(event.getId(), pageable);
+    }
+
 }

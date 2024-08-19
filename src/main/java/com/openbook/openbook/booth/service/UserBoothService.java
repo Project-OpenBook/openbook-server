@@ -107,10 +107,10 @@ public class UserBoothService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<BoothBasicData> searchBoothBy(Pageable pageable, String searchType, String name){
+    public Slice<BoothBasicData> searchBoothBy(Pageable pageable, String searchType, String name, String sort){
         Slice<Booth> booths = switch (searchType){
-            case "boothName" -> boothService.getBoothByName(pageable, name, BoothStatus.APPROVE);
-            case "tagName" -> boothTagService.getBoothByTag(pageable, name, BoothStatus.APPROVE);
+            case "boothName" -> boothService.getBoothByName(pageable, name, BoothStatus.APPROVE, sort);
+            case "tagName" -> boothTagService.getBoothByTag(pageable, name, BoothStatus.APPROVE, sort);
             default -> throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
         };
         return booths.map(

@@ -44,7 +44,8 @@ public class UserBoothController {
     @GetMapping("/search")
     public ResponseEntity<SliceResponse<BoothBasicData>> searchBoothName(@PageableDefault(size = 6) Pageable pageable,
                                                                          @RequestParam(value = "type") String searchType,
-                                                                         @RequestParam(value = "query") String query){
-        return ResponseEntity.ok(SliceResponse.of(userBoothService.searchBoothBy(pageable, searchType, query)));
+                                                                         @RequestParam(value = "query") String query,
+                                                                         @RequestParam(value = "sort") String sort){
+        return ResponseEntity.ok(SliceResponse.of(userBoothService.searchBoothBy(pageable, searchType, query, sort)));
     }
 }

@@ -7,9 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
-public record NoticeRegisterRequest(
+public record EventNoticeRegisterRequest(
         @NotBlank String title,
-        String content,
+        @NotBlank String content,
         @Enumerated(EnumType.STRING)
         @NotNull EventNoticeType noticeType,
         MultipartFile image

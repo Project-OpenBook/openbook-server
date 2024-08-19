@@ -1,6 +1,6 @@
 package com.openbook.openbook.event.service;
 
-import com.openbook.openbook.event.controller.request.NoticeRegisterRequest;
+import com.openbook.openbook.event.controller.request.EventNoticeRegisterRequest;
 import com.openbook.openbook.event.controller.response.ManagerEventData;
 import com.openbook.openbook.event.dto.EventNoticeDto;
 import com.openbook.openbook.event.entity.Event;
@@ -41,7 +41,7 @@ public class ManagerEventService {
     }
 
     @Transactional
-    public void registerEventNotice(Long userId, Long eventId, NoticeRegisterRequest request) {
+    public void registerEventNotice(Long userId, Long eventId, EventNoticeRegisterRequest request) {
         Event event = eventService.getEventOrException(eventId);
         if(!event.getManager().getId().equals(userId)) {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);

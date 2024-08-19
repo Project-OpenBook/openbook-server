@@ -52,7 +52,7 @@ public class ManagerBoothService {
     public Slice<BoothManageData> getManagedBoothList(Long managerId, Pageable pageable, String status){
         userService.getUserOrException(managerId);
         Slice<Booth> booths = (status.equals("ALL"))
-                ? boothService.getAllManagedBooths(pageable)
+                ? boothService.getAllManagedBooths(pageable, managerId)
                 : boothService.getAllManagedBoothsByStatus(pageable, managerId, BoothStatus.valueOf(status));
 
         return booths.map(booth -> {

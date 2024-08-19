@@ -65,8 +65,8 @@ public class BoothService {
         return boothRepository.findAllByNameAndStatus(pageable, boothName, status);
     }
 
-    public Slice<Booth> getAllManagedBooths(Pageable pageable){
-        return boothRepository.findAll(pageable);
+    public Slice<Booth> getAllManagedBooths(Pageable pageable, Long managerId){
+        return boothRepository.findAllByManagerId(pageable, managerId);
     }
 
     public Slice<Booth> getAllManagedBoothsByStatus(Pageable pageable, Long managerId, BoothStatus boothStatus){

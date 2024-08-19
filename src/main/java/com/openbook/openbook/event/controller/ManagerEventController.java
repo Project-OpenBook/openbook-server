@@ -1,6 +1,6 @@
 package com.openbook.openbook.event.controller;
 
-import com.openbook.openbook.event.controller.request.NoticeRegisterRequest;
+import com.openbook.openbook.event.controller.request.EventNoticeRegisterRequest;
 import com.openbook.openbook.event.controller.response.ManagerEventData;
 import com.openbook.openbook.event.service.ManagerEventService;
 import com.openbook.openbook.global.dto.ResponseMessage;
@@ -36,7 +36,7 @@ public class ManagerEventController {
     @PostMapping("/events/{event_id}/notices")
     public ResponseEntity<ResponseMessage> postNotice(Authentication authentication,
                                                         @PathVariable Long event_id,
-                                                        @Valid NoticeRegisterRequest request) {
+                                                        @Valid EventNoticeRegisterRequest request) {
         managerEventService.registerEventNotice(Long.valueOf(authentication.getName()), event_id, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("공지 등록에 성공했습니다."));
     }

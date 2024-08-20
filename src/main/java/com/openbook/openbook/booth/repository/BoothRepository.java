@@ -26,11 +26,8 @@ public interface BoothRepository extends JpaRepository<Booth, Long> {
     
     int countByLinkedEvent(Event linkedEvent);
 
-    @Query("SELECT b FROM Booth b WHERE b.name LIKE %:boothName% AND b.status =:boothStatus ORDER BY b.linkedEvent.openDate desc")
-    Slice<Booth> findAllByNameAndStatusOrderByDesc(Pageable pageable, String boothName, BoothStatus boothStatus);
-
-    @Query("SELECT b FROM Booth b WHERE b.name LIKE %:boothName% AND b.status =:boothStatus ORDER BY b.linkedEvent.openDate asc ")
-    Slice<Booth> findAllByNameAndStatusOrderByAsc(Pageable pageable, String boothName, BoothStatus boothStatus);
+    @Query("SELECT b FROM Booth b WHERE b.name LIKE %:boothName% AND b.status =:boothStatus")
+    Slice<Booth> findAllByNameAndStatus(Pageable pageable, String boothName, BoothStatus boothStatus);
 
     @Query("SELECT b FROM Booth b WHERE b.manager.id=:managerId AND b.status=:boothStatus")
     Slice<Booth> findAllByManagerIdAndStatus(Pageable pageable, Long managerId, BoothStatus boothStatus);

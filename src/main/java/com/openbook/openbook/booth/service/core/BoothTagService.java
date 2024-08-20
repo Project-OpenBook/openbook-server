@@ -29,11 +29,7 @@ public class BoothTagService {
         return boothTagRepository.findAllByLinkedBoothId(id);
     }
 
-    public Slice<Booth> getBoothByTag(Pageable pageable, String boothTag, BoothStatus status, String sort){
-        if(sort.equals("desc")){
-            return boothTagRepository.findBoothByNameOrderByDesc(pageable, boothTag, status);
-        }else{
-            return boothTagRepository.findBoothByNameOrderByAsc(pageable, boothTag, status);
-        }
+    public Slice<Booth> getBoothByTag(Pageable pageable, String boothTag, BoothStatus status){
+        return boothTagRepository.findBoothByName(pageable, boothTag, status);
     }
 }

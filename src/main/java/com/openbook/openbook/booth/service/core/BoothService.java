@@ -61,12 +61,8 @@ public class BoothService {
         return boothRepository.countByLinkedEvent(event);
     }
 
-    public Slice<Booth> getBoothByName(Pageable pageable, String boothName, BoothStatus status, String sort) {
-        if (sort.equals("desc")) {
-            return boothRepository.findAllByNameAndStatusOrderByDesc(pageable, boothName, status);
-        }else{
-            return boothRepository.findAllByNameAndStatusOrderByAsc(pageable, boothName, status);
-        }
+    public Slice<Booth> getBoothByName(Pageable pageable, String boothName, BoothStatus status) {
+        return boothRepository.findAllByNameAndStatus(pageable, boothName, status);
     }
 
     public Slice<Booth> getAllManagedBooths(Pageable pageable, Long managerId){

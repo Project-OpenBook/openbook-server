@@ -18,5 +18,4 @@ public interface BoothTagRepository extends JpaRepository<BoothTag, Long> {
 
     @Query("SELECT bt.linkedBooth FROM BoothTag bt WHERE bt.name LIKE :name AND bt.linkedBooth.status=:boothStatus")
     Slice<Booth> findBoothByName(Pageable pageable, String name, BoothStatus boothStatus);
-
 }

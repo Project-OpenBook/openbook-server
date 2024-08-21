@@ -26,8 +26,7 @@ import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.core.AlarmService;
 import com.openbook.openbook.user.service.core.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
@@ -107,10 +106,13 @@ public class UserBoothService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<BoothBasicData> searchBoothBy(Pageable pageable, String searchType, String name){
+    public Slice<BoothBasicData> searchBoothBy(String searchType, String name, int page, String sort){
+        PageRequest pageRequest = createBoothPageRequest(page, sort, searchType);
+
         Slice<Booth> booths = switch (searchType){
-            case "boothName" -> boothService.getBoothByName(pageable, name, BoothStatus.APPROVE);
-            case "tagName" -> boothTagService.getBoothByTag(pageable, name, BoothStatus.APPROVE);
+            case "boothName" ->
+                    boothService.getBoothByName(pageRequest, name, BoothStatus.APPROVE);
+            case "tagName" -> boothTagService.getBoothByTag(pageRequest, name, BoothStatus.APPROVE);
             default -> throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
         };
         return booths.map(
@@ -137,6 +139,13 @@ public class UserBoothService {
         if(now.isBefore(event.getBoothRecruitmentStartDate()) || now.isAfter(event.getBoothRecruitmentEndDate())){
             throw new OpenBookException(ErrorCode.INACCESSIBLE_PERIOD);
         }
+    }
+
+    private PageRequest createBoothPageRequest(int page, String sort, String searchType) {
+        Sort.Direction direction = "asc".equalsIgnoreCase(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        String sortProperty = searchType.equals("boothName") ? "registeredAt" : "linkedBooth.registeredAt";
+
+        return PageRequest.of(page, 6, Sort.by(direction, sortProperty));
     }
 
 }

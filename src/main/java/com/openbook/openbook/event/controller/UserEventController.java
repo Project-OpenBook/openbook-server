@@ -66,10 +66,11 @@ public class UserEventController {
     }
 
     @GetMapping("events/search")
-    public ResponseEntity<SliceResponse<UserEventData>> searchEvents(@PageableDefault(size = 6) Pageable pageable,
-                                             @RequestParam(value = "type", defaultValue = "eventName") String searchType,
-                                             @RequestParam(value = "query", defaultValue = "") String name) {
-        Slice<UserEventData> result = eventCommonService.getEventsSearchBy(pageable, searchType, name);
+    public ResponseEntity<SliceResponse<UserEventData>> searchEvents(@RequestParam(value = "type", defaultValue = "eventName") String searchType,
+                                                                     @RequestParam(value = "query", defaultValue = "") String name,
+                                                                     @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                     @RequestParam(value = "sort", defaultValue = "desc") String sort) {
+        Slice<UserEventData> result = eventCommonService.getEventsSearchBy(searchType, name, page, sort);
         return ResponseEntity.ok(SliceResponse.of(result));
     }
 

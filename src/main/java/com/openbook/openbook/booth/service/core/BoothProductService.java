@@ -15,8 +15,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BoothProductService {
 
+    private final BoothProductCategoryRepository categoryRepository;
     private final BoothProductRepository boothProductRepository;
     private final BoothProductImageRepository boothProductImageRepository;
+
+    public BoothProductCategory getProductCategoryOrException(final long id) {
+        return categoryRepository.findById(id).orElseThrow(()->
+                new OpenBookException(ErrorCode.PRODUCT_CATEGORY_NOT_FOUND)
+        );
+    }
 
     public void createProductCategory(String categoryName, Booth linkedBooth) {
         categoryRepository.save(

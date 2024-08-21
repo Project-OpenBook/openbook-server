@@ -61,7 +61,7 @@ public class Booth extends EntityBasicTime {
     private List<BoothReservation> boothReservations = new ArrayList<>();
 
     @OneToMany(mappedBy = "linkedBooth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<BoothProduct> boothProducts = new ArrayList<>();
+    private List<BoothProductCategory> boothProductCategories = new ArrayList<>();
 
     @OneToMany(mappedBy = "linkedBooth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BoothNotice> boothNotices = new ArrayList<>();

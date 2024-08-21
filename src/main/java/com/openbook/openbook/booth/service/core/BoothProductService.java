@@ -47,7 +47,7 @@ public class BoothProductService {
                         .description(boothProduct.description())
                         .stock(boothProduct.stock())
                         .price(boothProduct.price())
-                        .linkedBooth(boothProduct.linkedBooth())
+                        .linkedCategory(boothProduct.linkedCategory())
                         .build()
         );
         if(boothProduct.images()!=null && !boothProduct.images().isEmpty()) {

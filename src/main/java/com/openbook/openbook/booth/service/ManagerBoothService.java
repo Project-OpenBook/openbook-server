@@ -88,14 +88,10 @@ public class ManagerBoothService {
         if(!booth.getStatus().equals(BoothStatus.APPROVE)) {
             throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
         }
-        BoothProduct product = boothProductService.createBoothProduct(new BoothProductDto(
-                request.name(), request.description(), request.stock(), request.price(), booth)
+        boothProductService.createBoothProduct(new BoothProductDto(
+                request.name(), request.description(), request.stock(), request.price(),
+                request.images(), boothProductService.getProductCategoryOrException(request.categoryId()))
         );
-        if(request.images() != null && !request.images().isEmpty()){
-            request.images().forEach(image -> {
-                boothProductService.createBoothProductImage(s3Service.uploadFileAndGetUrl(image), product);
-            });
-        }
     }
 
     @Transactional

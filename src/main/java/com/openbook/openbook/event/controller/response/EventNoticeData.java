@@ -12,7 +12,8 @@ public record EventNoticeData(
         EventNoticeType type,
         LocalDateTime registeredAt,
         long eventId,
-        String eventName
+        String eventName,
+        long eventManagerId
 ) {
     public static EventNoticeData of(EventNotice notice) {
         return new EventNoticeData(
@@ -23,7 +24,8 @@ public record EventNoticeData(
                 EventNoticeType.valueOf(notice.getType()),
                 notice.getRegisteredAt(),
                 notice.getLinkedEvent().getId(),
-                notice.getLinkedEvent().getName()
+                notice.getLinkedEvent().getName(),
+                notice.getLinkedEvent().getManager().getId()
         );
     }
 }

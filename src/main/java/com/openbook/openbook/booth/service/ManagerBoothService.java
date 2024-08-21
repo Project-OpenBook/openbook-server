@@ -80,14 +80,7 @@ public class ManagerBoothService {
     }
 
     public void addBoothProduct(Long userId, Long boothId, ProductRegistrationRequest request) {
-        User user = userService.getUserOrException(userId);
-        Booth booth = boothService.getBoothOrException(boothId);
-        if(user != booth.getManager()){
-            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
-        }
-        if(!booth.getStatus().equals(BoothStatus.APPROVE)) {
-            throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
-        }
+        getValidBoothOrException(userId, boothId);
         boothProductService.createBoothProduct(new BoothProductDto(
                 request.name(), request.description(), request.stock(), request.price(),
                 request.images(), boothProductService.getProductCategoryOrException(request.categoryId()))
@@ -96,28 +89,29 @@ public class ManagerBoothService {
 
     @Transactional
     public void addReservation(Long userId, ReserveRegistrationRequest request, Long boothId) {
-        User user = userService.getUserOrException(userId);
-        Booth booth = boothService.getBoothOrException(boothId);
-
-        if (user != booth.getManager()) {
-            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
-        }
-
-        if (!booth.getStatus().equals(BoothStatus.APPROVE)) {
-            throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
-        }
-
+        Booth booth = getValidBoothOrException(userId, boothId);
         if (boothReservationService.hasExistDate(request.date(), booth)) {
             throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
         }
-
         checkAvailableTime(request, booth);
         checkDuplicateTimes(request.times());
-
         BoothReservation boothReservation = boothReservationService.createBoothReservation(
                 new BoothReservationDTO(request.content(), request.date()), booth);
         boothReservationDetailService.createReservationDetail(request.times(), boothReservation);
     }
+
+    private Booth getValidBoothOrException(Long userId, Long boothId) {
+        User user = userService.getUserOrException(userId);
+        Booth booth = boothService.getBoothOrException(boothId);
+        if (user != booth.getManager()) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        if (!booth.getStatus().equals(BoothStatus.APPROVE)) {
+            throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
+        }
+        return booth;
+    }
+
 
     private void checkAvailableTime(ReserveRegistrationRequest request, Booth booth){
         for(String time : request.times()){

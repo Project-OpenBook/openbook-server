@@ -44,7 +44,7 @@ public class UserBoothController {
     @GetMapping("/search")
     public ResponseEntity<SliceResponse<BoothBasicData>> searchBoothName(@RequestParam(value = "type") String searchType,
                                                                          @RequestParam(value = "query") String query,
-                                                                         @RequestParam(value = "page") int page,
+                                                                         @RequestParam(value = "page", defaultValue = "0") int page,
                                                                          @RequestParam(value = "sort", defaultValue = "desc") String sort){
         return ResponseEntity.ok(SliceResponse.of(userBoothService.searchBoothBy(searchType, query, page, sort)));
     }

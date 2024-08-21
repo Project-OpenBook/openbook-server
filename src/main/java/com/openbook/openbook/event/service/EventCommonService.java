@@ -115,11 +115,15 @@ public class EventCommonService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<EventNoticeData> getEventNotice(final Long eventId, Pageable pageable) {
+    public Slice<EventNoticeData> getEventNotices(final Long eventId, Pageable pageable) {
         Event event = eventService.getEventOrException(eventId);
         return eventNoticeService.getNotices(event, pageable).map(EventNoticeData::of);
     }
 
+    @Transactional(readOnly = true)
+    public EventNoticeData getEventNotice(final Long noticeId) {
+        return EventNoticeData.of(eventNoticeService.getEventNoticeOrException(noticeId));
+    }
 
     private void dateValidityCheck(LocalDate startDate, LocalDate endDate) {
         if(startDate.isAfter(endDate)) {

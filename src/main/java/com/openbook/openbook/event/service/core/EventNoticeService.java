@@ -5,6 +5,8 @@ import com.openbook.openbook.event.dto.EventNoticeDto;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventNotice;
 import com.openbook.openbook.event.repository.EventNoticeRepository;
+import com.openbook.openbook.global.exception.ErrorCode;
+import com.openbook.openbook.global.exception.OpenBookException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -15,6 +17,12 @@ import org.springframework.stereotype.Service;
 public class EventNoticeService {
 
     private final EventNoticeRepository eventNoticeRepository;
+
+    public EventNotice getEventNoticeOrException(final Long id) {
+        return eventNoticeRepository.findById(id).orElseThrow(() ->
+                new OpenBookException(ErrorCode.EVENT_NOTICE_NOT_FOUND)
+        );
+    }
 
     public void createEventNotice(EventNoticeDto eventNoticeDto) {
         eventNoticeRepository.save(

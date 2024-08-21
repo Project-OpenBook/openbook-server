@@ -57,7 +57,12 @@ public class UserEventController {
     @GetMapping("/events/{event_id}/notices")
     public ResponseEntity<SliceResponse<EventNoticeData>> getEventNotices(@PathVariable Long event_id,
                                                                           @PageableDefault(size = 5) Pageable pageable) {
-        return ResponseEntity.ok(SliceResponse.of(eventCommonService.getEventNotice(event_id, pageable)));
+        return ResponseEntity.ok(SliceResponse.of(eventCommonService.getEventNotices(event_id, pageable)));
+    }
+
+    @GetMapping("/events/notices/{notice_id}")
+    public ResponseEntity<EventNoticeData> getEventNotice(@PathVariable Long notice_id) {
+        return ResponseEntity.ok(eventCommonService.getEventNotice(notice_id));
     }
 
     @GetMapping("events/search")

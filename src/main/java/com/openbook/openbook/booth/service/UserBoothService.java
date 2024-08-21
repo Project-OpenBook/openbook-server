@@ -107,7 +107,7 @@ public class UserBoothService {
 
     @Transactional(readOnly = true)
     public Slice<BoothBasicData> searchBoothBy(String searchType, String name, int page, String sort){
-        PageRequest pageRequest = createPageRequest(page, sort, searchType);
+        PageRequest pageRequest = createBoothPageRequest(page, sort, searchType);
 
         Slice<Booth> booths = switch (searchType){
             case "boothName" ->
@@ -141,9 +141,9 @@ public class UserBoothService {
         }
     }
 
-    private PageRequest createPageRequest(int page, String sort, String searchType) {
+    private PageRequest createBoothPageRequest(int page, String sort, String searchType) {
         Sort.Direction direction = "asc".equalsIgnoreCase(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
-        String sortProperty = searchType.equals("boothName") ? "linkedEvent.openDate" : "linkedBooth.linkedEvent.openDate";
+        String sortProperty = searchType.equals("boothName") ? "registeredAt" : "linkedBooth.registeredAt";
 
         return PageRequest.of(page, 6, Sort.by(direction, sortProperty));
     }

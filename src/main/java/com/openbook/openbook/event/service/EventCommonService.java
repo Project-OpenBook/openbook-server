@@ -31,8 +31,10 @@ import java.util.List;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,10 +87,12 @@ public class EventCommonService {
         alarmService.createAlarm(user, userService.getAdminOrException(), AlarmType.EVENT_REQUEST, eventDto.name());
     }
 
-    public Slice<UserEventData> getEventsSearchBy(Pageable pageable, String searchType, String name) {
+    public Slice<UserEventData> getEventsSearchBy(String searchType, String name, int page, String sort) {
+        PageRequest pageRequest = createEventPageRequest(page, sort, searchType);
+
         Slice<Event> events  = switch (searchType) {
-            case "eventName" -> eventService.getEventsWithNameMatchBy(name, EventStatus.APPROVE, pageable);
-            case "tagName" -> eventTagService.getEventsWithTagNameMatchBy(name, EventStatus.APPROVE, pageable);
+            case "eventName" -> eventService.getEventsWithNameMatchBy(name, EventStatus.APPROVE, pageRequest);
+            case "tagName" -> eventTagService.getEventsWithTagNameMatchBy(name, EventStatus.APPROVE, pageRequest);
             default -> throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
         };
         return events.map(
@@ -138,6 +142,13 @@ public class EventCommonService {
         return IntStream.range(0, classifications.size())
                 .mapToObj( i -> new BoothAreaCreateData(classifications.get(i), maxNumbers.get(i)))
                 .toList();
+    }
+
+    private PageRequest createEventPageRequest(int page, String sort, String searchType){
+        Sort.Direction direction = "asc".equalsIgnoreCase(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        String sortProperty = searchType.equals("eventName") ? "registeredAt" : "linkedEvent.registeredAt";
+
+        return PageRequest.of(page, 6, Sort.by(direction, sortProperty));
     }
 
 }

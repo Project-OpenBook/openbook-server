@@ -3,6 +3,7 @@ package com.openbook.openbook.booth.service;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.service.core.BoothAreaService;
+import com.openbook.openbook.booth.service.core.BoothProductService;
 import com.openbook.openbook.booth.service.core.BoothService;
 import com.openbook.openbook.booth.service.core.BoothTagService;
 import com.openbook.openbook.booth.entity.dto.BoothAreaStatus;
@@ -35,6 +36,7 @@ public class EventManagerBoothService {
     private final BoothAreaService boothAreaService;
     private final BoothService boothService;
     private final BoothTagService boothTagService;
+    private final BoothProductService boothProductService;
     private final AlarmService alarmService;
 
     @Transactional(readOnly = true)
@@ -71,12 +73,12 @@ public class EventManagerBoothService {
 
         if(boothStatus.equals(BoothStatus.APPROVE)){
             changeAreaStatus(boothAreas, BoothAreaStatus.COMPLETE);
+            boothProductService.createProductCategory("기본", booth);
             alarmService.createAlarm(user, booth.getManager(), AlarmType.BOOTH_APPROVED, booth.getName());
         } else if (boothStatus.equals(BoothStatus.REJECT)) {
             changeAreaStatus(boothAreas, BoothAreaStatus.EMPTY);
             alarmService.createAlarm(user, booth.getManager(), AlarmType.BOOTH_REJECTED, booth.getName());
         }
-
     }
 
     private BoothManageData convertToBoothManageData(Booth booth) {

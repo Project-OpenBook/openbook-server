@@ -1,8 +1,10 @@
 package com.openbook.openbook.booth.service;
 
+import com.openbook.openbook.booth.controller.request.BoothNoticeRegisterRequest;
 import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothAreaData;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
+import com.openbook.openbook.booth.dto.BoothNoticeDto;
 import com.openbook.openbook.booth.dto.BoothReservationDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothArea;
@@ -46,6 +48,7 @@ public class ManagerBoothService {
     private final BoothReservationService boothReservationService;
     private final BoothReservationDetailService boothReservationDetailService;
     private final BoothProductService boothProductService;
+    private final BoothNoticeService boothNoticeService;
 
 
     @Transactional(readOnly = true)
@@ -98,6 +101,17 @@ public class ManagerBoothService {
         BoothReservation boothReservation = boothReservationService.createBoothReservation(
                 new BoothReservationDTO(request.content(), request.date()), booth);
         boothReservationDetailService.createReservationDetail(request.times(), boothReservation);
+    }
+
+    @Transactional
+    public void registerBoothNotice(Long userId, Long boothId, BoothNoticeRegisterRequest request){
+        Booth booth = boothService.getBoothOrException(boothId);
+        if(!booth.getManager().getId().equals(userId)){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        boothNoticeService.createBoothNotice(new BoothNoticeDto(
+                request.title(), request.content(), s3Service.uploadFileAndGetUrl(request.image()), request.noticeType(), booth
+        ));
     }
 
     private Booth getValidBoothOrException(Long userId, Long boothId) {

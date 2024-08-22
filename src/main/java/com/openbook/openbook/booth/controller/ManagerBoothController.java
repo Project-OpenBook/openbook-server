@@ -1,5 +1,6 @@
 package com.openbook.openbook.booth.controller;
 
+import com.openbook.openbook.booth.controller.request.BoothNoticeRegisterRequest;
 import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
 import com.openbook.openbook.booth.controller.request.ProductRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
@@ -53,5 +54,13 @@ public class ManagerBoothController {
                                                                @PathVariable Long boothId){
         managerBoothService.addReservation(Long.valueOf(authentication.getName()), request, boothId);
         return ResponseEntity.ok(new ResponseMessage("예약 추가에 성공했습니다."));
+    }
+
+    @PostMapping("/booths/{boothId}/notices")
+    public ResponseEntity<ResponseMessage> postNotice(Authentication authentication,
+                                                      @PathVariable Long boothId,
+                                                      @Valid BoothNoticeRegisterRequest boothNoticeRegisterRequest){
+        managerBoothService.registerBoothNotice(Long.valueOf(authentication.getName()), boothId, boothNoticeRegisterRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("공지 등록에 성공했습니다."));
     }
 }

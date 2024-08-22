@@ -26,18 +26,18 @@ public class BoothProduct {
     private int price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Booth linkedBooth;
+    private BoothProductCategory linkedCategory;
 
     @OneToMany(mappedBy = "linkedProduct", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BoothProductImage> productImages = new ArrayList<>();
 
     @Builder
-    public BoothProduct(String name, String description, int stock, int price, Booth linkedBooth) {
+    public BoothProduct(String name, String description, int stock, int price, BoothProductCategory linkedCategory) {
         this.name = name;
         this.description = description;
         this.stock = stock;
         this.price = price;
-        this.linkedBooth = linkedBooth;
+        this.linkedCategory = linkedCategory;
     }
 
 }

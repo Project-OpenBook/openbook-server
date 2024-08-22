@@ -6,15 +6,12 @@ import com.openbook.openbook.booth.controller.response.BoothAreaData;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
 import com.openbook.openbook.booth.dto.BoothNoticeDto;
 import com.openbook.openbook.booth.dto.BoothReservationDTO;
-import com.openbook.openbook.booth.entity.Booth;
-import com.openbook.openbook.booth.entity.BoothArea;
-import com.openbook.openbook.booth.entity.BoothReservation;
+import com.openbook.openbook.booth.entity.*;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.booth.service.core.*;
 import com.openbook.openbook.booth.controller.request.ProductRegistrationRequest;
 
 import com.openbook.openbook.booth.dto.BoothProductDto;
-import com.openbook.openbook.booth.entity.BoothProduct;
 import com.openbook.openbook.booth.service.core.BoothAreaService;
 import com.openbook.openbook.booth.service.core.BoothProductService;
 import com.openbook.openbook.booth.service.core.BoothService;
@@ -106,7 +103,7 @@ public class ManagerBoothService {
     @Transactional
     public void registerBoothNotice(Long userId, Long boothId, BoothNoticeRegisterRequest request){
         Booth booth = boothService.getBoothOrException(boothId);
-        if(!booth.getManager().getId().equals(userId)){
+        if(!booth.getManager().getId().equals(userId) || !booth.getStatus().equals(BoothStatus.APPROVE)){
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
         boothNoticeService.createBoothNotice(new BoothNoticeDto(

@@ -42,4 +42,9 @@ public class EventNoticeService {
         return eventNoticeRepository.findByLinkedEventId(event.getId(), pageable);
     }
 
+    public void deleteEventNotice(EventNotice notice) {
+        s3Service.deleteFileFromS3(notice.getImageUrl());
+        eventNoticeRepository.delete(notice);
+    }
+
 }

@@ -19,6 +19,7 @@ public class S3Service {
     @Value("${aws.s3.bucket.name}")
     private String bucket;
     private final AmazonS3Client S3Client;
+    private final int S3_PATH_LENGTH = 55;
 
     public String uploadFileAndGetUrl(final MultipartFile file) {
         ObjectMetadata metadata = new ObjectMetadata();
@@ -35,8 +36,8 @@ public class S3Service {
         return getFileUrlFromS3(fileName);
     }
 
-    public void deleteFileFromS3(final String fileName){
-        S3Client.deleteObject(bucket, fileName);
+    public void deleteFileFromS3(final String fileUrl){
+        S3Client.deleteObject(bucket, fileUrl.substring(S3_PATH_LENGTH));
     }
 
     private String getFileUrlFromS3(final String fileName) {

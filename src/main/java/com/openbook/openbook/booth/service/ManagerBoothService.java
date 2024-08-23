@@ -86,6 +86,9 @@ public class ManagerBoothService {
         if(boothProductService.getProductCategoryCountBy(booth) > 5) {
             throw new OpenBookException(ErrorCode.EXCEED_MAXIMUM_CATEGORY);
         }
+        if(boothProductService.isExistsCategoryIn(booth, request.name())) {
+            throw new OpenBookException(ErrorCode.ALREADY_EXIST_CATEGORY);
+        }
         boothProductService.createProductCategory(request.name(), request.description(), booth);
     }
 

@@ -1,6 +1,7 @@
 package com.openbook.openbook.booth.service;
 
 import com.openbook.openbook.booth.controller.request.BoothNoticeRegisterRequest;
+import com.openbook.openbook.booth.controller.request.ProductCategoryRegister;
 import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothAreaData;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
@@ -79,6 +80,16 @@ public class ManagerBoothService {
         boothAreaService.disconnectBooth(boothAreaList);
     }
 
+    @Transactional
+    public void addProductCategory(Long userId, Long boothId, ProductCategoryRegister request) {
+        Booth booth = getValidBoothOrException(userId, boothId);
+        if(boothProductService.getProductCategoryCountBy(booth) > 5) {
+            throw new OpenBookException(ErrorCode.EXCEED_MAXIMUM_CATEGORY);
+        }
+        boothProductService.createProductCategory(request.name(), request.description(), booth);
+    }
+
+    @Transactional
     public void addBoothProduct(Long userId, Long boothId, ProductRegistrationRequest request) {
         getValidBoothOrException(userId, boothId);
         boothProductService.createBoothProduct(new BoothProductDto(

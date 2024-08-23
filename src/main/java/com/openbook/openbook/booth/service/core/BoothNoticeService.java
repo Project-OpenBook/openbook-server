@@ -27,7 +27,7 @@ public class BoothNoticeService {
     }
 
     public Slice<BoothNotice> getNotices(Booth booth, Pageable pageable){
-        return boothNoticeRepository.findByLinkedBoothIdOrderByRegisteredAtDesc(booth.getId(), pageable);
+        return boothNoticeRepository.findByLinkedBoothId(booth.getId(), pageable);
     }
 
 }

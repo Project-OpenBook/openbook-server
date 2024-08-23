@@ -6,5 +6,5 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BoothNoticeRepository extends JpaRepository<BoothNotice, Long> {
-    Slice<BoothNotice> findByLinkedBoothIdOrderByRegisteredAtDesc(Long linkedBoothId, Pageable pageable);
+    Slice<BoothNotice> findByLinkedBoothId(Long linkedBoothId, Pageable pageable);
 }

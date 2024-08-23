@@ -6,6 +6,7 @@ import com.openbook.openbook.booth.controller.request.BoothRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothBasicData;
 import com.openbook.openbook.booth.controller.response.BoothDetail;
 import com.openbook.openbook.booth.controller.response.ProductCategoryResponse;
+import com.openbook.openbook.booth.controller.response.BoothNoticeResponse;
 import com.openbook.openbook.booth.dto.BoothDTO;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.booth.dto.BoothTagDTO;
@@ -13,6 +14,7 @@ import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.dto.BoothAreaStatus;
 import com.openbook.openbook.booth.service.core.BoothAreaService;
 import com.openbook.openbook.booth.service.core.BoothProductService;
+import com.openbook.openbook.booth.service.core.BoothNoticeService;
 import com.openbook.openbook.booth.service.core.BoothService;
 import com.openbook.openbook.booth.service.core.BoothTagService;
 import com.openbook.openbook.event.entity.Event;
@@ -44,6 +46,7 @@ public class UserBoothService {
 
     private final BoothService boothService;
     private final BoothTagService boothTagService;
+    private final BoothNoticeService boothNoticeService;
     private final EventService eventService;
     private final BoothAreaService boothAreaService;
     private final UserService userService;
@@ -106,6 +109,12 @@ public class UserBoothService {
                 .map(BoothAreaData::of)
                 .collect(Collectors.toList());
         return BoothDetail.of(booth, boothAreaData, boothTagService.getBoothTag(booth.getId()), Objects.equals(booth.getManager().getId(), userId));
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<BoothNoticeResponse> getBoothNotices(Long boothId, Pageable pageable){
+        Booth booth = boothService.getBoothOrException(boothId);
+        return boothNoticeService.getNotices(booth, pageable).map(BoothNoticeResponse::of);
     }
 
     @Transactional(readOnly = true)

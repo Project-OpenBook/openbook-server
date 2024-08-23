@@ -4,6 +4,7 @@ import com.openbook.openbook.event.controller.request.EventNoticeRegisterRequest
 import com.openbook.openbook.event.controller.response.ManagerEventData;
 import com.openbook.openbook.event.dto.EventNoticeDto;
 import com.openbook.openbook.event.entity.Event;
+import com.openbook.openbook.event.entity.EventNotice;
 import com.openbook.openbook.event.entity.dto.EventStatus;
 import com.openbook.openbook.event.service.core.EventNoticeService;
 import com.openbook.openbook.event.service.core.EventService;
@@ -49,6 +50,15 @@ public class ManagerEventService {
                 request.title(), request.content(), request.image(),
                 request.noticeType(), event)
         );
+    }
+
+    @Transactional
+    public void deleteEventNotice(Long userId, Long noticeId) {
+        EventNotice eventNotice = eventNoticeService.getEventNoticeOrException(noticeId);
+        if (!eventNotice.getLinkedEvent().getManager().getId().equals(userId)) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        eventNoticeService.deleteEventNotice(eventNotice);
     }
 
 }

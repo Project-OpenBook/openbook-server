@@ -3,6 +3,7 @@ package com.openbook.openbook.booth.controller;
 import com.openbook.openbook.booth.controller.request.BoothRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothBasicData;
 import com.openbook.openbook.booth.controller.response.BoothDetail;
+import com.openbook.openbook.booth.controller.response.BoothNoticeResponse;
 import com.openbook.openbook.booth.service.UserBoothService;
 import com.openbook.openbook.global.dto.ResponseMessage;
 import com.openbook.openbook.global.dto.SliceResponse;
@@ -39,6 +40,11 @@ public class UserBoothController {
     @GetMapping("/{boothId}")
     public ResponseEntity<BoothDetail> getBooth(Authentication authentication, @PathVariable Long boothId){
         return ResponseEntity.ok(userBoothService.getBoothDetail(Long.valueOf(authentication.getName()), boothId));
+    }
+
+    @GetMapping("/{boothId}/notices")
+    public ResponseEntity<SliceResponse<BoothNoticeResponse>> getBoothNotice(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
+        return ResponseEntity.ok(SliceResponse.of(userBoothService.getBoothNotices(boothId, pageable)));
     }
 
     @GetMapping("/search")

@@ -1,6 +1,7 @@
 package com.openbook.openbook.booth.controller;
 
 import com.openbook.openbook.booth.controller.request.BoothNoticeRegisterRequest;
+import com.openbook.openbook.booth.controller.request.ProductCategoryRegister;
 import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
 import com.openbook.openbook.booth.controller.request.ProductRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
@@ -38,6 +39,14 @@ public class ManagerBoothController {
     public ResponseEntity<ResponseMessage> deleteBooth(Authentication authentication, @PathVariable Long boothId){
         managerBoothService.deleteBooth(Long.valueOf(authentication.getName()), boothId);
         return ResponseEntity.ok(new ResponseMessage("부스를 삭제했습니다."));
+    }
+
+    @PostMapping("/booths/{booth_id}/product-category")
+    public ResponseEntity<ResponseMessage> addProductCategory(Authentication authentication,
+                                                              @PathVariable Long booth_id,
+                                                              @Valid ProductCategoryRegister request) {
+        managerBoothService.addProductCategory(Long.valueOf(authentication.getName()), booth_id, request);
+        return ResponseEntity.ok(new ResponseMessage("상품 카테고리 생성에 성공했습니다."));
     }
 
     @PostMapping("/booths/{booth_id}/products")

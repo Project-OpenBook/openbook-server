@@ -5,6 +5,7 @@ import static com.openbook.openbook.global.util.Formatter.getDateTime;
 import com.openbook.openbook.booth.controller.request.BoothRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothBasicData;
 import com.openbook.openbook.booth.controller.response.BoothDetail;
+import com.openbook.openbook.booth.controller.response.ProductCategoryResponse;
 import com.openbook.openbook.booth.controller.response.BoothNoticeResponse;
 import com.openbook.openbook.booth.dto.BoothDTO;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
@@ -12,6 +13,7 @@ import com.openbook.openbook.booth.dto.BoothTagDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.dto.BoothAreaStatus;
 import com.openbook.openbook.booth.service.core.BoothAreaService;
+import com.openbook.openbook.booth.service.core.BoothProductService;
 import com.openbook.openbook.booth.service.core.BoothNoticeService;
 import com.openbook.openbook.booth.service.core.BoothService;
 import com.openbook.openbook.booth.service.core.BoothTagService;
@@ -50,6 +52,7 @@ public class UserBoothService {
     private final UserService userService;
     private final AlarmService alarmService;
     private final S3Service s3Service;
+    private final BoothProductService boothProductService;
 
     @Transactional
     public void boothRegistration(Long userId, BoothRegistrationRequest request){
@@ -130,6 +133,15 @@ public class UserBoothService {
     }
 
 
+    @Transactional(readOnly = true)
+    public List<ProductCategoryResponse> getProductCategoryResponseList(long boothId) {
+        Booth booth = boothService.getBoothOrException(boothId);
+        if(!booth.getStatus().equals(BoothStatus.APPROVE)){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        return boothProductService.getProductCategories(booth).stream().map(ProductCategoryResponse::of).toList();
+    }
+
     private boolean hasReservationData(List<Long> eventLayoutAreaList){
         for(Long id : eventLayoutAreaList){
             BoothArea boothArea = boothAreaService.getBoothAreaOrException(id);
@@ -156,5 +168,6 @@ public class UserBoothService {
 
         return PageRequest.of(page, 6, Sort.by(direction, sortProperty));
     }
+
 
 }

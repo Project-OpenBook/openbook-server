@@ -12,6 +12,7 @@ import com.openbook.openbook.booth.repository.BoothProductRepository;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.global.util.S3Service;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,10 +32,15 @@ public class BoothProductService {
         );
     }
 
-    public void createProductCategory(String categoryName, Booth linkedBooth) {
+    public List<BoothProductCategory> getProductCategories(final Booth linkedBooth) {
+        return categoryRepository.findAllByLinkedBoothId(linkedBooth.getId());
+    }
+
+    public void createProductCategory(String categoryName, String description, Booth linkedBooth) {
         categoryRepository.save(
                 BoothProductCategory.builder()
                         .name(categoryName)
+                        .description(description)
                         .linkedBooth(linkedBooth)
                         .build()
         );

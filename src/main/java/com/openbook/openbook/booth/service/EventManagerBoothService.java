@@ -73,7 +73,7 @@ public class EventManagerBoothService {
 
         if(boothStatus.equals(BoothStatus.APPROVE)){
             changeAreaStatus(boothAreas, BoothAreaStatus.COMPLETE);
-            boothProductService.createProductCategory("기본", booth);
+            boothProductService.createProductCategory("기본", "기본으로 생성되는 카테고리",booth);
             alarmService.createAlarm(user, booth.getManager(), AlarmType.BOOTH_APPROVED, booth.getName());
         } else if (boothStatus.equals(BoothStatus.REJECT)) {
             changeAreaStatus(boothAreas, BoothAreaStatus.EMPTY);

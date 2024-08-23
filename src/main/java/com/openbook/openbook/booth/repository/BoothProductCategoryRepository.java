@@ -9,5 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BoothProductCategoryRepository extends JpaRepository<BoothProductCategory, Long> {
 
+    int countByLinkedBoothId(Long linkedBoothId);
+
     List<BoothProductCategory> findAllByLinkedBoothId(Long linkedBoothId);
+
 }

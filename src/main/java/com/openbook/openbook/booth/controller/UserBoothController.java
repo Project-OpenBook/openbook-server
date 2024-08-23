@@ -3,10 +3,12 @@ package com.openbook.openbook.booth.controller;
 import com.openbook.openbook.booth.controller.request.BoothRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothBasicData;
 import com.openbook.openbook.booth.controller.response.BoothDetail;
+import com.openbook.openbook.booth.controller.response.ProductCategoryResponse;
 import com.openbook.openbook.booth.service.UserBoothService;
 import com.openbook.openbook.global.dto.ResponseMessage;
 import com.openbook.openbook.global.dto.SliceResponse;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -47,5 +49,10 @@ public class UserBoothController {
                                                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                                                          @RequestParam(value = "sort", defaultValue = "desc") String sort){
         return ResponseEntity.ok(SliceResponse.of(userBoothService.searchBoothBy(searchType, query, page, sort)));
+    }
+
+    @GetMapping("/{booth_id}/product-category")
+    public ResponseEntity<List<ProductCategoryResponse>> getProductCategory(@PathVariable Long booth_id) {
+        return ResponseEntity.ok(userBoothService.getProductCategoryResponseList(booth_id));
     }
 }

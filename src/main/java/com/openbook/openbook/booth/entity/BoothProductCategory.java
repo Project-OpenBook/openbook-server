@@ -26,6 +26,8 @@ public class BoothProductCategory {
 
     private String name;
 
+    private String description;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Booth linkedBooth;
 
@@ -33,8 +35,9 @@ public class BoothProductCategory {
     private List<BoothProduct> boothProducts = new ArrayList<>();
 
     @Builder
-    public BoothProductCategory(String name, Booth linkedBooth) {
+    public BoothProductCategory(String name, String description, Booth linkedBooth) {
         this.name = name;
+        this.description = description;
         this.linkedBooth = linkedBooth;
     }
 }

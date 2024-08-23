@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ManagerEventService {
 
-    private final S3Service service;
     private final UserService userService;
     private final EventService eventService;
     private final EventTagService eventTagService;
@@ -47,7 +46,7 @@ public class ManagerEventService {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
         eventNoticeService.createEventNotice(new EventNoticeDto(
-                request.title(), request.content(), service.uploadFileAndGetUrl(request.image()),
+                request.title(), request.content(), request.image(),
                 request.noticeType(), event)
         );
     }

@@ -7,6 +7,7 @@ import com.openbook.openbook.event.entity.EventNotice;
 import com.openbook.openbook.event.repository.EventNoticeRepository;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.global.util.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class EventNoticeService {
 
     private final EventNoticeRepository eventNoticeRepository;
+    private final S3Service s3Service;
 
     public EventNotice getEventNoticeOrException(final Long id) {
         return eventNoticeRepository.findById(id).orElseThrow(() ->
@@ -30,7 +32,7 @@ public class EventNoticeService {
                         .title(eventNoticeDto.title())
                         .content(eventNoticeDto.content())
                         .type(eventNoticeDto.type())
-                        .imageUrl(eventNoticeDto.imageUrl())
+                        .imageUrl(s3Service.uploadFileAndGetUrl(eventNoticeDto.image()))
                         .linkedEvent(eventNoticeDto.linkedEvent())
                         .build()
         );

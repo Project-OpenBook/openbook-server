@@ -32,6 +32,9 @@ public enum ErrorCode {
     ALREADY_RESERVED_DATE(HttpStatus.CONFLICT, "이미 존재하는 예약 날짜 입니다."),
     DUPLICATE_RESERVED_TIME(HttpStatus.CONFLICT, "중복 되는 시간 데이터가 있습니다."),
 
+    EXCEED_MAXIMUM_CATEGORY(HttpStatus.CONFLICT, "생성할 수 있는 최대 카테고리 수를 초과했습니다."),
+    ALREADY_EXIST_CATEGORY(HttpStatus.CONFLICT, "이미 존재하는 카테고리 입니다."),
+
     // NOT FOUND
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저 정보를 찾을 수 없습니다."),
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "행사 정보를 찾을 수 없습니다."),

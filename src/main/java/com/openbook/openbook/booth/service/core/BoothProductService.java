@@ -36,6 +36,14 @@ public class BoothProductService {
         return categoryRepository.findAllByLinkedBoothId(linkedBooth.getId());
     }
 
+    public boolean isExistsCategoryIn(Booth linkedBooth, String name) {
+        return categoryRepository.existsByLinkedBoothIdAndName(linkedBooth.getId(), name);
+    }
+
+    public int getProductCategoryCountBy(Booth linkedBooth) {
+        return categoryRepository.countByLinkedBoothId(linkedBooth.getId());
+    }
+
     public void createProductCategory(String categoryName, String description, Booth linkedBooth) {
         categoryRepository.save(
                 BoothProductCategory.builder()

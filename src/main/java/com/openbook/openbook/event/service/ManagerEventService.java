@@ -4,6 +4,7 @@ import com.openbook.openbook.event.controller.request.EventNoticeRegisterRequest
 import com.openbook.openbook.event.controller.response.ManagerEventData;
 import com.openbook.openbook.event.dto.EventNoticeDto;
 import com.openbook.openbook.event.entity.Event;
+import com.openbook.openbook.event.entity.EventNotice;
 import com.openbook.openbook.event.entity.dto.EventStatus;
 import com.openbook.openbook.event.service.core.EventNoticeService;
 import com.openbook.openbook.event.service.core.EventService;
@@ -22,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ManagerEventService {
 
-    private final S3Service service;
     private final UserService userService;
     private final EventService eventService;
     private final EventTagService eventTagService;
@@ -47,9 +47,18 @@ public class ManagerEventService {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
         eventNoticeService.createEventNotice(new EventNoticeDto(
-                request.title(), request.content(), service.uploadFileAndGetUrl(request.image()),
+                request.title(), request.content(), request.image(),
                 request.noticeType(), event)
         );
+    }
+
+    @Transactional
+    public void deleteEventNotice(Long userId, Long noticeId) {
+        EventNotice eventNotice = eventNoticeService.getEventNoticeOrException(noticeId);
+        if (!eventNotice.getLinkedEvent().getManager().getId().equals(userId)) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        eventNoticeService.deleteEventNotice(eventNotice);
     }
 
 }

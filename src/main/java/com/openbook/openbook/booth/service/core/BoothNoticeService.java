@@ -4,6 +4,8 @@ import com.openbook.openbook.booth.dto.BoothNoticeDto;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothNotice;
 import com.openbook.openbook.booth.repository.BoothNoticeRepository;
+import com.openbook.openbook.global.exception.ErrorCode;
+import com.openbook.openbook.global.exception.OpenBookException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -28,6 +30,12 @@ public class BoothNoticeService {
 
     public Slice<BoothNotice> getNotices(Booth booth, Pageable pageable){
         return boothNoticeRepository.findByLinkedBoothId(booth.getId(), pageable);
+    }
+
+    public BoothNotice getBoothNoticeOrException(Long id){
+        return boothNoticeRepository.findById(id).orElseThrow(
+                () -> new OpenBookException(ErrorCode.BOOTH_NOTICE_NOT_FOUND)
+        );
     }
 
 }

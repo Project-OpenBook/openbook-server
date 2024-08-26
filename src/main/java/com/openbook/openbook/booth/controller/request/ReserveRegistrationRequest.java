@@ -12,9 +12,9 @@ import java.util.List;
 public record ReserveRegistrationRequest(
         @NotBlank String name,
         @NotBlank String description,
-        @NotNull LocalDate date,
-        @NotEmpty List<String> times,
+        @NotNull int price,
         MultipartFile image,
-        @NotNull int price
+        @NotNull LocalDate date,
+        @NotEmpty List<String> times
         ) {
 }

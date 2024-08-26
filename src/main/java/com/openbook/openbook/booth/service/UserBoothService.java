@@ -118,6 +118,11 @@ public class UserBoothService {
     }
 
     @Transactional(readOnly = true)
+    public BoothNoticeResponse getBoothNotice(Long boothId){
+        return BoothNoticeResponse.of(boothNoticeService.getBoothNoticeOrException(boothId));
+    }
+
+    @Transactional(readOnly = true)
     public Slice<BoothBasicData> searchBoothBy(String searchType, String name, int page, String sort){
         PageRequest pageRequest = createBoothPageRequest(page, sort, searchType);
 

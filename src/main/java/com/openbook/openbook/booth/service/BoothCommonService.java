@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserBoothService {
+public class BoothCommonService {
 
     private final BoothService boothService;
     private final BoothTagService boothTagService;

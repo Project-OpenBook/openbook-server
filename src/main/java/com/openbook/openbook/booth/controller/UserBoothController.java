@@ -3,7 +3,7 @@ package com.openbook.openbook.booth.controller;
 import com.openbook.openbook.booth.controller.request.BoothRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothBasicData;
 import com.openbook.openbook.booth.controller.response.BoothDetail;
-import com.openbook.openbook.booth.controller.response.CategoryProducts;
+import com.openbook.openbook.booth.controller.response.CategoryProductsResponse;
 import com.openbook.openbook.booth.controller.response.ProductCategoryResponse;
 import com.openbook.openbook.booth.controller.response.BoothNoticeResponse;
 import com.openbook.openbook.booth.service.BoothCommonService;
@@ -48,7 +48,7 @@ public class UserBoothController {
     public ResponseEntity<BoothDetail> getBooth(Authentication authentication, @PathVariable Long boothId){
         return ResponseEntity.ok(boothCommonService.getBoothDetail(Long.valueOf(authentication.getName()), boothId));
     }
-    
+
     @GetMapping("/{boothId}/notices")
     public ResponseEntity<SliceResponse<BoothNoticeResponse>> getBoothNotices(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
         return ResponseEntity.ok(SliceResponse.of(boothCommonService.getBoothNotices(boothId, pageable)));
@@ -74,8 +74,8 @@ public class UserBoothController {
     }
 
     @GetMapping("/{booth_id}/products")
-    public ResponseEntity<List<CategoryProducts>> getAllProductsBy(@PathVariable Long booth_id,
-                                                                   @PageableDefault(size = 5) Pageable pageable) {
+    public ResponseEntity<List<CategoryProductsResponse>> getAllProductsBy(@PathVariable Long booth_id,
+                                                                           @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(commonProductService.findAllBoothProducts(booth_id, pageable));
     }
 

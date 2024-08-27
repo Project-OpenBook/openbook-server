@@ -1,9 +1,8 @@
 package com.openbook.openbook.booth.service.common;
 
 import com.openbook.openbook.booth.controller.response.BoothProductResponse;
-import com.openbook.openbook.booth.controller.response.CategoryProducts;
+import com.openbook.openbook.booth.controller.response.CategoryProductsResponse;
 import com.openbook.openbook.booth.entity.Booth;
-import com.openbook.openbook.booth.entity.BoothProduct;
 import com.openbook.openbook.booth.entity.BoothProductCategory;
 import com.openbook.openbook.booth.service.core.BoothProductService;
 import com.openbook.openbook.booth.service.core.BoothService;
@@ -23,10 +22,10 @@ public class CommonProductService {
     private final BoothProductService boothProductService;
 
     @Transactional(readOnly = true)
-    public List<CategoryProducts> findAllBoothProducts(final long boothId, final Pageable pageable) {
+    public List<CategoryProductsResponse> findAllBoothProducts(final long boothId, final Pageable pageable) {
         Booth booth = boothService.getBoothOrException(boothId);
         List<BoothProductCategory> categories = boothProductService.getProductCategories(booth);
-        List<CategoryProducts> productsList = new ArrayList<>();
+        List<CategoryProductsResponse> productsList = new ArrayList<>();
         for(BoothProductCategory category : categories) {
             Slice<BoothProductResponse> products = boothProductService.getProductsByCategory(category, pageable).map(
                     boothProduct -> BoothProductResponse.of(
@@ -35,7 +34,7 @@ public class CommonProductService {
                     )
             );
             if(products.getNumberOfElements()!=0) {
-                productsList.add(CategoryProducts.of(category, products));
+                productsList.add(CategoryProductsResponse.of(category, products));
             }
         }
         return productsList;

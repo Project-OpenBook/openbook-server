@@ -48,15 +48,15 @@ public class UserBoothController {
     public ResponseEntity<BoothDetail> getBooth(Authentication authentication, @PathVariable Long boothId){
         return ResponseEntity.ok(boothCommonService.getBoothDetail(Long.valueOf(authentication.getName()), boothId));
     }
+    
+    @GetMapping("/{boothId}/notices")
+    public ResponseEntity<SliceResponse<BoothNoticeResponse>> getBoothNotices(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
+        return ResponseEntity.ok(SliceResponse.of(boothCommonService.getBoothNotices(boothId, pageable)));
+    }
 
     @GetMapping("/notices/{noticeId}")
     public ResponseEntity<BoothNoticeResponse> getBoothNotice(@PathVariable Long noticeId){
         return ResponseEntity.ok(boothCommonService.getBoothNotice(noticeId));
-    }
-
-    @GetMapping("/{boothId}/notices")
-    public ResponseEntity<SliceResponse<BoothNoticeResponse>> getBoothNotices(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
-        return ResponseEntity.ok(SliceResponse.of(boothCommonService.getBoothNotices(boothId, pageable)));
     }
 
     @GetMapping("/search")

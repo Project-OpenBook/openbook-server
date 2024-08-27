@@ -3,9 +3,11 @@ package com.openbook.openbook.booth.controller;
 import com.openbook.openbook.booth.controller.request.BoothRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothBasicData;
 import com.openbook.openbook.booth.controller.response.BoothDetail;
+import com.openbook.openbook.booth.controller.response.CategoryProducts;
 import com.openbook.openbook.booth.controller.response.ProductCategoryResponse;
 import com.openbook.openbook.booth.controller.response.BoothNoticeResponse;
 import com.openbook.openbook.booth.service.UserBoothService;
+import com.openbook.openbook.booth.service.common.CommonProductService;
 import com.openbook.openbook.global.dto.ResponseMessage;
 import com.openbook.openbook.global.dto.SliceResponse;
 import jakarta.validation.Valid;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserBoothController {
 
     private final UserBoothService userBoothService;
+    private final CommonProductService commonProductService;
+
     @PostMapping
     public ResponseEntity <ResponseMessage>  registration(Authentication authentication, @Valid BoothRegistrationRequest request){
         userBoothService.boothRegistration(Long.valueOf(authentication.getName()), request);
@@ -61,4 +65,11 @@ public class UserBoothController {
     public ResponseEntity<List<ProductCategoryResponse>> getProductCategory(@PathVariable Long booth_id) {
         return ResponseEntity.ok(userBoothService.getProductCategoryResponseList(booth_id));
     }
+
+    @GetMapping("/{booth_id}/products")
+    public ResponseEntity<List<CategoryProducts>> getAllProductsBy(@PathVariable Long booth_id,
+                                                                   @PageableDefault(size = 5) Pageable pageable) {
+        return ResponseEntity.ok(commonProductService.findAllBoothProducts(booth_id, pageable));
+    }
+
 }

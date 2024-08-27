@@ -30,6 +30,6 @@ public class BoothTagService {
     }
 
     public Slice<Booth> getBoothByTag(Pageable pageable, String boothTag, BoothStatus status){
-        return boothTagRepository.findBoothByName(pageable, boothTag, status);
+        return boothTagRepository.findAllBoothByName(pageable, boothTag, status);
     }
 }

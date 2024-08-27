@@ -16,6 +16,6 @@ public interface BoothTagRepository extends JpaRepository<BoothTag, Long> {
     @Query("SELECT t FROM BoothTag t WHERE t.linkedBooth.id=:boothId")
     List<BoothTag> findAllByLinkedBoothId(Long boothId);
 
-    @Query("SELECT bt.linkedBooth FROM BoothTag bt WHERE bt.name LIKE :name AND bt.linkedBooth.status=:boothStatus")
-    Slice<Booth> findBoothByName(Pageable pageable, String name, BoothStatus boothStatus);
+    @Query("SELECT bt.linkedBooth FROM BoothTag bt WHERE bt.name LIKE %:name% AND bt.linkedBooth.status=:boothStatus")
+    Slice<Booth> findAllBoothByName(Pageable pageable, String name, BoothStatus boothStatus);
 }

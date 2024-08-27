@@ -42,6 +42,10 @@ public class BoothProductService {
         return boothProductRepository.findAllByLinkedCategoryId(category.getId(), pageable);
     }
 
+    public List<BoothProductImage> getProductImages(final BoothProduct product) {
+        return boothProductImageRepository.findAllByLinkedProductId(product.getId());
+    }
+
     public boolean isExistsCategoryIn(Booth linkedBooth, String name) {
         return categoryRepository.existsByLinkedBoothIdAndName(linkedBooth.getId(), name);
     }

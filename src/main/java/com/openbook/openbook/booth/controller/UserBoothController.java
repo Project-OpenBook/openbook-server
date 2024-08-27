@@ -31,7 +31,6 @@ public class UserBoothController {
     @PostMapping
     public ResponseEntity <ResponseMessage>  registration(Authentication authentication, @Valid BoothRegistrationRequest request){
         userBoothService.boothRegistration(Long.valueOf(authentication.getName()), request);
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseMessage("신청 완료 되었습니다."));
@@ -49,7 +48,8 @@ public class UserBoothController {
     }
 
     @GetMapping("/{boothId}/notices")
-    public ResponseEntity<SliceResponse<BoothNoticeResponse>> getBoothNotice(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
+    public ResponseEntity<SliceResponse<BoothNoticeResponse>> getBoothNotice(@PathVariable Long boothId,
+                                                                             @PageableDefault(size = 5) Pageable pageable){
         return ResponseEntity.ok(SliceResponse.of(userBoothService.getBoothNotices(boothId, pageable)));
     }
 

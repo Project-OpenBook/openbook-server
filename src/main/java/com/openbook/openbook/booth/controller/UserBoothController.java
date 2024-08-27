@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,17 +49,23 @@ public class UserBoothController {
         return ResponseEntity.ok(boothCommonService.getBoothDetail(Long.valueOf(authentication.getName()), boothId));
     }
 
+    @GetMapping("/notices/{noticeId}")
+    public ResponseEntity<BoothNoticeResponse> getBoothNotice(@PathVariable Long noticeId){
+        return ResponseEntity.ok(boothCommonService.getBoothNotice(noticeId));
+    }
+
     @GetMapping("/{boothId}/notices")
-    public ResponseEntity<SliceResponse<BoothNoticeResponse>> getBoothNotice(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
+    public ResponseEntity<SliceResponse<BoothNoticeResponse>> getBoothNotices(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
         return ResponseEntity.ok(SliceResponse.of(boothCommonService.getBoothNotices(boothId, pageable)));
     }
 
     @GetMapping("/search")
     public ResponseEntity<SliceResponse<BoothBasicData>> searchBoothName(@RequestParam(value = "type") String searchType,
-                                                                         @RequestParam(value = "query") String query,
+                                                                         @RequestParam(value = "query", defaultValue = "") String query,
                                                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                                                          @RequestParam(value = "sort", defaultValue = "desc") String sort){
-        return ResponseEntity.ok(SliceResponse.of(boothCommonService.searchBoothBy(searchType, query, page, sort)));
+        Slice<BoothBasicData> result = boothCommonService.searchBoothBy(searchType, query, page, sort);
+        return ResponseEntity.ok(SliceResponse.of(result));
     }
 
     @GetMapping("/{booth_id}/product-category")

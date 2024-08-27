@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserBoothService {
+public class BoothCommonService {
 
     private final BoothService boothService;
     private final BoothTagService boothTagService;
@@ -115,6 +115,11 @@ public class UserBoothService {
     public Slice<BoothNoticeResponse> getBoothNotices(Long boothId, Pageable pageable){
         Booth booth = boothService.getBoothOrException(boothId);
         return boothNoticeService.getNotices(booth, pageable).map(BoothNoticeResponse::of);
+    }
+
+    @Transactional(readOnly = true)
+    public BoothNoticeResponse getBoothNotice(Long boothId){
+        return BoothNoticeResponse.of(boothNoticeService.getBoothNoticeOrException(boothId));
     }
 
     @Transactional(readOnly = true)

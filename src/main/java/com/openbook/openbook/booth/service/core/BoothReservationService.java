@@ -4,6 +4,7 @@ import com.openbook.openbook.booth.dto.BoothReservationDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothReservation;
 import com.openbook.openbook.booth.repository.BoothReservationRepository;
+import com.openbook.openbook.global.util.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +14,14 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class BoothReservationService {
     private final BoothReservationRepository boothReservationRepository;
+    private final S3Service s3Service;
     public BoothReservation createBoothReservation(BoothReservationDTO boothReservationDTO, Booth booth){
         return boothReservationRepository.save(
                 BoothReservation.builder()
-                        .content(boothReservationDTO.content())
+                        .name(boothReservationDTO.name())
+                        .description(boothReservationDTO.description())
                         .date(boothReservationDTO.date())
+                        .imageUrl(s3Service.uploadFileAndGetUrl(boothReservationDTO.image()))
                         .linkedBooth(booth)
                         .build()
         );

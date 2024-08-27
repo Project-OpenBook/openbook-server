@@ -6,7 +6,7 @@ import com.openbook.openbook.booth.controller.response.BoothDetail;
 import com.openbook.openbook.booth.controller.response.CategoryProducts;
 import com.openbook.openbook.booth.controller.response.ProductCategoryResponse;
 import com.openbook.openbook.booth.controller.response.BoothNoticeResponse;
-import com.openbook.openbook.booth.service.UserBoothService;
+import com.openbook.openbook.booth.service.BoothCommonService;
 import com.openbook.openbook.booth.service.common.CommonProductService;
 import com.openbook.openbook.global.dto.ResponseMessage;
 import com.openbook.openbook.global.dto.SliceResponse;
@@ -25,12 +25,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/booths")
 public class UserBoothController {
 
-    private final UserBoothService userBoothService;
+    private final BoothCommonService boothCommonService;
     private final CommonProductService commonProductService;
 
     @PostMapping
     public ResponseEntity <ResponseMessage>  registration(Authentication authentication, @Valid BoothRegistrationRequest request){
-        userBoothService.boothRegistration(Long.valueOf(authentication.getName()), request);
+        boothCommonService.boothRegistration(Long.valueOf(authentication.getName()), request);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseMessage("신청 완료 되었습니다."));
@@ -39,18 +40,17 @@ public class UserBoothController {
 
     @GetMapping
     public ResponseEntity<SliceResponse<BoothBasicData>> getBooths(@PageableDefault(size = 6)Pageable pageable){
-        return ResponseEntity.ok(SliceResponse.of(userBoothService.getBoothBasicData(pageable)));
+        return ResponseEntity.ok(SliceResponse.of(boothCommonService.getBoothBasicData(pageable)));
     }
 
     @GetMapping("/{boothId}")
     public ResponseEntity<BoothDetail> getBooth(Authentication authentication, @PathVariable Long boothId){
-        return ResponseEntity.ok(userBoothService.getBoothDetail(Long.valueOf(authentication.getName()), boothId));
+        return ResponseEntity.ok(boothCommonService.getBoothDetail(Long.valueOf(authentication.getName()), boothId));
     }
 
     @GetMapping("/{boothId}/notices")
-    public ResponseEntity<SliceResponse<BoothNoticeResponse>> getBoothNotice(@PathVariable Long boothId,
-                                                                             @PageableDefault(size = 5) Pageable pageable){
-        return ResponseEntity.ok(SliceResponse.of(userBoothService.getBoothNotices(boothId, pageable)));
+    public ResponseEntity<SliceResponse<BoothNoticeResponse>> getBoothNotice(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
+        return ResponseEntity.ok(SliceResponse.of(boothCommonService.getBoothNotices(boothId, pageable)));
     }
 
     @GetMapping("/search")
@@ -58,12 +58,12 @@ public class UserBoothController {
                                                                          @RequestParam(value = "query") String query,
                                                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                                                          @RequestParam(value = "sort", defaultValue = "desc") String sort){
-        return ResponseEntity.ok(SliceResponse.of(userBoothService.searchBoothBy(searchType, query, page, sort)));
+        return ResponseEntity.ok(SliceResponse.of(boothCommonService.searchBoothBy(searchType, query, page, sort)));
     }
 
     @GetMapping("/{booth_id}/product-category")
     public ResponseEntity<List<ProductCategoryResponse>> getProductCategory(@PathVariable Long booth_id) {
-        return ResponseEntity.ok(userBoothService.getProductCategoryResponseList(booth_id));
+        return ResponseEntity.ok(boothCommonService.getProductCategoryResponseList(booth_id));
     }
 
     @GetMapping("/{booth_id}/products")

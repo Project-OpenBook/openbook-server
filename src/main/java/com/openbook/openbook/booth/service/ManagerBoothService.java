@@ -110,7 +110,8 @@ public class ManagerBoothService {
         checkAvailableTime(request, booth);
         checkDuplicateTimes(request.times());
         BoothReservation boothReservation = boothReservationService.createBoothReservation(
-                new BoothReservationDTO(request.content(), request.date()), booth);
+                new BoothReservationDTO(request.name(), request.description(), request.date(),
+                        request.image(), request.price()), booth);
         boothReservationDetailService.createReservationDetail(request.times(), boothReservation);
     }
 

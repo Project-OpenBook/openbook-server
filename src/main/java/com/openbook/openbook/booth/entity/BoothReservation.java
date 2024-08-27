@@ -18,9 +18,15 @@ public class BoothReservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String content;
+    private String name;
+
+    private String description;
 
     private LocalDate date;
+
+    private String imageUrl;
+
+    private int price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Booth linkedBooth;
@@ -29,9 +35,12 @@ public class BoothReservation {
     private List<BoothReservationDetail> boothReservationDetails = new ArrayList<>();
 
     @Builder
-    public BoothReservation(Booth linkedBooth, String content, LocalDate date){
-        this.content = content;
+    public BoothReservation(String name, String description, Booth linkedBooth, LocalDate date, String imageUrl, int price){
+        this.name = name;
+        this.description = description;
         this.date = date;
+        this.imageUrl = imageUrl;
+        this.price = price;
         this.linkedBooth = linkedBooth;
     }
 }

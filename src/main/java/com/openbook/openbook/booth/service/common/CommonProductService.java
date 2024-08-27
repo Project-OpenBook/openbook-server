@@ -1,5 +1,6 @@
 package com.openbook.openbook.booth.service.common;
 
+import com.openbook.openbook.booth.controller.response.BoothProductResponse;
 import com.openbook.openbook.booth.controller.response.CategoryProducts;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothProduct;
@@ -27,7 +28,12 @@ public class CommonProductService {
         List<BoothProductCategory> categories = boothProductService.getProductCategories(booth);
         List<CategoryProducts> productsList = new ArrayList<>();
         for(BoothProductCategory category : categories) {
-            Slice<BoothProduct> products = boothProductService.getProductsByCategory(category, pageable);
+            Slice<BoothProductResponse> products = boothProductService.getProductsByCategory(category, pageable).map(
+                    boothProduct -> BoothProductResponse.of(
+                            boothProduct,
+                            boothProductService.getProductImages(boothProduct)
+                    )
+            );
             if(products.getNumberOfElements()!=0) {
                 productsList.add(CategoryProducts.of(category, products));
             }

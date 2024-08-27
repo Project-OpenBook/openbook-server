@@ -11,10 +11,10 @@ public record CategoryProducts(
         ProductCategoryResponse category,
         SliceResponse<BoothProductResponse> products
 ) {
-    public static CategoryProducts of(BoothProductCategory category, Slice<BoothProduct> products) {
+    public static CategoryProducts of(BoothProductCategory category, Slice<BoothProductResponse> products) {
         return new CategoryProducts(
                 ProductCategoryResponse.of(category),
-                SliceResponse.of(products.map(BoothProductResponse::of))
+                SliceResponse.of(products)
         );
     }
 }

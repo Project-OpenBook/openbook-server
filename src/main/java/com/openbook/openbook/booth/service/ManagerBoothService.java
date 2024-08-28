@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ManagerBoothService {
-    private final S3Service s3Service;
     private final UserService userService;
     private final BoothService boothService;
     private final BoothTagService boothTagService;
@@ -122,7 +121,7 @@ public class ManagerBoothService {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
         boothNoticeService.createBoothNotice(new BoothNoticeDto(
-                request.title(), request.content(), s3Service.uploadFileAndGetUrl(request.image()), request.noticeType(), booth
+                request.title(), request.content(), request.image(), request.noticeType(), booth
         ));
     }
 

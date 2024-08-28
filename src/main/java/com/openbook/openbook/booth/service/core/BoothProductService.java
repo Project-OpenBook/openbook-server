@@ -14,6 +14,8 @@ import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.global.util.S3Service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +36,14 @@ public class BoothProductService {
 
     public List<BoothProductCategory> getProductCategories(final Booth linkedBooth) {
         return categoryRepository.findAllByLinkedBoothId(linkedBooth.getId());
+    }
+
+    public Slice<BoothProduct> getProductsByCategory(final BoothProductCategory category, final Pageable pageable) {
+        return boothProductRepository.findAllByLinkedCategoryId(category.getId(), pageable);
+    }
+
+    public List<BoothProductImage> getProductImages(final BoothProduct product) {
+        return boothProductImageRepository.findAllByLinkedProductId(product.getId());
     }
 
     public boolean isExistsCategoryIn(Booth linkedBooth, String name) {

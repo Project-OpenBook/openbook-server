@@ -2,11 +2,12 @@ package com.openbook.openbook.booth.dto;
 
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.dto.BoothNoticeType;
+import org.springframework.web.multipart.MultipartFile;
 
 public record BoothNoticeDto(
         String title,
         String content,
-        String imageUrl,
+        MultipartFile imageUrl,
         BoothNoticeType type,
         Booth linkedBooth
 ) {

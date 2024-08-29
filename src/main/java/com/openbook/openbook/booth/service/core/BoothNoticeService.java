@@ -6,6 +6,7 @@ import com.openbook.openbook.booth.entity.BoothNotice;
 import com.openbook.openbook.booth.repository.BoothNoticeRepository;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.global.util.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BoothNoticeService {
     private final BoothNoticeRepository boothNoticeRepository;
+    private final S3Service s3Service;
 
     public void createBoothNotice(BoothNoticeDto boothNoticeDto){
         boothNoticeRepository.save(
@@ -22,7 +24,7 @@ public class BoothNoticeService {
                         .title(boothNoticeDto.title())
                         .content(boothNoticeDto.content())
                         .type(boothNoticeDto.type())
-                        .imageUrl(boothNoticeDto.imageUrl())
+                        .imageUrl(s3Service.uploadFileAndGetUrl(boothNoticeDto.imageUrl()))
                         .linkedBooth(boothNoticeDto.linkedBooth())
                         .build()
         );

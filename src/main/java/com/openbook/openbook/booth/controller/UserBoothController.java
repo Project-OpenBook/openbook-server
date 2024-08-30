@@ -1,6 +1,7 @@
 package com.openbook.openbook.booth.controller;
 
 import com.openbook.openbook.booth.controller.request.BoothRegistrationRequest;
+import com.openbook.openbook.booth.controller.request.ProductCategoryId;
 import com.openbook.openbook.booth.controller.response.BoothBasicData;
 import com.openbook.openbook.booth.controller.response.BoothDetail;
 import com.openbook.openbook.booth.controller.response.CategoryProductsResponse;
@@ -77,6 +78,12 @@ public class UserBoothController {
     public ResponseEntity<List<CategoryProductsResponse>> getAllProductsBy(@PathVariable Long booth_id,
                                                                            @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(commonProductService.findAllBoothProducts(booth_id, pageable));
+    }
+
+    @GetMapping("/products/category")
+    public ResponseEntity<CategoryProductsResponse> getProductsByCategory(@RequestBody ProductCategoryId request,
+                                                                          @PageableDefault(size = 5) Pageable pageable) {
+        return ResponseEntity.ok(commonProductService.findCategoryProducts(request.category_id(), pageable));
     }
 
 }

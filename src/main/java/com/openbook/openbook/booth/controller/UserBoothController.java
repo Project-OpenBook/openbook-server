@@ -74,8 +74,8 @@ public class UserBoothController {
     }
 
     @GetMapping("/{booth_id}/products")
-    public ResponseEntity<List<CategoryProductsResponse>> getAllProductsBy(@PathVariable Long booth_id,
-                                                                           @PageableDefault(size = 5) Pageable pageable) {
+    public ResponseEntity<List<CategoryProductsResponse>> getAllBoothProducts(@PathVariable Long booth_id,
+                                                                              @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(commonProductService.findAllBoothProducts(booth_id, pageable));
     }
 

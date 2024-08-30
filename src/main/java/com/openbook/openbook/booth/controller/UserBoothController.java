@@ -33,7 +33,6 @@ public class UserBoothController {
     @PostMapping
     public ResponseEntity <ResponseMessage>  registration(Authentication authentication, @Valid BoothRegistrationRequest request){
         boothCommonService.boothRegistration(Long.valueOf(authentication.getName()), request);
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseMessage("신청 완료 되었습니다."));

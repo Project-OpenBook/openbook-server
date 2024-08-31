@@ -4,6 +4,7 @@ import com.openbook.openbook.booth.entity.BoothReservation;
 import com.openbook.openbook.booth.entity.BoothReservationDetail;
 import com.openbook.openbook.booth.repository.BoothReservationDetailRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,5 +22,9 @@ public class BoothReservationDetailService {
                             .build()
             );
         }
+    }
+
+    public List<BoothReservationDetail> getReservationDetailsByReservation(BoothReservation boothReservation){
+        return boothReservationDetailRepository.findBoothReservationDetailsByLinkedReservation(boothReservation);
     }
 }

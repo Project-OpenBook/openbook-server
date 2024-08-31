@@ -13,7 +13,8 @@ public record BoothReservationsResponse(
         String imageUrl,
         int price,
         String date,
-        List<BoothReservationDetailResponse> details
+        List<BoothReservationDetailResponse> details,
+        long boothManagerId
 ) {
     public static BoothReservationsResponse of(BoothReservation boothReservation, List<BoothReservationDetailResponse> boothReservationDetail){
         return new BoothReservationsResponse(
@@ -23,7 +24,8 @@ public record BoothReservationsResponse(
                 boothReservation.getImageUrl(),
                 boothReservation.getPrice(),
                 getFormattingDate(boothReservation.getDate().atStartOfDay()),
-                boothReservationDetail
+                boothReservationDetail,
+                boothReservation.getLinkedBooth().getManager().getId()
         );
 
     }

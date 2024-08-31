@@ -69,7 +69,7 @@ public class UserEventController {
     }
 
 
-    @PostMapping("/event/reviews")
+    @PostMapping("/event/review")
     public ResponseEntity<ResponseMessage> postReview(Authentication authentication,
                                                       @Valid EventReviewRegisterRequest request) {
         eventReviewService.registerEventReview(Long.valueOf(authentication.getName()), request);

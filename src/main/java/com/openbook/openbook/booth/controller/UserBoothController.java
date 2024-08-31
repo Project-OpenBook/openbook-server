@@ -32,7 +32,6 @@ public class UserBoothController {
     @PostMapping
     public ResponseEntity <ResponseMessage>  registration(Authentication authentication, @Valid BoothRegistrationRequest request){
         boothCommonService.boothRegistration(Long.valueOf(authentication.getName()), request);
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseMessage("신청 완료 되었습니다."));
@@ -74,9 +73,15 @@ public class UserBoothController {
     }
 
     @GetMapping("/{booth_id}/products")
-    public ResponseEntity<List<CategoryProductsResponse>> getAllProductsBy(@PathVariable Long booth_id,
-                                                                           @PageableDefault(size = 5) Pageable pageable) {
+    public ResponseEntity<List<CategoryProductsResponse>> getAllBoothProducts(@PathVariable Long booth_id,
+                                                                              @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(commonProductService.findAllBoothProducts(booth_id, pageable));
+    }
+
+    @GetMapping("/products/category")
+    public ResponseEntity<CategoryProductsResponse> getProductsByCategory(@RequestParam Long category_id,
+                                                                          @PageableDefault(size = 5) Pageable pageable) {
+        return ResponseEntity.ok(commonProductService.findCategoryProducts(category_id, pageable));
     }
 
 }

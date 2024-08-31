@@ -40,4 +40,17 @@ public class CommonProductService {
         return productsList;
     }
 
+    @Transactional(readOnly = true)
+    public CategoryProductsResponse findCategoryProducts(final long categoryId, final Pageable pageable) {
+        BoothProductCategory category = boothProductService.getProductCategoryOrException(categoryId);
+        Slice<BoothProductResponse> products = boothProductService.getProductsByCategory(category, pageable).map(
+                boothProduct -> BoothProductResponse.of(
+                        boothProduct,
+                        boothProductService.getProductImages(boothProduct)
+                )
+        );
+        return CategoryProductsResponse.of(category, products);
+    }
+
+
 }

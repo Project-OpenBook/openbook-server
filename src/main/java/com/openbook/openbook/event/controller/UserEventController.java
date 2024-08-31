@@ -70,7 +70,8 @@ public class UserEventController {
 
 
     @PostMapping("/event/reviews")
-    public ResponseEntity<ResponseMessage> postReview(Authentication authentication, @Valid EventReviewRegisterRequest request) {
+    public ResponseEntity<ResponseMessage> postReview(Authentication authentication,
+                                                      @Valid EventReviewRegisterRequest request) {
         eventReviewService.registerEventReview(Long.valueOf(authentication.getName()), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("행사 리뷰 작성에 성공했습니다."));
     }

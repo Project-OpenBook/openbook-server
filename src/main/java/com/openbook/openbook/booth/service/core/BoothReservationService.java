@@ -1,17 +1,13 @@
 package com.openbook.openbook.booth.service.core;
 
-import com.openbook.openbook.booth.controller.response.BoothProductResponse;
 import com.openbook.openbook.booth.controller.response.BoothReservationDetailResponse;
 import com.openbook.openbook.booth.controller.response.BoothReservationsResponse;
 import com.openbook.openbook.booth.dto.BoothReservationDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothReservation;
-import com.openbook.openbook.booth.entity.BoothReservationDetail;
 import com.openbook.openbook.booth.repository.BoothReservationRepository;
 import com.openbook.openbook.global.util.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -52,9 +48,5 @@ public class BoothReservationService {
         }
 
         return boothReservationsResponses;
-    }
-
-    public BoothReservation getReserveByBoothAndDate(LocalDate date, Booth booth){
-        return boothReservationRepository.findBoothReservationByDateAndLinkedBooth(date, booth);
     }
 }

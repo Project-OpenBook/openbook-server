@@ -1,7 +1,5 @@
 package com.openbook.openbook.booth.service.core;
 
-import com.openbook.openbook.booth.controller.response.BoothReservationDetailResponse;
-import com.openbook.openbook.booth.controller.response.BoothReservationsResponse;
 import com.openbook.openbook.booth.dto.BoothReservationDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothReservation;
@@ -11,15 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class BoothReservationService {
     private final BoothReservationRepository boothReservationRepository;
-    private final BoothReservationDetailService boothReservationDetailService;
-    private final BoothService boothService;
     private final S3Service s3Service;
     public BoothReservation createBoothReservation(BoothReservationDTO boothReservationDTO, Booth booth){
         return boothReservationRepository.save(
@@ -37,16 +32,7 @@ public class BoothReservationService {
         return boothReservationRepository.existsByDateAndLinkedBooth(date, booth);
     }
 
-    public List<BoothReservationsResponse> getAllBoothReservations(long boothId){
-        Booth booth = boothService.getBoothOrException(boothId);
-        List<BoothReservation> boothReservations = boothReservationRepository.findBoothReservationByLinkedBoothId(booth.getId());
-        List<BoothReservationsResponse> boothReservationsResponses = new ArrayList<>();
-        for(BoothReservation boothReservation : boothReservations){
-            List<BoothReservationDetailResponse> details = boothReservationDetailService.getReservationDetailsByReservation(boothReservation)
-                    .stream().map(BoothReservationDetailResponse::of).toList();
-            boothReservationsResponses.add(BoothReservationsResponse.of(boothReservation, details));
-        }
-
-        return boothReservationsResponses;
+    public List<BoothReservation> getBoothReservations(Long boothId){
+        return boothReservationRepository.findBoothReservationByLinkedBoothId(boothId);
     }
 }

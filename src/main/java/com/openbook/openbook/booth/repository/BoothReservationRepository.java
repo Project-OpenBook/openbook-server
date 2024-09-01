@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface BoothReservationRepository extends JpaRepository<BoothReservation, Long> {
     boolean existsByDateAndLinkedBooth(LocalDate date, Booth booth);
-    List<BoothReservation> findBoothReservationByLinkedBooth(Booth booth);
+    List<BoothReservation> findBoothReservationByLinkedBoothId(Long boothId);
 }

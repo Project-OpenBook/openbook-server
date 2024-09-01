@@ -39,7 +39,7 @@ public class BoothReservationService {
 
     public List<BoothReservationsResponse> getAllBoothReservations(long boothId){
         Booth booth = boothService.getBoothOrException(boothId);
-        List<BoothReservation> boothReservations = boothReservationRepository.findBoothReservationByLinkedBooth(booth);
+        List<BoothReservation> boothReservations = boothReservationRepository.findBoothReservationByLinkedBoothId(booth.getId());
         List<BoothReservationsResponse> boothReservationsResponses = new ArrayList<>();
         for(BoothReservation boothReservation : boothReservations){
             List<BoothReservationDetailResponse> details = boothReservationDetailService.getReservationDetailsByReservation(boothReservation)

@@ -1,10 +1,12 @@
 package com.openbook.openbook.event.controller;
 
 
+import com.openbook.openbook.event.controller.request.EventReviewRegisterRequest;
 import com.openbook.openbook.event.controller.response.EventNoticeData;
 import com.openbook.openbook.event.controller.response.UserEventData;
 import com.openbook.openbook.event.controller.response.EventDetail;
 import com.openbook.openbook.event.controller.response.EventLayoutStatus;
+import com.openbook.openbook.event.service.common.CommonEventReviewService;
 import com.openbook.openbook.event.service.EventCommonService;
 import com.openbook.openbook.event.controller.request.EventRegistrationRequest;
 import com.openbook.openbook.event.service.EventLayoutCommonService;
@@ -30,6 +32,7 @@ public class UserEventController {
 
     private final EventCommonService eventCommonService;
     private final EventLayoutCommonService eventLayoutCommonService;
+    private final CommonEventReviewService eventReviewService;
 
     @PostMapping("/events")
     public ResponseEntity<ResponseMessage> registration(Authentication authentication,
@@ -64,6 +67,15 @@ public class UserEventController {
     public ResponseEntity<EventNoticeData> getEventNotice(@PathVariable Long notice_id) {
         return ResponseEntity.ok(eventCommonService.getEventNotice(notice_id));
     }
+
+
+    @PostMapping("/event/review")
+    public ResponseEntity<ResponseMessage> postReview(Authentication authentication,
+                                                      @Valid EventReviewRegisterRequest request) {
+        eventReviewService.registerEventReview(Long.valueOf(authentication.getName()), request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("행사 리뷰 작성에 성공했습니다."));
+    }
+
 
     @GetMapping("events/search")
     public ResponseEntity<SliceResponse<UserEventData>> searchEvents(@RequestParam(value = "type", defaultValue = "eventName") String searchType,

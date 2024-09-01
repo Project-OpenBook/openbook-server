@@ -15,7 +15,7 @@ public interface EventTagRepository extends JpaRepository<EventTag, Long> {
     @Query("SELECT t FROM EventTag t WHERE t.linkedEvent.id=:eventId")
     List<EventTag> findAllByLinkedEventId(Long eventId);
 
-    @Query("SELECT t.linkedEvent FROM EventTag t WHERE t.name LIKE %:name% AND t.linkedEvent.status=:status")
+    @Query("SELECT distinct t.linkedEvent FROM EventTag t WHERE t.name LIKE %:name% AND t.linkedEvent.status=:status")
     Slice<Event> findLinkedEventsByNameAndEventStatus(Pageable pageable, String name, EventStatus status);
 
 }

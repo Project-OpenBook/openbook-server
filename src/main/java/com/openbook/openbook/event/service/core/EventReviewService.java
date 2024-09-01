@@ -1,12 +1,16 @@
 package com.openbook.openbook.event.service.core;
 
 import com.openbook.openbook.event.dto.EventReviewDto;
+import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventReview;
 import com.openbook.openbook.event.entity.EventReviewImage;
 import com.openbook.openbook.event.repository.EventReviewImageRepository;
 import com.openbook.openbook.event.repository.EventReviewRepository;
 import com.openbook.openbook.global.util.S3Service;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +42,14 @@ public class EventReviewService {
                         .imageOrder(order)
                         .build()
         );
+    }
+
+    public Slice<EventReview> getReviewsOf(Event linkedEvent, Pageable pageable){
+        return eventReviewRepository.findByLinkedEventId(linkedEvent.getId(), pageable);
+    }
+
+    public List<EventReviewImage> getReviewImagesOf(EventReview linkedReview) {
+        return eventReviewImageRepository.findAllByLinkedReviewId(linkedReview.getId());
     }
 
 }

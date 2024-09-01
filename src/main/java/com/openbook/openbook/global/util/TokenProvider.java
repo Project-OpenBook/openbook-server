@@ -1,8 +1,7 @@
 package com.openbook.openbook.global.util;
 
 import com.openbook.openbook.user.controller.response.TokenInfo;
-import com.openbook.openbook.user.dto.UserPublicData;
-import com.openbook.openbook.user.entity.dto.UserRole;
+import com.openbook.openbook.user.dto.UserDetail;
 import com.openbook.openbook.user.service.core.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -12,14 +11,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -51,7 +47,7 @@ public class TokenProvider {
     public TokenInfo getInfoOf(String token) {
         Claims claims = getBody(token);
         Long userId = Long.valueOf(claims.get(USER_ID).toString());
-        UserPublicData userDetails = UserPublicData.of(userService.getUserOrException(userId));
+        UserDetail userDetails = UserDetail.of(userService.getUserOrException(userId));
         return TokenInfo.builder()
                 .id(userId)
                 .nickname(userDetails.nickname())
@@ -79,7 +75,7 @@ public class TokenProvider {
     public UsernamePasswordAuthenticationToken getAuthentication(String token) {
         Claims claims = getBody(token);
         Long userId = Long.valueOf(claims.get(USER_ID).toString());
-        UserDetails userDetails = UserPublicData.of(userService.getUserOrException(userId));
+        UserDetails userDetails = UserDetail.of(userService.getUserOrException(userId));
         return new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities()
         );

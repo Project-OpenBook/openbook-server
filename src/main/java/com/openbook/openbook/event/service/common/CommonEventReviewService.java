@@ -1,6 +1,7 @@
 package com.openbook.openbook.event.service.common;
 
 import com.openbook.openbook.event.controller.request.EventReviewRegisterRequest;
+import com.openbook.openbook.event.controller.response.EventReviewResponse;
 import com.openbook.openbook.event.dto.EventReviewDto;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventReview;
@@ -13,6 +14,8 @@ import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.core.UserService;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,17 @@ public class CommonEventReviewService {
     private final UserService userService;
     private final EventService eventService;
     private final EventReviewService eventReviewService;
+
+    @Transactional(readOnly = true)
+    public Slice<EventReviewResponse> getEventReviews(final long eventId, final Pageable pageable) {
+        Event event = eventService.getEventOrException(eventId);
+        if(!event.getStatus().equals(EventStatus.APPROVE)) {
+            throw new OpenBookException(ErrorCode.EVENT_NOT_APPROVED);
+        }
+        return eventReviewService.getReviewsOf(event, pageable).map(eventReview ->
+                EventReviewResponse.of(eventReview, eventReviewService.getReviewImagesOf(eventReview))
+        );
+    }
 
     @Transactional
     public void registerEventReview(Long loginUser, EventReviewRegisterRequest request) {

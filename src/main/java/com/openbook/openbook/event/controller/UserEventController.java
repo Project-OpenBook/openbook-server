@@ -3,6 +3,7 @@ package com.openbook.openbook.event.controller;
 
 import com.openbook.openbook.event.controller.request.EventReviewRegisterRequest;
 import com.openbook.openbook.event.controller.response.EventNoticeData;
+import com.openbook.openbook.event.controller.response.EventReviewResponse;
 import com.openbook.openbook.event.controller.response.UserEventData;
 import com.openbook.openbook.event.controller.response.EventDetail;
 import com.openbook.openbook.event.controller.response.EventLayoutStatus;
@@ -68,7 +69,6 @@ public class UserEventController {
         return ResponseEntity.ok(eventCommonService.getEventNotice(notice_id));
     }
 
-
     @PostMapping("/event/review")
     public ResponseEntity<ResponseMessage> postReview(Authentication authentication,
                                                       @Valid EventReviewRegisterRequest request) {
@@ -76,6 +76,12 @@ public class UserEventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("행사 리뷰 작성에 성공했습니다."));
     }
 
+    @GetMapping("/event/reviews")
+    public ResponseEntity<SliceResponse<EventReviewResponse>> getReviews(@RequestParam(value = "event_id") Long request,
+                                                                         @PageableDefault(size = 5)Pageable pageable) {
+        Slice<EventReviewResponse> reviews = eventReviewService.getEventReviews(request, pageable);
+        return ResponseEntity.ok(SliceResponse.of(reviews));
+    }
 
     @GetMapping("events/search")
     public ResponseEntity<SliceResponse<UserEventData>> searchEvents(@RequestParam(value = "type", defaultValue = "eventName") String searchType,

@@ -1,13 +1,11 @@
 package com.openbook.openbook.booth.controller;
 
 import com.openbook.openbook.booth.controller.request.BoothRegistrationRequest;
-import com.openbook.openbook.booth.controller.response.BoothBasicData;
-import com.openbook.openbook.booth.controller.response.BoothDetail;
-import com.openbook.openbook.booth.controller.response.CategoryProductsResponse;
-import com.openbook.openbook.booth.controller.response.ProductCategoryResponse;
-import com.openbook.openbook.booth.controller.response.BoothNoticeResponse;
+import com.openbook.openbook.booth.controller.response.*;
 import com.openbook.openbook.booth.service.BoothCommonService;
 import com.openbook.openbook.booth.service.common.CommonProductService;
+import com.openbook.openbook.booth.service.common.CommonReservationService;
+import com.openbook.openbook.booth.service.core.BoothReservationService;
 import com.openbook.openbook.global.dto.ResponseMessage;
 import com.openbook.openbook.global.dto.SliceResponse;
 import jakarta.validation.Valid;
@@ -28,6 +26,7 @@ public class UserBoothController {
 
     private final BoothCommonService boothCommonService;
     private final CommonProductService commonProductService;
+    private final CommonReservationService commonReservationService;
 
     @PostMapping
     public ResponseEntity <ResponseMessage>  registration(Authentication authentication, @Valid BoothRegistrationRequest request){
@@ -82,6 +81,11 @@ public class UserBoothController {
     public ResponseEntity<CategoryProductsResponse> getProductsByCategory(@RequestParam Long category_id,
                                                                           @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(commonProductService.findCategoryProducts(category_id, pageable));
+    }
+
+    @GetMapping("/{booth_id}/reservations")
+    public ResponseEntity<List<BoothReservationsResponse>> getAllBoothReservations(@PathVariable Long booth_id){
+        return ResponseEntity.ok(commonReservationService.getAllBoothReservations(booth_id));
     }
 
 }

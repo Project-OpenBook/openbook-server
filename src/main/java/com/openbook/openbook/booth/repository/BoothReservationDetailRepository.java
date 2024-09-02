@@ -5,7 +5,9 @@ import com.openbook.openbook.booth.entity.BoothReservationDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BoothReservationDetailRepository extends JpaRepository<BoothReservationDetail, Long> {
-    boolean existsByTimeAndLinkedReservation(String time, BoothReservation boothReservation);
+    List<BoothReservationDetail> findBoothReservationDetailsByLinkedReservationId(Long reservationId);
 }

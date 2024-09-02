@@ -30,10 +30,10 @@ public class CommonReservationService {
         }
         List<BoothReservation> boothReservations = boothReservationService.getBoothReservations(booth.getId());
         List<BoothReservationsResponse> boothReservationsResponses = new ArrayList<>();
-        for(BoothReservation boothReservation : boothReservations){
-            List<BoothReservationDetailResponse> details = boothReservationDetailService.getReservationDetailsByReservation(boothReservation)
+        for(BoothReservation reservation : boothReservations){
+            List<BoothReservationDetailResponse> details = boothReservationDetailService.getReservationDetailsByReservation(reservation.getId())
                     .stream().map(BoothReservationDetailResponse::of).toList();
-            boothReservationsResponses.add(BoothReservationsResponse.of(boothReservation, details));
+            boothReservationsResponses.add(BoothReservationsResponse.of(reservation, details));
         }
 
         return boothReservationsResponses;

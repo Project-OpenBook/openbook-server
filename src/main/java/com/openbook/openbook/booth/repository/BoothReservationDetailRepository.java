@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface BoothReservationDetailRepository extends JpaRepository<BoothReservationDetail, Long> {
-    List<BoothReservationDetail> findBoothReservationDetailsByLinkedReservation(BoothReservation boothReservation);
+    List<BoothReservationDetail> findBoothReservationDetailsByLinkedReservationId(Long reservationId);
 }

@@ -23,7 +23,7 @@ public class BoothReservationDetailService {
         }
     }
 
-    public List<BoothReservationDetail> getReservationDetailsByReservation(BoothReservation boothReservation){
-        return boothReservationDetailRepository.findBoothReservationDetailsByLinkedReservation(boothReservation);
+    public List<BoothReservationDetail> getReservationDetailsByReservation(Long reservationId){
+        return boothReservationDetailRepository.findBoothReservationDetailsByLinkedReservationId(reservationId);
     }
 }

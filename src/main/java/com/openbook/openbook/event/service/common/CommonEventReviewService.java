@@ -38,6 +38,12 @@ public class CommonEventReviewService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public EventReviewResponse getEventReview(final long reviewId) {
+        EventReview review = eventReviewService.getEventReviewOrException(reviewId);
+        return EventReviewResponse.of(review, eventReviewService.getReviewImagesOf(review));
+    }
+
     @Transactional
     public void registerEventReview(Long loginUser, EventReviewRegisterRequest request) {
         User user = userService.getUserOrException(loginUser);

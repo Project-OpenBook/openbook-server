@@ -43,8 +43,8 @@ public class UserBoothController {
     }
 
     @GetMapping("/{boothId}")
-    public ResponseEntity<BoothDetail> getBooth(Authentication authentication, @PathVariable Long boothId){
-        return ResponseEntity.ok(boothCommonService.getBoothDetail(Long.valueOf(authentication.getName()), boothId));
+    public ResponseEntity<BoothDetail> getBooth(@PathVariable Long boothId){
+        return ResponseEntity.ok(boothCommonService.getBoothDetail(boothId));
     }
 
     @GetMapping("/{boothId}/notices")

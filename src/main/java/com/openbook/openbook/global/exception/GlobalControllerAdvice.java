@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -22,6 +23,12 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ResponseMessage> applicationException(final OpenBookException e){
         log.error(String.format(ERROR_LOG, e.getHttpStatus(), e.getMessage()));
         return ResponseEntity.status(e.getHttpStatus()).body(new ResponseMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    ResponseEntity<ResponseMessage> missingServletRequestParameter(final MissingServletRequestParameterException e) {
+        log.error(String.format(ERROR_LOG, e.getParameterName(), e.getMessage()));
+        return ResponseEntity.status(e.getStatusCode()).body(new ResponseMessage("필요한 파라미터가 입력되지 않았습니다."));
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

@@ -83,6 +83,11 @@ public class UserEventController {
         return ResponseEntity.ok(SliceResponse.of(reviews));
     }
 
+    @GetMapping("/event/review/{review_id}")
+    public ResponseEntity<EventReviewResponse> getReview(@PathVariable Long review_id) {
+        return ResponseEntity.ok(eventReviewService.getEventReview(review_id));
+    }
+
     @GetMapping("events/search")
     public ResponseEntity<SliceResponse<UserEventData>> searchEvents(@RequestParam(value = "type", defaultValue = "eventName") String searchType,
                                                                      @RequestParam(value = "query", defaultValue = "") String name,

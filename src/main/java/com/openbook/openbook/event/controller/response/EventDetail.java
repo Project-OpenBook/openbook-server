@@ -19,7 +19,7 @@ public record EventDetail(
         String closeDate,
         List<String> tags,
         List<String> layoutImageUrls,
-        UserPublicData event_manager,
+        UserPublicData eventManager,
         int boothCount
 ) {
     public static EventDetail of(Event event, List<EventTag> tags, int boothCount) {

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class BoothReservationService {
         return boothReservationRepository.existsByDateAndLinkedBooth(date, booth);
     }
 
-    public BoothReservation getReserveByBoothAndDate(LocalDate date, Booth booth){
-        return boothReservationRepository.findBoothReservationByDateAndLinkedBooth(date, booth);
+    public List<BoothReservation> getBoothReservations(Long boothId){
+        return boothReservationRepository.findBoothReservationByLinkedBoothId(boothId);
     }
 }

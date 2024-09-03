@@ -54,8 +54,8 @@ public class UserEventController {
     }
 
     @GetMapping("/events/{eventId}")
-    public ResponseEntity<EventDetail> getEvent(Authentication authentication, @PathVariable Long eventId) {
-        return ResponseEntity.ok(eventCommonService.getEventDetail(Long.valueOf(authentication.getName()), eventId));
+    public ResponseEntity<EventDetail> getEvent(@PathVariable Long eventId) {
+        return ResponseEntity.ok(eventCommonService.getEventDetail(eventId));
     }
 
     @GetMapping("/events/{event_id}/notices")

@@ -109,13 +109,13 @@ public class EventCommonService {
     }
 
     @Transactional(readOnly = true)
-    public EventDetail getEventDetail(final Long userId, final Long eventId) {
+    public EventDetail getEventDetail(final Long eventId) {
         Event event = eventService.getEventOrException(eventId);
         if(!event.getStatus().equals(EventStatus.APPROVE)) {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
         int boothCount = boothService.getBoothCountByEvent(event);
-        return EventDetail.of(event, userId, eventTagService.getEventTags(event.getId()), boothCount);
+        return EventDetail.of(event, eventTagService.getEventTags(event.getId()), boothCount);
     }
 
     @Transactional(readOnly = true)

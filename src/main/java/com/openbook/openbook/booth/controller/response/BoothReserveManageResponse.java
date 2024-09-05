@@ -14,7 +14,8 @@ public record BoothReserveManageResponse(
         int price,
         String imageUrl
 ) {
-    public static BoothReserveManageResponse of(BoothReservation reservation, List<BoothReserveDetailManageResponse> detailManage){
+    public static BoothReserveManageResponse of(BoothReservation reservation,
+                                                List<BoothReserveDetailManageResponse> detailManage){
         return new BoothReserveManageResponse(
                 reservation.getId(),
                 reservation.getName(),

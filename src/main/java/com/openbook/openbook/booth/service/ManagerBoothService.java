@@ -124,7 +124,8 @@ public class ManagerBoothService {
         List<BoothReserveManageResponse> boothReserveManageResponses = new ArrayList<>();
 
         for(BoothReservation reservation : boothReservations){
-            List<BoothReserveDetailManageResponse> detailManages = boothReservationDetailService.getReservationDetailsByReservation(reservation.getId())
+            List<BoothReserveDetailManageResponse> detailManages =
+                    boothReservationDetailService.getReservationDetailsByReservation(reservation.getId())
                     .stream().map(BoothReserveDetailManageResponse::of).toList();
             boothReserveManageResponses.add(BoothReserveManageResponse.of(reservation, detailManages));
         }

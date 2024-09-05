@@ -99,7 +99,7 @@ public class BoothCommonService {
     }
 
     @Transactional(readOnly = true)
-    public BoothDetail getBoothDetail(Long userId, Long boothId){
+    public BoothDetail getBoothDetail(Long boothId){
         Booth booth = boothService.getBoothOrException(boothId);
         if(!booth.getStatus().equals(BoothStatus.APPROVE)){
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
@@ -108,7 +108,7 @@ public class BoothCommonService {
                 .stream()
                 .map(BoothAreaData::of)
                 .collect(Collectors.toList());
-        return BoothDetail.of(booth, boothAreaData, boothTagService.getBoothTag(booth.getId()), Objects.equals(booth.getManager().getId(), userId));
+        return BoothDetail.of(booth, boothAreaData, boothTagService.getBoothTag(booth.getId()));
     }
 
     @Transactional(readOnly = true)

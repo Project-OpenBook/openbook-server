@@ -67,6 +67,10 @@ public class CommonEventReviewService {
 
     @Transactional
     public void deleteReview(long userId, long reviewId) {
+        EventReview review = eventReviewService.getEventReviewOrException(reviewId);
+        if(review.getReviewer().getId()!=userId) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
         eventReviewService.deleteEventReview(reviewId);
     }
 

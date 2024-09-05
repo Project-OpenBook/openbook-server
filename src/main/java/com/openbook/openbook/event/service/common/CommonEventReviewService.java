@@ -65,5 +65,9 @@ public class CommonEventReviewService {
         }
     }
 
+    @Transactional
+    public void deleteReview(long userId, long reviewId) {
+        eventReviewService.deleteEventReview(reviewId);
+    }
 
 }

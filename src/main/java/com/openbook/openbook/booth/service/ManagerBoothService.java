@@ -5,6 +5,8 @@ import com.openbook.openbook.booth.controller.request.ProductCategoryRegister;
 import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothAreaData;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
+import com.openbook.openbook.booth.controller.response.BoothReserveDetailManageResponse;
+import com.openbook.openbook.booth.controller.response.BoothReserveManageResponse;
 import com.openbook.openbook.booth.dto.BoothNoticeDto;
 import com.openbook.openbook.booth.dto.BoothReservationDTO;
 import com.openbook.openbook.booth.entity.*;
@@ -30,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -112,6 +115,21 @@ public class ManagerBoothService {
                 new BoothReservationDTO(request.name(), request.description(), request.date(),
                         request.image(), request.price()), booth);
         boothReservationDetailService.createReservationDetail(request.times(), boothReservation);
+    }
+
+    @Transactional
+    public List<BoothReserveManageResponse> getAllManageReservations(Long userId, Long boothId){
+        Booth booth = getValidBoothOrException(userId, boothId);
+
+        List<BoothReservation> boothReservations = boothReservationService.getBoothReservations(booth.getId());
+        List<BoothReserveManageResponse> boothReserveManageResponses = new ArrayList<>();
+
+        for(BoothReservation reservation : boothReservations){
+            List<BoothReserveDetailManageResponse> detailManages = boothReservationDetailService.getReservationDetailsByReservation(reservation.getId())
+                    .stream().map(BoothReserveDetailManageResponse::of).toList();
+            boothReserveManageResponses.add(BoothReserveManageResponse.of(reservation, detailManages));
+        }
+        return boothReserveManageResponses;
     }
 
     @Transactional

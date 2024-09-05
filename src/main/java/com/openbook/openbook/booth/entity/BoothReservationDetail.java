@@ -34,8 +34,7 @@ public class BoothReservationDetail {
     }
 
     @Builder
-    public BoothReservationDetail(User user, BoothReservation boothReservation, String time){
-        this.user = user;
+    public BoothReservationDetail(BoothReservation boothReservation, String time){
         this.linkedReservation = boothReservation;
         this.time = time;
     }

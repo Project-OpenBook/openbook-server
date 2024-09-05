@@ -5,7 +5,6 @@ import com.openbook.openbook.booth.controller.request.ProductCategoryRegister;
 import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
 import com.openbook.openbook.booth.controller.request.ProductRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
-import com.openbook.openbook.booth.controller.response.BoothReservationsResponse;
 import com.openbook.openbook.booth.controller.response.BoothReserveManageResponse;
 import com.openbook.openbook.booth.service.ManagerBoothService;
 import com.openbook.openbook.global.dto.ResponseMessage;

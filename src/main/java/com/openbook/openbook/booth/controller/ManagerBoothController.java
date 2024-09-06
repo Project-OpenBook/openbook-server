@@ -5,6 +5,7 @@ import com.openbook.openbook.booth.controller.request.ProductCategoryRegister;
 import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
 import com.openbook.openbook.booth.controller.request.ProductRegistrationRequest;
 import com.openbook.openbook.booth.controller.response.BoothManageData;
+import com.openbook.openbook.booth.controller.response.BoothReserveManageResponse;
 import com.openbook.openbook.booth.service.ManagerBoothService;
 import com.openbook.openbook.global.dto.ResponseMessage;
 import com.openbook.openbook.global.dto.SliceResponse;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -63,6 +66,12 @@ public class ManagerBoothController {
                                                                @PathVariable Long boothId){
         managerBoothService.addReservation(Long.valueOf(authentication.getName()), request, boothId);
         return ResponseEntity.ok(new ResponseMessage("예약 추가에 성공했습니다."));
+    }
+
+    @GetMapping("manage/booths/{boothId}/reservations")
+    public ResponseEntity<List<BoothReserveManageResponse>> getManagedReservation(Authentication authentication,
+                                                                                  @PathVariable Long boothId){
+        return ResponseEntity.ok(managerBoothService.getAllManageReservations(Long.valueOf(authentication.getName()), boothId));
     }
 
     @PostMapping("/booths/{boothId}/notices")

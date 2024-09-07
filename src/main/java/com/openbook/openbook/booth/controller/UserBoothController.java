@@ -5,7 +5,6 @@ import com.openbook.openbook.booth.controller.response.*;
 import com.openbook.openbook.booth.service.BoothCommonService;
 import com.openbook.openbook.booth.service.common.CommonProductService;
 import com.openbook.openbook.booth.service.common.CommonReservationService;
-import com.openbook.openbook.booth.service.core.BoothReservationService;
 import com.openbook.openbook.global.dto.ResponseMessage;
 import com.openbook.openbook.global.dto.SliceResponse;
 import jakarta.validation.Valid;
@@ -81,6 +80,12 @@ public class UserBoothController {
     public ResponseEntity<CategoryProductsResponse> getProductsByCategory(@RequestParam Long category_id,
                                                                           @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(commonProductService.findCategoryProducts(category_id, pageable));
+    }
+
+    @PutMapping("/reserve/{detail_id}")
+    public ResponseEntity<ResponseMessage> reservation(Authentication authentication, @PathVariable Long detail_id){
+        commonReservationService.reserveBooth(Long.valueOf(authentication.getName()), detail_id);
+        return ResponseEntity.ok(new ResponseMessage("예약 신청이 되었습니다."));
     }
 
     @GetMapping("/{booth_id}/reservations")

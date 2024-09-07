@@ -10,6 +10,8 @@ import com.openbook.openbook.booth.service.core.BoothReservationService;
 import com.openbook.openbook.booth.service.core.BoothService;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.user.entity.User;
+import com.openbook.openbook.user.service.core.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ public class CommonReservationService {
     private final BoothService boothService;
     private final BoothReservationService boothReservationService;
     private final BoothReservationDetailService boothReservationDetailService;
+    private final UserService userService;
 
     public List<BoothReservationsResponse> getAllBoothReservations(long boothId){
         Booth booth = boothService.getBoothOrException(boothId);
@@ -37,5 +40,10 @@ public class CommonReservationService {
         }
 
         return boothReservationsResponses;
+    }
+
+    public void reserveBooth(Long userId, Long detailId){
+        User user = userService.getUserOrException(userId);
+        boothReservationDetailService.setUserToReservation(user, detailId);
     }
 }

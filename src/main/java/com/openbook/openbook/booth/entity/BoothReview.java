@@ -1,5 +1,6 @@
 package com.openbook.openbook.booth.entity;
 
+import com.openbook.openbook.global.util.EntityBasicTime;
 import com.openbook.openbook.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BoothReview {
+public class BoothReview extends EntityBasicTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

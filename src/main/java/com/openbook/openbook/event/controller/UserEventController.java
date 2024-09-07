@@ -21,6 +21,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -86,6 +87,12 @@ public class UserEventController {
     @GetMapping("/event/review/{review_id}")
     public ResponseEntity<EventReviewResponse> getReview(@PathVariable Long review_id) {
         return ResponseEntity.ok(eventReviewService.getEventReview(review_id));
+    }
+
+    @DeleteMapping("/event/reviews/{review_id}")
+    public ResponseEntity<ResponseMessage> deleteReview(Authentication authentication, @PathVariable Long review_id) {
+        eventReviewService.deleteReview(Long.parseLong(authentication.getName()), review_id);
+        return ResponseEntity.ok(new ResponseMessage("리뷰 삭제에 성공했습니다."));
     }
 
     @GetMapping("events/search")

@@ -60,4 +60,8 @@ public class EventReviewService {
         return eventReviewImageRepository.findAllByLinkedReviewId(linkedReview.getId());
     }
 
+    public void deleteEventReview(long eventReviewId) {
+        eventReviewRepository.deleteById(eventReviewId);
+    }
+
 }

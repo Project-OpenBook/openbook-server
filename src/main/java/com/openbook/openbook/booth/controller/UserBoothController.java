@@ -1,11 +1,12 @@
 package com.openbook.openbook.booth.controller;
 
 import com.openbook.openbook.booth.controller.request.BoothRegistrationRequest;
+import com.openbook.openbook.booth.controller.request.BoothReviewRegisterRequest;
 import com.openbook.openbook.booth.controller.response.*;
 import com.openbook.openbook.booth.service.BoothCommonService;
+import com.openbook.openbook.booth.service.common.CommonBoothReviewService;
 import com.openbook.openbook.booth.service.common.CommonProductService;
 import com.openbook.openbook.booth.service.common.CommonReservationService;
-import com.openbook.openbook.booth.service.core.BoothReservationService;
 import com.openbook.openbook.global.dto.ResponseMessage;
 import com.openbook.openbook.global.dto.SliceResponse;
 import jakarta.validation.Valid;
@@ -27,6 +28,7 @@ public class UserBoothController {
     private final BoothCommonService boothCommonService;
     private final CommonProductService commonProductService;
     private final CommonReservationService commonReservationService;
+    private final CommonBoothReviewService commonBoothReviewService;
 
     @PostMapping
     public ResponseEntity <ResponseMessage>  registration(Authentication authentication, @Valid BoothRegistrationRequest request){
@@ -88,4 +90,10 @@ public class UserBoothController {
         return ResponseEntity.ok(commonReservationService.getAllBoothReservations(booth_id));
     }
 
+    @PostMapping("/review")
+    public ResponseEntity<ResponseMessage> postReview(Authentication authentication,
+                                                      @Valid BoothReviewRegisterRequest request){
+        commonBoothReviewService.registerBoothReview(Long.valueOf(authentication.getName()), request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("부스 리뷰 작성에 성공했습니다."));
+    }
 }

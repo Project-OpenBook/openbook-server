@@ -43,7 +43,6 @@ public class CommonReservationService {
     }
 
     public void reserveBooth(Long userId, Long detailId){
-        User user = userService.getUserOrException(userId);
-        boothReservationDetailService.setUserToReservation(user, detailId);
+        boothReservationDetailService.setUserToReservation(userId, detailId);
     }
 }

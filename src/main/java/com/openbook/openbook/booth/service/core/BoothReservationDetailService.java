@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoothReservationDetailService {
     private final BoothReservationDetailRepository boothReservationDetailRepository;
-    private final UserService userService;
 
     public BoothReservationDetail getBoothReservationDetailOrException(final Long id) {
         return boothReservationDetailRepository.findById(id).orElseThrow(() ->
@@ -41,17 +40,9 @@ public class BoothReservationDetailService {
     }
 
     @Transactional
-    public void setUserToReservation(Long userId, Long reserveId){
-        User user = userService.getUserOrException(userId);
-        BoothReservationDetail boothReservationDetail = getReservationDetail(reserveId);
+    public void setUserToReservation(User user, BoothReservationDetail boothReservationDetail){
         boothReservationDetail.updateUser(BoothReservationStatus.WAITING, user);
     }
 
-    private BoothReservationDetail getReservationDetail(Long reserveId){
-        BoothReservationDetail boothReservationDetail = getBoothReservationDetailOrException(reserveId);
-        if(!boothReservationDetail.getStatus().equals(BoothReservationStatus.EMPTY)){
-            throw new OpenBookException(ErrorCode.ALREADY_RESERVED_SERVICE);
-        }
-        return boothReservationDetail;
-    }
+
 }

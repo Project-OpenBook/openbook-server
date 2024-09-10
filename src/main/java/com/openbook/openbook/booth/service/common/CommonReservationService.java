@@ -4,6 +4,8 @@ import com.openbook.openbook.booth.controller.response.BoothReservationDetailRes
 import com.openbook.openbook.booth.controller.response.BoothReservationsResponse;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothReservation;
+import com.openbook.openbook.booth.entity.BoothReservationDetail;
+import com.openbook.openbook.booth.entity.dto.BoothReservationStatus;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
 import com.openbook.openbook.booth.service.core.BoothReservationDetailService;
 import com.openbook.openbook.booth.service.core.BoothReservationService;
@@ -43,6 +45,15 @@ public class CommonReservationService {
     }
 
     public void reserveBooth(Long userId, Long detailId){
-        boothReservationDetailService.setUserToReservation(userId, detailId);
+        User user = userService.getUserOrException(userId);
+        BoothReservationDetail boothReservationDetail = boothReservationDetailService.getBoothReservationDetailOrException(detailId);
+        getReservationDetail(boothReservationDetail);
+        boothReservationDetailService.setUserToReservation(user, boothReservationDetail);
+    }
+
+    private void getReservationDetail(BoothReservationDetail boothReservationDetail){
+        if(!boothReservationDetail.getStatus().equals(BoothReservationStatus.EMPTY)){
+            throw new OpenBookException(ErrorCode.ALREADY_RESERVED_SERVICE);
+        }
     }
 }

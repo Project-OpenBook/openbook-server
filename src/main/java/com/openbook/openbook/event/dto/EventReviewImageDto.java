@@ -1,14 +1,14 @@
-package com.openbook.openbook.event.controller.response;
+package com.openbook.openbook.event.dto;
 
 import com.openbook.openbook.event.entity.EventReviewImage;
 
-public record EventReviewImageData(
+public record EventReviewImageDto(
         long id,
-        String url,
+        String imageUrl,
         int seq
 ) {
-    public static EventReviewImageData of(EventReviewImage image) {
-        return new EventReviewImageData(
+    public static EventReviewImageDto of(EventReviewImage image) {
+        return new EventReviewImageDto(
                 image.getId(),
                 image.getImageUrl(),
                 image.getImageOrder()

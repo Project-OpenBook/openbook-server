@@ -85,6 +85,12 @@ public class UserBoothController {
         return ResponseEntity.ok(commonProductService.findCategoryProducts(category_id, pageable));
     }
 
+    @PatchMapping("/reserve/{detail_id}")
+    public ResponseEntity<ResponseMessage> reservation(Authentication authentication, @PathVariable Long detail_id){
+        commonReservationService.reserveBooth(Long.valueOf(authentication.getName()), detail_id);
+        return ResponseEntity.ok(new ResponseMessage("예약 신청이 되었습니다."));
+    }
+
     @GetMapping("/{booth_id}/reservations")
     public ResponseEntity<List<BoothReservationsResponse>> getAllBoothReservations(@PathVariable Long booth_id){
         return ResponseEntity.ok(commonReservationService.getAllBoothReservations(booth_id));

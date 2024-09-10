@@ -38,4 +38,9 @@ public class BoothReservationDetail {
         this.linkedReservation = boothReservation;
         this.time = time;
     }
+
+    public void updateUser(BoothReservationStatus status, User user) {
+        this.status = status;
+        this.user = user;
+    }
 }

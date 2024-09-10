@@ -33,6 +33,7 @@ public enum ErrorCode {
     UNAVAILABLE_RESERVED_TIME(HttpStatus.CONFLICT, "예약 가능 시간이 아닙니다."),
     ALREADY_RESERVED_DATE(HttpStatus.CONFLICT, "이미 존재하는 예약 날짜 입니다."),
     DUPLICATE_RESERVED_TIME(HttpStatus.CONFLICT, "중복 되는 시간 데이터가 있습니다."),
+    ALREADY_RESERVED_SERVICE(HttpStatus.CONFLICT, "이미 예약된 시간 입니다."),
 
     EXCEED_MAXIMUM_CATEGORY(HttpStatus.CONFLICT, "생성할 수 있는 최대 카테고리 수를 초과했습니다."),
     ALREADY_EXIST_CATEGORY(HttpStatus.CONFLICT, "이미 존재하는 카테고리 입니다."),
@@ -47,6 +48,7 @@ public enum ErrorCode {
     AREA_NOT_FOUND(HttpStatus.NOT_FOUND, "구역 정보를 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "리뷰 정보를 찾을 수 없습니다."),
     ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "알림 정보를 찾을 수 없습니다."),
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 정보를 찾을 수 없습니다."),
 
     // INTERNET SERVER ERROR
     FIlE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.")

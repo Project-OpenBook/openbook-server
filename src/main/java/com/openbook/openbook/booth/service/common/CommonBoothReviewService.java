@@ -19,9 +19,11 @@ import java.time.LocalDate;
 @Service
 @RequiredArgsConstructor
 public class CommonBoothReviewService {
+    
     private final UserService userService;
     private final BoothService boothService;
     private final BoothReviewService boothReviewService;
+
     @Transactional
     public void registerBoothReview(Long userId, BoothReviewRegisterRequest request){
         User user = userService.getUserOrException(userId);

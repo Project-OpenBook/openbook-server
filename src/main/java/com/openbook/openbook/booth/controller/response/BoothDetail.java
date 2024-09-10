@@ -3,7 +3,7 @@ package com.openbook.openbook.booth.controller.response;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothTag;
 
-import com.openbook.openbook.user.dto.UserPublicData;
+import com.openbook.openbook.user.controller.response.UserPublicResponse;
 import java.util.List;
 
 import static com.openbook.openbook.global.util.Formatter.getFormattingTime;
@@ -17,7 +17,7 @@ public record BoothDetail(
         String closeTime,
         List<BoothAreaData> location,
         List<String> tags,
-        UserPublicData boothManager,
+        UserPublicResponse boothManager,
         Long eventId,
         String eventName
 ) {
@@ -32,7 +32,7 @@ public record BoothDetail(
                 getFormattingTime(booth.getCloseTime()),
                 boothAreas,
                 tags.stream().map(BoothTag::getName).toList(),
-                UserPublicData.of(booth.getManager()),
+                UserPublicResponse.of(booth.getManager()),
                 booth.getLinkedEvent().getId(),
                 booth.getLinkedEvent().getName()
         );

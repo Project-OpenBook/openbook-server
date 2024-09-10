@@ -2,12 +2,12 @@ package com.openbook.openbook.event.controller.response;
 
 import com.openbook.openbook.event.entity.EventReview;
 import com.openbook.openbook.event.entity.EventReviewImage;
-import com.openbook.openbook.user.dto.UserPublicData;
+import com.openbook.openbook.user.controller.response.UserPublicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record EventReviewResponse(
-        UserPublicData reviewer,
+        UserPublicResponse reviewer,
         long id,
         float star,
         String content,
@@ -16,7 +16,7 @@ public record EventReviewResponse(
 ) {
     public static EventReviewResponse of(EventReview eventReview, List<EventReviewImage> images) {
         return new EventReviewResponse(
-                UserPublicData.of(eventReview.getReviewer()),
+                UserPublicResponse.of(eventReview.getReviewer()),
                 eventReview.getId(),
                 eventReview.getStar(),
                 eventReview.getContent(),

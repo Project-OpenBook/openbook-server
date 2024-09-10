@@ -27,8 +27,8 @@ import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.global.util.TagUtil;
 import com.openbook.openbook.user.entity.dto.AlarmType;
 import com.openbook.openbook.user.entity.User;
-import com.openbook.openbook.user.service.core.AlarmService;
-import com.openbook.openbook.user.service.core.UserService;
+import com.openbook.openbook.user.service.AlarmService;
+import com.openbook.openbook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service

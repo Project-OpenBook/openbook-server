@@ -13,7 +13,7 @@ import com.openbook.openbook.booth.service.core.BoothService;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.entity.User;
-import com.openbook.openbook.user.service.core.UserService;
+import com.openbook.openbook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

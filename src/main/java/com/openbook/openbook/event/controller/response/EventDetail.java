@@ -5,9 +5,8 @@ import static com.openbook.openbook.global.util.JsonService.convertJsonToList;
 
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventTag;
-import com.openbook.openbook.user.dto.UserPublicData;
+import com.openbook.openbook.user.controller.response.UserPublicResponse;
 import java.util.List;
-import java.util.Objects;
 
 public record EventDetail(
         Long id,
@@ -19,7 +18,7 @@ public record EventDetail(
         String closeDate,
         List<String> tags,
         List<String> layoutImageUrls,
-        UserPublicData eventManager,
+        UserPublicResponse eventManager,
         int boothCount
 ) {
     public static EventDetail of(Event event, List<EventTag> tags, int boothCount) {
@@ -33,7 +32,7 @@ public record EventDetail(
                 getFormattingDate(event.getCloseDate().atStartOfDay()),
                 tags.stream().map(EventTag::getName).toList(),
                 convertJsonToList(event.getLayout().getImageUrl()),
-                UserPublicData.of(event.getManager()),
+                UserPublicResponse.of(event.getManager()),
                 boothCount
         );
     }

@@ -2,25 +2,18 @@ package com.openbook.openbook.user.controller;
 
 
 import com.openbook.openbook.global.util.TokenProvider;
-import com.openbook.openbook.user.controller.response.AlarmData;
 import com.openbook.openbook.global.dto.ResponseMessage;
 import com.openbook.openbook.user.controller.response.TokenInfo;
-import com.openbook.openbook.user.service.UserCommonService;
 import com.openbook.openbook.user.controller.request.LoginRequest;
 import com.openbook.openbook.user.controller.request.SignUpRequest;
-import com.openbook.openbook.global.dto.SliceResponse;
+import com.openbook.openbook.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     final private TokenProvider tokenProvider;
-    private final UserCommonService basicUserService;
+    private final UserService userService;
 
     @GetMapping("user/access_token_info")
     public ResponseEntity<TokenInfo> getTokenInfo(@NotNull HttpServletRequest request) {
@@ -40,36 +33,16 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<ResponseMessage> signup(@RequestBody @Valid final SignUpRequest request) {
-        basicUserService.signup(request);
+        userService.signup(request);
         return ResponseEntity.ok(new ResponseMessage("API 요청 성공"));
     }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody @Valid final LoginRequest request) {
-        String token = basicUserService.login(request);
+        String token = userService.login(request);
         return ResponseEntity.ok(Map.of("token", token));
     }
 
-    @GetMapping("/alarms")
-    public ResponseEntity<SliceResponse<AlarmData>> getAlarms(@PageableDefault(size = 5) Pageable pageable,
-                                                              Authentication authentication) {
-        return ResponseEntity.ok(
-                SliceResponse.of(
-                        basicUserService.getAlarmData(pageable, Long.valueOf(authentication.getName()))
-                )
-        );
-    }
 
-    @DeleteMapping("/alarms")
-    public ResponseEntity<ResponseMessage> deleteAllAlarm(Authentication authentication) {
-        basicUserService.deleteAllAlarm(Long.valueOf(authentication.getName()));
-        return ResponseEntity.ok(new ResponseMessage("전체 알림을 삭제했습니다."));
-    }
-
-    @DeleteMapping("/alarms/{alarmId}")
-    public ResponseEntity<ResponseMessage> deleteAlarm(Authentication authentication, @PathVariable Long alarmId) {
-        basicUserService.deleteAlarm(Long.valueOf(authentication.getName()), alarmId);
-        return ResponseEntity.ok(new ResponseMessage("알림을 삭제했습니다."));
-    }
 
 }

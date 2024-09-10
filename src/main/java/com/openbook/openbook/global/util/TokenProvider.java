@@ -2,7 +2,7 @@ package com.openbook.openbook.global.util;
 
 import com.openbook.openbook.user.controller.response.TokenInfo;
 import com.openbook.openbook.user.dto.UserDetail;
-import com.openbook.openbook.user.service.core.UserService;
+import com.openbook.openbook.user.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

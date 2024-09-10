@@ -17,6 +17,7 @@ import com.openbook.openbook.user.service.core.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,8 +53,12 @@ public class CommonReservationService {
     }
 
     private void getReservationDetail(BoothReservationDetail boothReservationDetail){
-        if(!boothReservationDetail.getStatus().equals(BoothReservationStatus.EMPTY)){
+        if(!boothReservationDetail.getStatus().equals(BoothReservationStatus.EMPTY)) {
             throw new OpenBookException(ErrorCode.ALREADY_RESERVED_SERVICE);
+        }
+
+        if(LocalTime.parse(boothReservationDetail.getTime()).isBefore(LocalTime.now())){
+            throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
         }
     }
 }

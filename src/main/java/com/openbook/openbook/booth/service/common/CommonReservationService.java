@@ -48,11 +48,11 @@ public class CommonReservationService {
     public void reserveBooth(Long userId, Long detailId){
         User user = userService.getUserOrException(userId);
         BoothReservationDetail boothReservationDetail = boothReservationDetailService.getBoothReservationDetailOrException(detailId);
-        getReservationDetail(boothReservationDetail);
+        checkValidReservationDetail(boothReservationDetail);
         boothReservationDetailService.setUserToReservation(user, boothReservationDetail);
     }
 
-    private void getReservationDetail(BoothReservationDetail boothReservationDetail){
+    private void checkValidReservationDetail(BoothReservationDetail boothReservationDetail){
         if(!boothReservationDetail.getStatus().equals(BoothReservationStatus.EMPTY)) {
             throw new OpenBookException(ErrorCode.ALREADY_RESERVED_SERVICE);
         }

@@ -1,18 +1,18 @@
 package com.openbook.openbook.event.service;
 
+
 import static com.openbook.openbook.global.util.JsonService.convertJsonToList;
 
 import com.google.gson.Gson;
-import com.openbook.openbook.booth.service.core.BoothAreaService;
-import com.openbook.openbook.event.dto.EventLayoutCreateData;
 import com.openbook.openbook.booth.dto.BoothAreaCreateData;
 import com.openbook.openbook.booth.dto.BoothAreaStatusData;
+import com.openbook.openbook.booth.service.core.BoothAreaService;
 import com.openbook.openbook.event.controller.response.EventLayoutStatus;
+import com.openbook.openbook.event.dto.EventLayoutCreateData;
 import com.openbook.openbook.event.dto.EventLayoutDTO;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventLayout;
-import com.openbook.openbook.event.service.core.EventLayoutService;
-import com.openbook.openbook.event.service.core.EventService;
+import com.openbook.openbook.event.repository.EventLayoutRepository;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.global.util.S3Service;
@@ -26,10 +26,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class EventLayoutCommonService {
+public class EventLayoutService {
+
+    private final EventLayoutRepository eventLayoutRepository;
 
     private final EventService eventService;
-    private final EventLayoutService eventLayoutService;
     private final BoothAreaService boothAreaService;
     private final S3Service s3Service;
 
@@ -40,7 +41,7 @@ public class EventLayoutCommonService {
                 .type(layoutData.type())
                 .imageUrl(imagesJson)
                 .build();
-        EventLayout eventLayout = eventLayoutService.createEventLayout(eventLayoutDTO);
+        EventLayout eventLayout = createEventLayout(eventLayoutDTO);
         for(BoothAreaCreateData areaData : layoutData.areas()) {
             boothAreaService.createBoothArea(eventLayout, areaData.classification(), areaData.maxNumber());
         }
@@ -65,6 +66,15 @@ public class EventLayoutCommonService {
     private boolean isNotRecruitmentPeriod(LocalDate startDate, LocalDate endDate) {
         LocalDate now = LocalDate.now();
         return now.isBefore(startDate) || now.isAfter(endDate);
+    }
+
+    public EventLayout createEventLayout(final EventLayoutDTO eventLayout) {
+        return eventLayoutRepository.save(
+                EventLayout.builder()
+                        .type(eventLayout.type())
+                        .imageUrl(eventLayout.imageUrl())
+                        .build()
+        );
     }
 
 }

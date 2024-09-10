@@ -1,9 +1,8 @@
 package com.openbook.openbook.event.controller.response;
 
 import static com.openbook.openbook.global.util.Formatter.getFormattingDate;
-
-import com.openbook.openbook.event.entity.Event;
-import com.openbook.openbook.event.entity.EventTag;
+import com.openbook.openbook.event.dto.EventDto;
+import com.openbook.openbook.event.dto.EventTagDto;
 import java.util.List;
 
 public record UserEventData(
@@ -16,16 +15,16 @@ public record UserEventData(
         String recruitEndDate,
         List<String> tags
 ) {
-    public static UserEventData of(Event event, List<EventTag> tags) {
+    public static UserEventData of(EventDto event) {
         return new UserEventData(
-                event.getId(),
-                event.getName(),
-                event.getMainImageUrl(),
-                getFormattingDate(event.getOpenDate().atStartOfDay()),
-                getFormattingDate(event.getCloseDate().atStartOfDay()),
-                getFormattingDate(event.getBoothRecruitmentStartDate().atStartOfDay()),
-                getFormattingDate(event.getBoothRecruitmentEndDate().atStartOfDay()),
-                tags.stream().map(EventTag::getName).toList()
+                event.id(),
+                event.name(),
+                event.mainImageUrl(),
+                getFormattingDate(event.openDate().atStartOfDay()),
+                getFormattingDate(event.closeDate().atStartOfDay()),
+                getFormattingDate(event.b_RecruitmentStartDate().atStartOfDay()),
+                getFormattingDate(event.b_RecruitmentEndDate().atStartOfDay()),
+                event.tags().stream().map(EventTagDto::name).toList()
         );
     }
 }

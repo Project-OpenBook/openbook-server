@@ -2,9 +2,8 @@ package com.openbook.openbook.event.controller.response;
 
 import static com.openbook.openbook.global.util.Formatter.getFormattingDate;
 import static com.openbook.openbook.global.util.JsonService.convertJsonToList;
-
-import com.openbook.openbook.event.entity.Event;
-import com.openbook.openbook.event.entity.EventTag;
+import com.openbook.openbook.event.dto.EventDto;
+import com.openbook.openbook.event.dto.EventTagDto;
 import com.openbook.openbook.user.controller.response.UserPublicResponse;
 import java.util.List;
 
@@ -21,18 +20,18 @@ public record EventDetail(
         UserPublicResponse eventManager,
         int boothCount
 ) {
-    public static EventDetail of(Event event, List<EventTag> tags, int boothCount) {
+    public static EventDetail of(EventDto event, int boothCount) {
         return new EventDetail(
-                event.getId(),
-                event.getName(),
-                event.getMainImageUrl(),
-                event.getLocation(),
-                event.getDescription(),
-                getFormattingDate(event.getOpenDate().atStartOfDay()),
-                getFormattingDate(event.getCloseDate().atStartOfDay()),
-                tags.stream().map(EventTag::getName).toList(),
-                convertJsonToList(event.getLayout().getImageUrl()),
-                UserPublicResponse.of(event.getManager()),
+                event.id(),
+                event.name(),
+                event.mainImageUrl(),
+                event.location(),
+                event.description(),
+                getFormattingDate(event.openDate().atStartOfDay()),
+                getFormattingDate(event.closeDate().atStartOfDay()),
+                event.tags().stream().map(EventTagDto::name).toList(),
+                convertJsonToList(event.layoutImageUrls()),
+                UserPublicResponse.of(event.manager()),
                 boothCount
         );
     }

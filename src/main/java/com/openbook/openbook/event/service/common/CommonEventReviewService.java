@@ -7,7 +7,7 @@ import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.entity.EventReview;
 import com.openbook.openbook.event.entity.dto.EventStatus;
 import com.openbook.openbook.event.service.core.EventReviewService;
-import com.openbook.openbook.event.service.core.EventService;
+import com.openbook.openbook.event.service.EventService;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.user.entity.User;

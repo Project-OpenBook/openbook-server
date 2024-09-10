@@ -1,12 +1,8 @@
 package com.openbook.openbook.event.controller.response;
 
 import static com.openbook.openbook.global.util.Formatter.getFormattingDate;
-
-import com.openbook.openbook.event.entity.Event;
-import com.openbook.openbook.event.entity.dto.EventStatus;
-import com.openbook.openbook.event.entity.EventTag;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import com.openbook.openbook.event.dto.EventDto;
+import com.openbook.openbook.event.dto.EventTagDto;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,24 +17,23 @@ public record ManagerEventData(
         String recruitStartDate,
         String recruitEndDate,
         List<String> tags,
-        @Enumerated(EnumType.STRING)
-        EventStatus status,
+        String status,
         LocalDateTime registerDate
 ) {
-    public static ManagerEventData of(Event event, List<EventTag> tags) {
+    public static ManagerEventData of(EventDto event) {
         return new ManagerEventData(
-                event.getId(),
-                event.getName(),
-                event.getMainImageUrl(),
-                event.getLocation(),
-                event.getDescription(),
-                getFormattingDate(event.getOpenDate().atStartOfDay()),
-                getFormattingDate(event.getCloseDate().atStartOfDay()),
-                getFormattingDate(event.getBoothRecruitmentStartDate().atStartOfDay()),
-                getFormattingDate(event.getBoothRecruitmentEndDate().atStartOfDay()),
-                tags.stream().map(EventTag::getName).toList(),
-                event.getStatus(),
-                event.getRegisteredAt()
+                event.id(),
+                event.name(),
+                event.mainImageUrl(),
+                event.location(),
+                event.description(),
+                getFormattingDate(event.openDate().atStartOfDay()),
+                getFormattingDate(event.closeDate().atStartOfDay()),
+                getFormattingDate(event.b_RecruitmentStartDate().atStartOfDay()),
+                getFormattingDate(event.b_RecruitmentEndDate().atStartOfDay()),
+                event.tags().stream().map(EventTagDto::name).toList(),
+                event.status(),
+                event.registeredAt()
         );
     }
 }

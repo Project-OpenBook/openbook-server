@@ -1,5 +1,6 @@
 package com.openbook.openbook.event.entity;
 
+import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.event.entity.dto.EventStatus;
 import com.openbook.openbook.global.util.EntityBasicTime;
 import com.openbook.openbook.user.entity.User;
@@ -55,6 +56,9 @@ public class Event extends EntityBasicTime {
 
     @Enumerated(EnumType.STRING)
     private EventStatus status;
+
+    @OneToMany(mappedBy = "linkedEvent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Booth> eventBooths = new ArrayList<>();
 
     @OneToMany(mappedBy = "linkedEvent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<EventTag> eventTags = new ArrayList<>();

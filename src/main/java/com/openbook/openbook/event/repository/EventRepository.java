@@ -13,10 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
-    Optional<Event> findById(Long id);
 
-    @Query("SELECT e FROM Event e")
-    Page<Event> findAll(Pageable pageable);
+    Optional<Event> findById(Long id);
 
     @Query("SELECT e FROM Event e WHERE e.status=:status ORDER BY e.registeredAt")
     Page<Event> findAllByStatus(Pageable pageable, EventStatus status);

@@ -1,6 +1,5 @@
 package com.openbook.openbook.user.dto;
 
-import com.openbook.openbook.user.entity.User;
 import java.util.Collection;
 import java.util.List;
 import net.minidev.json.annotate.JsonIgnore;
@@ -13,13 +12,6 @@ public record UserDetail(
         String nickname,
         String role
 ) implements UserDetails {
-    public static UserDetail of(User user) {
-        return new UserDetail(
-                user.getId(),
-                user.getNickname(),
-                user.getRole().name()
-        );
-    }
 
     @JsonIgnore
     @Override

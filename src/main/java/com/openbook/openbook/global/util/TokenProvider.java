@@ -27,14 +27,11 @@ public class TokenProvider {
     private Long TOKEN_EXPIRATION_TIME;
     @Value("${jwt.secret.key}")
     private String JWT_SECRET_KEY;
-    private final UserService userService;
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final String USER_ID = "userId";
+    private static final String USER_NICKNAME = "userNickname";
+    private static final String USER_ROLE = "userRole";
 
-    @Autowired
-    public TokenProvider(UserService userService) {
-        this.userService = userService;
-    }
 
     public String getTokenFrom(HttpServletRequest request) {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -45,13 +42,11 @@ public class TokenProvider {
     }
 
     public TokenInfo getInfoOf(String token) {
-        Claims claims = getBody(token);
-        Long userId = Long.valueOf(claims.get(USER_ID).toString());
-        UserDetail userDetails = UserDetail.of(userService.getUserOrException(userId));
+        Claims claims = getBody(token);;
         return TokenInfo.builder()
-                .id(userId)
-                .nickname(userDetails.nickname())
-                .role(userDetails.role())
+                .id(Long.valueOf(claims.get(USER_ID).toString()))
+                .nickname(claims.get(USER_NICKNAME).toString())
+                .role(claims.get(USER_ROLE).toString())
                 .expires_in((claims.getExpiration().getTime() - System.currentTimeMillis())/1000)
                 .build();
     }
@@ -61,9 +56,11 @@ public class TokenProvider {
         return expiredDate.before(new Date());
     }
 
-    public String generateToken(Long id){
+    public String generateToken(Long id, String nickname, String role) {
         Claims claims = Jwts.claims();
         claims.put(USER_ID, id);
+        claims.put(USER_NICKNAME, nickname);
+        claims.put(USER_ROLE, role);
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -74,8 +71,11 @@ public class TokenProvider {
 
     public UsernamePasswordAuthenticationToken getAuthentication(String token) {
         Claims claims = getBody(token);
-        Long userId = Long.valueOf(claims.get(USER_ID).toString());
-        UserDetails userDetails = UserDetail.of(userService.getUserOrException(userId));
+        UserDetails userDetails = new UserDetail(
+                Long.valueOf(claims.get(USER_ID).toString()),
+                claims.get(USER_NICKNAME).toString(),
+                claims.get(USER_ROLE).toString()
+        );
         return new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities()
         );

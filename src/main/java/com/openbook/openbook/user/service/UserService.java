@@ -55,7 +55,7 @@ public class UserService {
         if (!encoder.matches(request.password(), user.getPassword())) {
             throw new OpenBookException(ErrorCode.INVALID_PASSWORD);
         }
-        return tokenProvider.generateToken(user.getId());
+        return tokenProvider.generateToken(user.getId(), user.getNickname(), user.getRole().name());
     }
 
     public Optional<User> getUserByEmail(final String email) {

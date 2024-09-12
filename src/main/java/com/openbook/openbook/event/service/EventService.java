@@ -1,9 +1,14 @@
 package com.openbook.openbook.event.service;
 
+import static com.openbook.openbook.global.util.JsonService.convertJsonToList;
+
 import com.openbook.openbook.booth.service.dto.BoothAreaCreateData;
+import com.openbook.openbook.booth.service.dto.BoothAreaDto;
 import com.openbook.openbook.event.controller.request.EventRegistrationRequest;
+import com.openbook.openbook.event.controller.response.EventLayoutResponse;
 import com.openbook.openbook.event.dto.EventDto;
 import com.openbook.openbook.event.dto.EventLayoutCreateData;
+import com.openbook.openbook.event.dto.EventLayoutDto;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.entity.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
@@ -17,6 +22,7 @@ import com.openbook.openbook.user.service.AlarmService;
 import com.openbook.openbook.user.service.UserService;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -153,12 +159,25 @@ public class EventService {
             default -> throw new OpenBookException(ErrorCode.INVALID_PARAMETER);
         };
     }
-
+    @Transactional(readOnly = true)
+    public EventLayoutDto getEventLayoutStatus(Long eventId) {
+        Event event = getEventOrException(eventId);
+        if(isNotRecruitmentPeriod(event.getBoothRecruitmentStartDate(), event.getBoothRecruitmentEndDate())) {
+            throw new OpenBookException(ErrorCode.INACCESSIBLE_PERIOD);
+        }
+        return EventLayoutDto.of(event.getLayout());
+    }
 
     private void dateValidityCheck(LocalDate startDate, LocalDate endDate) {
         if(startDate.isAfter(endDate)) {
             throw new OpenBookException(ErrorCode.INVALID_DATE_RANGE);
         }
+    }
+
+
+    private boolean isNotRecruitmentPeriod(LocalDate startDate, LocalDate endDate) {
+        LocalDate now = LocalDate.now();
+        return now.isBefore(startDate) || now.isAfter(endDate);
     }
 
     private List<BoothAreaCreateData> getBoothAreaCreateList(List<String> classifications, List<Integer> maxNumbers) {

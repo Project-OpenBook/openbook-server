@@ -4,6 +4,7 @@ package com.openbook.openbook.event.controller;
 import com.openbook.openbook.event.controller.request.EventRegistrationRequest;
 import com.openbook.openbook.event.controller.request.EventStatusUpdateRequest;
 import com.openbook.openbook.event.controller.response.EventDetail;
+import com.openbook.openbook.event.controller.response.EventLayoutResponse;
 import com.openbook.openbook.event.controller.response.ManagerEventData;
 import com.openbook.openbook.event.controller.response.UserEventData;
 import com.openbook.openbook.event.service.EventService;
@@ -49,6 +50,11 @@ public class EventController {
     @GetMapping("/events/{eventId}")
     public EventDetail getEventDetail(@PathVariable Long eventId) {
         return EventDetail.of(eventService.getEventById(eventId), eventService.findBoothCount(eventId));
+    }
+
+    @GetMapping("/events/{eventId}/layout/status")
+    public ResponseEntity<EventLayoutResponse> getEventLayoutStatus(@PathVariable Long eventId) {
+        return ResponseEntity.ok(EventLayoutResponse.of(eventService.getEventLayoutStatus(eventId)));
     }
 
 

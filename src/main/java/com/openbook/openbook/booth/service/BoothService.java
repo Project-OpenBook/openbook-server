@@ -34,13 +34,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BoothService {
 
-    private final BoothProductService boothProductService;
-    private final BoothTagService boothTagService;
+
     private final EventService eventService;
-    private final BoothAreaService boothAreaService;
     private final UserService userService;
     private final AlarmService alarmService;
     private final S3Service s3Service;
+
+    private final BoothAreaService boothAreaService;
+    private final BoothTagService boothTagService;
+    //private final BoothProductService boothProductService;
+
     private final BoothRepository boothRepository;
 
     public Booth getBoothOrException(Long boothId){
@@ -150,7 +153,7 @@ public class BoothService {
         booth.updateStatus(boothStatus);
         if(boothStatus.equals(BoothStatus.APPROVE)){
             boothAreaService.changeAreaStatusBy(booth, BoothAreaStatus.COMPLETE);
-            boothProductService.createProductCategory("기본", "기본으로 생성되는 카테고리",booth);
+            //boothProductService.createProductCategory("기본", "기본으로 생성되는 카테고리",booth);
             alarmService.createAlarm(user, booth.getManager(), AlarmType.BOOTH_APPROVED, booth.getName());
         } else if (boothStatus.equals(BoothStatus.REJECT)) {
             boothAreaService.changeAreaStatusBy(booth, BoothAreaStatus.EMPTY);

@@ -29,27 +29,20 @@ public class BoothReviewService {
     public void registerBoothReview(Long userId, BoothReviewRegisterRequest request){
         User user = userService.getUserOrException(userId);
         Booth booth = boothService.getBoothOrException(request.booth_id());
-
         if(!booth.getStatus().equals(BoothStatus.APPROVE)){
             throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
         }
         if(booth.getLinkedEvent().getOpenDate().isAfter(LocalDate.now())){
             throw new OpenBookException(ErrorCode.CANNOT_REVIEW_PERIOD);
         }
-
-        BoothReviewDto reviewDto = new BoothReviewDto(user, booth, request.star(), request.content(), request.image());
-        createBoothReview(reviewDto);
-    }
-
-    public void createBoothReview(BoothReviewDto reviewDto){
-        boothReviewRepository.save(
-            BoothReview.builder()
-                    .reviewer(reviewDto.reviewer())
-                    .linkedBooth(reviewDto.linkedBooth())
-                    .star(reviewDto.star())
-                    .content(reviewDto.content())
-                    .imageUrl(s3Service.uploadFileAndGetUrl(reviewDto.image()))
-                    .build()
+        boothReviewRepository.save(BoothReview.builder()
+                .reviewer(user)
+                .linkedBooth(booth)
+                .star(request.star())
+                .content(request.content())
+                .imageUrl(s3Service.uploadFileAndGetUrl(request.image()))
+                .build()
         );
     }
+
 }

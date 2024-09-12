@@ -33,13 +33,13 @@ public class BoothNoticeController {
     }
 
     @GetMapping("/{boothId}/notices")
-    public ResponseEntity<SliceResponse<BoothNoticeResponse>> getBoothNotices(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
-        return ResponseEntity.ok(SliceResponse.of(boothNoticeService.getBoothNotices(boothId, pageable)));
+    public SliceResponse<BoothNoticeResponse> getBoothNotices(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
+        return SliceResponse.of(boothNoticeService.getBoothNotices(boothId, pageable).map(BoothNoticeResponse::of));
     }
 
     @GetMapping("/notices/{noticeId}")
     public ResponseEntity<BoothNoticeResponse> getBoothNotice(@PathVariable Long noticeId){
-        return ResponseEntity.ok(boothNoticeService.getBoothNotice(noticeId));
+        return ResponseEntity.ok(BoothNoticeResponse.of(boothNoticeService.getBoothNotice(noticeId)));
     }
 
 }

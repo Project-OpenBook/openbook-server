@@ -1,8 +1,6 @@
 package com.openbook.openbook.booth.controller.response;
 
-import com.openbook.openbook.booth.entity.BoothNotice;
-import com.openbook.openbook.booth.entity.dto.BoothNoticeType;
-
+import com.openbook.openbook.booth.service.dto.BoothNoticeDto;
 import java.time.LocalDateTime;
 
 public record BoothNoticeResponse(
@@ -10,23 +8,19 @@ public record BoothNoticeResponse(
         String title,
         String content,
         String imageUrl,
-        BoothNoticeType type,
+        String type,
         LocalDateTime registeredAt,
-        long boothId,
-        String boothName,
-        long boothManagerId
+        BoothPublicResponse booth
 ) {
-    public static BoothNoticeResponse of(BoothNotice boothNotice){
+    public static BoothNoticeResponse of(BoothNoticeDto boothNotice){
         return new BoothNoticeResponse(
-                boothNotice.getId(),
-                boothNotice.getTitle(),
-                boothNotice.getContent(),
-                boothNotice.getImageUrl(),
-                BoothNoticeType.valueOf(boothNotice.getType()),
-                boothNotice.getRegisteredAt(),
-                boothNotice.getLinkedBooth().getId(),
-                boothNotice.getLinkedBooth().getName(),
-                boothNotice.getLinkedBooth().getManager().getId()
+                boothNotice.id(),
+                boothNotice.title(),
+                boothNotice.content(),
+                boothNotice.imageUrl(),
+                boothNotice.type(),
+                boothNotice.registeredAt(),
+                BoothPublicResponse.of(boothNotice.linkedBooth())
         );
     }
 }

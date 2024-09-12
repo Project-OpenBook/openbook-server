@@ -1,7 +1,8 @@
 package com.openbook.openbook.booth.controller;
 
 import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
-import com.openbook.openbook.booth.controller.response.BoothReservationsResponse;
+import com.openbook.openbook.booth.controller.response.BoothReserveDetailManageResponse;
+import com.openbook.openbook.booth.controller.response.BoothReserveResponse;
 import com.openbook.openbook.booth.controller.response.BoothReserveManageResponse;
 import com.openbook.openbook.booth.service.BoothReservationService;
 import com.openbook.openbook.global.dto.ResponseMessage;
@@ -31,9 +32,10 @@ public class BoothReservationController {
     }
 
     @GetMapping("manage/booths/{boothId}/reservations")
-    public ResponseEntity<List<BoothReserveManageResponse>> getManagedReservation(Authentication authentication,
-                                                                                  @PathVariable Long boothId){
-        return ResponseEntity.ok(reservationService.getAllManageReservations(Long.valueOf(authentication.getName()), boothId));
+    public List<BoothReserveManageResponse> getManagedReservation(Authentication authentication,
+                                                                  @PathVariable Long boothId){
+        return reservationService.getAllManageReservations(Long.valueOf(authentication.getName()), boothId)
+                .stream().map(BoothReserveManageResponse::of).toList();
     }
 
     @PatchMapping("/reserve/{detail_id}")
@@ -43,7 +45,7 @@ public class BoothReservationController {
     }
 
     @GetMapping("/{booth_id}/reservations")
-    public ResponseEntity<List<BoothReservationsResponse>> getAllBoothReservations(@PathVariable Long booth_id){
-        return ResponseEntity.ok(reservationService.getAllBoothReservations(booth_id));
+    public List<BoothReserveResponse> getAllBoothReservations(@PathVariable Long booth_id){
+        return reservationService.getReservationsByBooth(booth_id).stream().map(BoothReserveResponse::of).toList();
     }
 }

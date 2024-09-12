@@ -16,25 +16,27 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BoothReservationDetailService {
+
     private final BoothReservationDetailRepository boothReservationDetailRepository;
 
-    public BoothReservationDetail getBoothReservationDetailOrException(final Long id) {
+    public BoothReservationDetail getReservationDetailOrException(final Long id) {
         return boothReservationDetailRepository.findById(id).orElseThrow(() ->
                 new OpenBookException(ErrorCode.RESERVATION_NOT_FOUND)
         );
     }
-    public void createReservationDetail(List<String> reservationDetails, BoothReservation boothReservation){
+
+    public void createReservationDetail(List<String> reservationDetails, BoothReservation reservation){
         for(String time : reservationDetails){
             boothReservationDetailRepository.save(
                     BoothReservationDetail.builder()
-                            .boothReservation(boothReservation)
+                            .boothReservation(reservation)
                             .time(time)
                             .build()
             );
         }
     }
 
-    public List<BoothReservationDetail> getReservationDetailsByReservation(Long reservationId){
+    public List<BoothReservationDetail> getDetailsOfReservation(Long reservationId){
         return boothReservationDetailRepository.findBoothReservationDetailsByLinkedReservationId(reservationId);
     }
 

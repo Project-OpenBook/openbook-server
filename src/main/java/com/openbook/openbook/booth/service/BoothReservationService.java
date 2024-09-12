@@ -1,17 +1,15 @@
 package com.openbook.openbook.booth.service;
 
 import com.openbook.openbook.booth.controller.request.ReserveRegistrationRequest;
-import com.openbook.openbook.booth.controller.response.BoothReservationDetailResponse;
-import com.openbook.openbook.booth.controller.response.BoothReservationsResponse;
 import com.openbook.openbook.booth.controller.response.BoothReserveDetailManageResponse;
 import com.openbook.openbook.booth.controller.response.BoothReserveManageResponse;
 import com.openbook.openbook.booth.entity.BoothReservationDetail;
 import com.openbook.openbook.booth.entity.dto.BoothReservationStatus;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
-import com.openbook.openbook.booth.service.dto.BoothReservationDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothReservation;
 import com.openbook.openbook.booth.repository.BoothReservationRepository;
+import com.openbook.openbook.booth.service.dto.BoothReservationDto;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.global.util.S3Service;
@@ -32,32 +30,44 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BoothReservationService {
     private final UserService userService;
-    private final BoothService boothService;
-    private final BoothReservationDetailService boothReservationDetailService;
-    private final BoothReservationRepository boothReservationRepository;
     private final S3Service s3Service;
 
-    public List<BoothReservationsResponse> getAllBoothReservations(long boothId){
+    private final BoothService boothService;
+    private final BoothReservationDetailService reservationDetailService;
+    private final BoothReservationRepository boothReservationRepository;
+
+
+    private Booth getValidBoothOrException(long userId, long boothId) {
+        Booth booth = boothService.getBoothOrException(boothId);
+        if (booth.getManager().getId()!=userId) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        if (!booth.getStatus().equals(BoothStatus.APPROVE)) {
+            throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
+        }
+        return booth;
+    }
+
+    public List<BoothReservationDto> getReservationsByBooth(long boothId){
         Booth booth = boothService.getBoothOrException(boothId);
         if(!booth.getStatus().equals(BoothStatus.APPROVE)){
             throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
         }
-        List<BoothReservation> boothReservations = getBoothReservations(booth.getId());
-        List<BoothReservationsResponse> boothReservationsResponses = new ArrayList<>();
-        for(BoothReservation reservation : boothReservations){
-            List<BoothReservationDetailResponse> details = boothReservationDetailService.getReservationDetailsByReservation(reservation.getId())
-                    .stream().map(BoothReservationDetailResponse::of).toList();
-            boothReservationsResponses.add(BoothReservationsResponse.of(reservation, details));
-        }
+        return getBoothReservations(booth.getId()).stream().map(BoothReservationDto::of).toList();
+    }
 
-        return boothReservationsResponses;
+    @Transactional
+    public List<BoothReservationDto> getAllManageReservations(Long userId, Long boothId){
+        Booth booth = getValidBoothOrException(userId, boothId);
+        return getBoothReservations(booth.getId()).stream().map(BoothReservationDto::of).toList();
     }
 
     public void reserveBooth(Long userId, Long detailId){
         User user = userService.getUserOrException(userId);
-        BoothReservationDetail boothReservationDetail = boothReservationDetailService.getBoothReservationDetailOrException(detailId);
+        BoothReservationDetail boothReservationDetail = reservationDetailService.
+                getReservationDetailOrException(detailId);
         checkValidReservationDetail(boothReservationDetail);
-        boothReservationDetailService.setUserToReservation(user, boothReservationDetail);
+        reservationDetailService.setUserToReservation(user, boothReservationDetail);
     }
 
     private void checkValidReservationDetail(BoothReservationDetail boothReservationDetail){
@@ -78,41 +88,19 @@ public class BoothReservationService {
         }
         checkAvailableTime(request, booth);
         checkDuplicateTimes(request.times());
-        BoothReservation boothReservation = createBoothReservation(
-                new BoothReservationDTO(request.name(), request.description(), request.date(),
-                        request.image(), request.price()), booth);
-        boothReservationDetailService.createReservationDetail(request.times(), boothReservation);
-    }
-
-    @Transactional
-    public List<BoothReserveManageResponse> getAllManageReservations(Long userId, Long boothId){
-        Booth booth = getValidBoothOrException(userId, boothId);
-
-        List<BoothReservation> boothReservations = getBoothReservations(booth.getId());
-        List<BoothReserveManageResponse> boothReserveManageResponses = new ArrayList<>();
-
-        for(BoothReservation reservation : boothReservations){
-            List<BoothReserveDetailManageResponse> detailManages =
-                    boothReservationDetailService.getReservationDetailsByReservation(reservation.getId())
-                            .stream().map(BoothReserveDetailManageResponse::of).toList();
-            boothReserveManageResponses.add(BoothReserveManageResponse.of(reservation, detailManages));
-        }
-        return boothReserveManageResponses;
-    }
-
-    public BoothReservation createBoothReservation(BoothReservationDTO boothReservationDTO, Booth booth){
-        return boothReservationRepository.save(
+        BoothReservation reservation = boothReservationRepository.save(
                 BoothReservation.builder()
-                        .name(boothReservationDTO.name())
-                        .description(boothReservationDTO.description())
-                        .date(boothReservationDTO.date())
-                        .imageUrl(s3Service.uploadFileAndGetUrl(boothReservationDTO.image()))
+                        .name(request.name())
+                        .description(request.description())
+                        .date(request.date())
+                        .imageUrl(s3Service.uploadFileAndGetUrl(request.image()))
                         .linkedBooth(booth)
                         .build()
         );
+        reservationDetailService.createReservationDetail(request.times(), reservation);
     }
 
-    public boolean hasExistDate(LocalDate date, Booth booth){
+    private boolean hasExistDate(LocalDate date, Booth booth){
         return boothReservationRepository.existsByDateAndLinkedBooth(date, booth);
     }
 
@@ -140,15 +128,5 @@ public class BoothReservationService {
                 });
     }
 
-    private Booth getValidBoothOrException(Long userId, Long boothId) {
-        User user = userService.getUserOrException(userId);
-        Booth booth = boothService.getBoothOrException(boothId);
-        if (user != booth.getManager()) {
-            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
-        }
-        if (!booth.getStatus().equals(BoothStatus.APPROVE)) {
-            throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
-        }
-        return booth;
-    }
+
 }

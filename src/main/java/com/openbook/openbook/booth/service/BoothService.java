@@ -42,7 +42,7 @@ public class BoothService {
 
     private final BoothAreaService boothAreaService;
     private final BoothTagService boothTagService;
-    //private final BoothProductService boothProductService;
+    private final BoothProductCategoryService boothCategoryService;
 
     private final BoothRepository boothRepository;
 
@@ -153,7 +153,7 @@ public class BoothService {
         booth.updateStatus(boothStatus);
         if(boothStatus.equals(BoothStatus.APPROVE)){
             boothAreaService.changeAreaStatusBy(booth, BoothAreaStatus.COMPLETE);
-            //boothProductService.createProductCategory("기본", "기본으로 생성되는 카테고리",booth);
+            boothCategoryService.createProductCategory("기본", "기본으로 생성되는 카테고리",booth);
             alarmService.createAlarm(user, booth.getManager(), AlarmType.BOOTH_APPROVED, booth.getName());
         } else if (boothStatus.equals(BoothStatus.REJECT)) {
             boothAreaService.changeAreaStatusBy(booth, BoothAreaStatus.EMPTY);

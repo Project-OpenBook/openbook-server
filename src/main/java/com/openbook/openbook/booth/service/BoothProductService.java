@@ -32,25 +32,19 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class BoothProductService {
 
-    private final BoothProductCategoryRepository categoryRepository;
     private final BoothProductRepository boothProductRepository;
     private final BoothProductImageRepository boothProductImageRepository;
     private final S3Service s3Service;
 
     private final UserService userService;
     private final BoothService boothService;
+    private final BoothProductCategoryService categoryService;
 
-
-    public BoothProductCategory getProductCategoryOrException(final long id) {
-        return categoryRepository.findById(id).orElseThrow(()->
-                new OpenBookException(ErrorCode.PRODUCT_CATEGORY_NOT_FOUND)
-        );
-    }
 
     @Transactional(readOnly = true)
     public List<CategoryProductsResponse> findAllBoothProducts(final long boothId, final Pageable pageable) {
         Booth booth = boothService.getBoothOrException(boothId);
-        List<BoothProductCategory> categories = getProductCategories(booth);
+        List<BoothProductCategory> categories = categoryService.getProductCategories(booth);
         List<CategoryProductsResponse> productsList = new ArrayList<>();
         for(BoothProductCategory category : categories) {
             Slice<BoothProductResponse> products = getProductsByCategory(category, pageable).map(
@@ -73,12 +67,12 @@ public class BoothProductService {
         if(!booth.getStatus().equals(BoothStatus.APPROVE)){
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
-        return getProductCategories(booth).stream().map(ProductCategoryResponse::of).toList();
+        return categoryService.getProductCategories(booth).stream().map(ProductCategoryResponse::of).toList();
     }
 
     @Transactional(readOnly = true)
     public CategoryProductsResponse findCategoryProducts(final long categoryId, final Pageable pageable) {
-        BoothProductCategory category = getProductCategoryOrException(categoryId);
+        BoothProductCategory category = categoryService.getProductCategoryOrException(categoryId);
         Slice<BoothProductResponse> products = getProductsByCategory(category, pageable).map(
                 boothProduct -> BoothProductResponse.of(
                         boothProduct,
@@ -92,13 +86,13 @@ public class BoothProductService {
     @Transactional
     public void addProductCategory(Long userId, Long boothId, ProductCategoryRegister request) {
         Booth booth = getValidBoothOrException(userId, boothId);
-        if(getProductCategoryCountBy(booth) > 5) {
+        if(categoryService.getProductCategoryCountBy(booth) > 5) {
             throw new OpenBookException(ErrorCode.EXCEED_MAXIMUM_CATEGORY);
         }
-        if(isExistsCategoryIn(booth, request.name())) {
+        if(categoryService.isExistsCategoryIn(booth, request.name())) {
             throw new OpenBookException(ErrorCode.ALREADY_EXIST_CATEGORY);
         }
-        createProductCategory(request.name(), request.description(), booth);
+        categoryService.createProductCategory(request.name(), request.description(), booth);
     }
 
     @Transactional
@@ -109,7 +103,7 @@ public class BoothProductService {
                 .description(request.description())
                 .stock(request.stock())
                 .price(request.price())
-                .linkedCategory(getProductCategoryOrException(request.categoryId()))
+                .linkedCategory(categoryService.getProductCategoryOrException(request.categoryId()))
                 .build()
         );
         if(request.images()!=null && !request.images().isEmpty()) {
@@ -119,9 +113,6 @@ public class BoothProductService {
         }
     }
 
-    public List<BoothProductCategory> getProductCategories(final Booth linkedBooth) {
-        return categoryRepository.findAllByLinkedBoothId(linkedBooth.getId());
-    }
 
     public Slice<BoothProduct> getProductsByCategory(final BoothProductCategory category, final Pageable pageable) {
         return boothProductRepository.findAllByLinkedCategoryId(category.getId(), pageable);
@@ -131,23 +122,7 @@ public class BoothProductService {
         return boothProductImageRepository.findAllByLinkedProductId(product.getId());
     }
 
-    public boolean isExistsCategoryIn(Booth linkedBooth, String name) {
-        return categoryRepository.existsByLinkedBoothIdAndName(linkedBooth.getId(), name);
-    }
 
-    public int getProductCategoryCountBy(Booth linkedBooth) {
-        return categoryRepository.countByLinkedBoothId(linkedBooth.getId());
-    }
-
-    public void createProductCategory(String categoryName, String description, Booth linkedBooth) {
-        categoryRepository.save(
-                BoothProductCategory.builder()
-                        .name(categoryName)
-                        .description(description)
-                        .linkedBooth(linkedBooth)
-                        .build()
-        );
-    }
 
     public void createBoothProductImage(final MultipartFile imageUrl, final BoothProduct boothProduct) {
         boothProductImageRepository.save(

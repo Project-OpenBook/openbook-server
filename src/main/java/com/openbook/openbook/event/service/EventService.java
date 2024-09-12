@@ -1,22 +1,16 @@
 package com.openbook.openbook.event.service;
 
-import com.openbook.openbook.booth.dto.BoothAreaCreateData;
-import com.openbook.openbook.booth.service.core.BoothService;
+import com.openbook.openbook.booth.service.dto.BoothAreaCreateData;
 import com.openbook.openbook.event.controller.request.EventRegistrationRequest;
-import com.openbook.openbook.event.controller.response.EventDetail;
-import com.openbook.openbook.event.controller.response.ManagerEventData;
-import com.openbook.openbook.event.controller.response.UserEventData;
 import com.openbook.openbook.event.dto.EventDto;
 import com.openbook.openbook.event.dto.EventLayoutCreateData;
 import com.openbook.openbook.event.entity.EventLayout;
 import com.openbook.openbook.event.entity.dto.EventStatus;
 import com.openbook.openbook.event.entity.Event;
 import com.openbook.openbook.event.repository.EventRepository;
-import com.openbook.openbook.event.service.core.EventTagService;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
 import com.openbook.openbook.global.util.S3Service;
-import com.openbook.openbook.global.util.TagUtil;
 import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.entity.dto.AlarmType;
 import com.openbook.openbook.user.service.AlarmService;

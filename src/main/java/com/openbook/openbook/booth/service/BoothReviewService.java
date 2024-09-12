@@ -1,28 +1,29 @@
-package com.openbook.openbook.booth.service.common;
+package com.openbook.openbook.booth.service;
 
 import com.openbook.openbook.booth.controller.request.BoothReviewRegisterRequest;
-import com.openbook.openbook.booth.dto.BoothReviewDto;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;
-import com.openbook.openbook.booth.service.core.BoothReviewService;
-import com.openbook.openbook.booth.service.core.BoothService;
+import com.openbook.openbook.booth.service.dto.BoothReviewDto;
+import com.openbook.openbook.booth.entity.BoothReview;
+import com.openbook.openbook.booth.repository.BoothReviewRepository;
 import com.openbook.openbook.global.exception.ErrorCode;
 import com.openbook.openbook.global.exception.OpenBookException;
+import com.openbook.openbook.global.util.S3Service;
 import com.openbook.openbook.user.entity.User;
 import com.openbook.openbook.user.service.UserService;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-
 @Service
 @RequiredArgsConstructor
-public class CommonBoothReviewService {
-    
+public class BoothReviewService {
+    private final BoothReviewRepository boothReviewRepository;
+    private final S3Service s3Service;
+
     private final UserService userService;
     private final BoothService boothService;
-    private final BoothReviewService boothReviewService;
 
     @Transactional
     public void registerBoothReview(Long userId, BoothReviewRegisterRequest request){
@@ -37,6 +38,18 @@ public class CommonBoothReviewService {
         }
 
         BoothReviewDto reviewDto = new BoothReviewDto(user, booth, request.star(), request.content(), request.image());
-        boothReviewService.createBoothReview(reviewDto);
+        createBoothReview(reviewDto);
+    }
+
+    public void createBoothReview(BoothReviewDto reviewDto){
+        boothReviewRepository.save(
+            BoothReview.builder()
+                    .reviewer(reviewDto.reviewer())
+                    .linkedBooth(reviewDto.linkedBooth())
+                    .star(reviewDto.star())
+                    .content(reviewDto.content())
+                    .imageUrl(s3Service.uploadFileAndGetUrl(reviewDto.image()))
+                    .build()
+        );
     }
 }

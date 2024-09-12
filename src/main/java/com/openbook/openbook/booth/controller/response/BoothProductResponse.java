@@ -1,6 +1,6 @@
 package com.openbook.openbook.booth.controller.response;
 
-import com.openbook.openbook.booth.dto.ProductImageDto;
+import com.openbook.openbook.booth.service.dto.ProductImageDto;
 import com.openbook.openbook.booth.entity.BoothProduct;
 import com.openbook.openbook.booth.entity.BoothProductImage;
 import java.util.List;

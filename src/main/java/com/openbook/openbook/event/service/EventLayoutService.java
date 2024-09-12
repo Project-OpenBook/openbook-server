@@ -4,9 +4,9 @@ package com.openbook.openbook.event.service;
 import static com.openbook.openbook.global.util.JsonService.convertJsonToList;
 
 import com.google.gson.Gson;
-import com.openbook.openbook.booth.dto.BoothAreaCreateData;
-import com.openbook.openbook.booth.dto.BoothAreaStatusData;
-import com.openbook.openbook.booth.service.core.BoothAreaService;
+import com.openbook.openbook.booth.service.dto.BoothAreaCreateData;
+import com.openbook.openbook.booth.service.dto.BoothAreaStatusData;
+import com.openbook.openbook.booth.service.BoothAreaService;
 import com.openbook.openbook.event.controller.response.EventLayoutStatus;
 import com.openbook.openbook.event.dto.EventLayoutCreateData;
 import com.openbook.openbook.event.dto.EventLayoutDTO;
@@ -50,6 +50,7 @@ public class EventLayoutService {
 
     @Transactional(readOnly = true)
     public EventLayoutStatus getEventLayoutStatus(Long eventId) {
+
         Event event = eventService.getEventOrException(eventId);
         if(isNotRecruitmentPeriod(event.getBoothRecruitmentStartDate(), event.getBoothRecruitmentEndDate())) {
             throw new OpenBookException(ErrorCode.INACCESSIBLE_PERIOD);

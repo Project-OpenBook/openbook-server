@@ -1,7 +1,7 @@
-package com.openbook.openbook.booth.service.core;
+package com.openbook.openbook.booth.service;
 
 
-import com.openbook.openbook.booth.dto.BoothAreaStatusData;
+import com.openbook.openbook.booth.service.dto.BoothAreaStatusData;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.dto.BoothAreaStatus;
 import com.openbook.openbook.event.entity.EventLayout;

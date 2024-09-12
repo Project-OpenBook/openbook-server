@@ -1,4 +1,4 @@
-package com.openbook.openbook.booth.dto;
+package com.openbook.openbook.booth.service.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 

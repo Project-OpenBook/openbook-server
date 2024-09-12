@@ -1,6 +1,6 @@
 package com.openbook.openbook.event.controller.response;
 
-import com.openbook.openbook.booth.dto.BoothAreaStatusData;
+import com.openbook.openbook.booth.service.dto.BoothAreaStatusData;
 import com.openbook.openbook.event.entity.dto.EventLayoutType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

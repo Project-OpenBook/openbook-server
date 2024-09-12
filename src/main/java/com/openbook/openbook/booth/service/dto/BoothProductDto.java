@@ -1,4 +1,4 @@
-package com.openbook.openbook.booth.dto;
+package com.openbook.openbook.booth.service.dto;
 
 import com.openbook.openbook.booth.entity.BoothProductCategory;
 import java.util.List;

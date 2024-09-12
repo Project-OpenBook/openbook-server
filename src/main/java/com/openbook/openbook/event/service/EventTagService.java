@@ -1,4 +1,4 @@
-package com.openbook.openbook.event.service.core;
+package com.openbook.openbook.event.service;
 
 
 import com.openbook.openbook.event.entity.Event;
@@ -27,7 +27,6 @@ public class EventTagService {
                 )
         );
     }
-
 
     public Slice<Event> getEventsWithTagNameMatchBy(String name, EventStatus status, Pageable pageable) {
         return eventTagRepository.findLinkedEventsByNameAndEventStatus(pageable, name, status);

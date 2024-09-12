@@ -1,6 +1,6 @@
-package com.openbook.openbook.booth.service.core;
+package com.openbook.openbook.booth.service;
 
-import com.openbook.openbook.booth.dto.BoothTagDTO;
+import com.openbook.openbook.booth.service.dto.BoothTagDTO;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.BoothTag;
 import com.openbook.openbook.booth.entity.dto.BoothStatus;

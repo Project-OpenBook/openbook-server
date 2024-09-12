@@ -1,6 +1,6 @@
 package com.openbook.openbook.event.dto;
 
-import com.openbook.openbook.booth.dto.BoothAreaCreateData;
+import com.openbook.openbook.booth.service.dto.BoothAreaCreateData;
 import com.openbook.openbook.event.entity.dto.EventLayoutType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

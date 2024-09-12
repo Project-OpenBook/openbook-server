@@ -1,4 +1,4 @@
-package com.openbook.openbook.booth.service.core;
+package com.openbook.openbook.booth.service;
 
 import com.openbook.openbook.booth.entity.BoothReservation;
 import com.openbook.openbook.booth.entity.BoothReservationDetail;

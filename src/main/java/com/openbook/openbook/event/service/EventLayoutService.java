@@ -5,7 +5,7 @@ import static com.openbook.openbook.global.util.JsonService.convertJsonToList;
 
 import com.google.gson.Gson;
 import com.openbook.openbook.booth.service.dto.BoothAreaCreateData;
-import com.openbook.openbook.booth.service.dto.BoothAreaStatusData;
+import com.openbook.openbook.booth.service.dto.BoothAreaDto;
 import com.openbook.openbook.booth.service.BoothAreaService;
 import com.openbook.openbook.event.controller.response.EventLayoutStatus;
 import com.openbook.openbook.event.dto.EventLayoutCreateData;
@@ -56,7 +56,7 @@ public class EventLayoutService {
             throw new OpenBookException(ErrorCode.INACCESSIBLE_PERIOD);
         }
         EventLayout layout = event.getLayout();
-        Map<String, List<BoothAreaStatusData>> areas = boothAreaService.getBoothAreaProgress(layout);
+        Map<String, List<BoothAreaDto>> areas = boothAreaService.getBoothAreasOf(layout);
         return new EventLayoutStatus(convertJsonToList(layout.getImageUrl()), layout.getType(), areas);
     }
 

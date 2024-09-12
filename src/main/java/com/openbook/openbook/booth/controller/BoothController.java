@@ -46,14 +46,13 @@ public class BoothController {
 
     @GetMapping
     public ResponseEntity<SliceResponse<BoothBasicData>> getBooths(@PageableDefault(size = 6) Pageable pageable){
-        return ResponseEntity.ok(SliceResponse.of(boothService.getBoothBasicData(pageable)));
+        return ResponseEntity.ok(SliceResponse.of(boothService.getBooths(pageable).map(BoothBasicData::of)));
     }
 
     @GetMapping("/{boothId}")
     public ResponseEntity<BoothDetail> getBooth(@PathVariable Long boothId){
-        return ResponseEntity.ok(boothService.getBoothDetail(boothId));
+        return ResponseEntity.ok(BoothDetail.of(boothService.getBoothById(boothId)));
     }
-
 
 
     @GetMapping("/search")
@@ -61,17 +60,18 @@ public class BoothController {
                                                                          @RequestParam(value = "query", defaultValue = "") String query,
                                                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                                                          @RequestParam(value = "sort", defaultValue = "desc") String sort){
-        Slice<BoothBasicData> result = boothService.searchBoothBy(searchType, query, page, sort);
+        Slice<BoothBasicData> result = boothService.searchBoothBy(searchType, query, page, sort).map(BoothBasicData::of);
         return ResponseEntity.ok(SliceResponse.of(result));
     }
 
     @GetMapping("/events/{eventId}/managed/booths")
-    public ResponseEntity<PageResponse<BoothManageData>> getBoothManagePage(@RequestParam(defaultValue = "all") String status,
+    public PageResponse<BoothManageData> getBoothManagePage(@RequestParam(defaultValue = "all") String status,
                                                                             @PathVariable Long eventId,
                                                                             @PageableDefault(size = 10) Pageable pageable,
                                                                             Authentication authentication){
-        return ResponseEntity.ok(PageResponse.of(
-                boothService.getBoothManageData(status, eventId, pageable, Long.valueOf(authentication.getName()))));
+        return PageResponse.of(
+                boothService.getBoothsOfEvent(status, eventId, pageable, Long.valueOf(authentication.getName()))
+                        .map(BoothManageData::of));
     }
 
     @PutMapping("/events/booths/{boothId}/status")
@@ -82,11 +82,12 @@ public class BoothController {
     }
 
     @GetMapping("manage/booths")
-    public ResponseEntity<SliceResponse<BoothManageData>> getManagedBooth(Authentication authentication,
+    public SliceResponse<BoothManageData> getManagedBooth(Authentication authentication,
                                                                           @PageableDefault(size = 6)Pageable pageable,
                                                                           @RequestParam(defaultValue = "ALL") String status){
-        return ResponseEntity.ok(SliceResponse.of(
-                boothService.getManagedBoothList(Long.valueOf(authentication.getName()), pageable, status)));
+        return SliceResponse.of(
+                boothService.getBoothsByManager(Long.valueOf(authentication.getName()), pageable, status)
+                        .map(BoothManageData::of));
     }
 
     @DeleteMapping("/booths/{boothId}")
@@ -94,4 +95,5 @@ public class BoothController {
         boothService.deleteBooth(Long.valueOf(authentication.getName()), boothId);
         return ResponseEntity.ok(new ResponseMessage("부스를 삭제했습니다."));
     }
+
 }

@@ -31,6 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class EventService {
 
+    private final UserService userService;
+    private final EventTagService eventTagService;
+    private final EventLayoutService eventLayoutService;
+
+    private final AlarmService alarmService;
+    private final S3Service s3Service;
+
     private final EventRepository eventRepository;
 
     public Event getEventOrException(final Long eventId) {
@@ -42,13 +49,6 @@ public class EventService {
     public int findBoothCount(final Long eventId) {
         return getEventOrException(eventId).getEventBooths().size();
     }
-
-    private final EventLayoutService eventLayoutService;
-    private final UserService userService;
-    private final EventTagService eventTagService;
-    private final AlarmService alarmService;
-    private final S3Service s3Service;
-
 
 
 

@@ -1,8 +1,9 @@
 package com.openbook.openbook.booth.controller.response;
 
-import com.openbook.openbook.booth.entity.Booth;
-import com.openbook.openbook.booth.entity.BoothTag;
-
+import com.openbook.openbook.booth.service.dto.BoothAreaDto;
+import com.openbook.openbook.booth.service.dto.BoothDto;
+import com.openbook.openbook.booth.service.dto.BoothTagDto;
+import com.openbook.openbook.event.controller.response.EventPublicResponse;
 import com.openbook.openbook.user.controller.response.UserPublicResponse;
 import java.util.List;
 
@@ -15,26 +16,23 @@ public record BoothDetail(
         String mainImageUrl,
         String openTime,
         String closeTime,
-        List<BoothAreaData> location,
+        List<BoothAreaDto> location,
         List<String> tags,
-        UserPublicResponse boothManager,
-        Long eventId,
-        String eventName
+        UserPublicResponse manager,
+        EventPublicResponse event
 ) {
-
-    public static BoothDetail of(Booth booth, List<BoothAreaData> boothAreas, List<BoothTag> tags){
+    public static BoothDetail of(BoothDto booth){
         return new BoothDetail(
-                booth.getId(),
-                booth.getName(),
-                booth.getDescription(),
-                booth.getMainImageUrl(),
-                getFormattingTime(booth.getOpenTime()),
-                getFormattingTime(booth.getCloseTime()),
-                boothAreas,
-                tags.stream().map(BoothTag::getName).toList(),
-                UserPublicResponse.of(booth.getManager()),
-                booth.getLinkedEvent().getId(),
-                booth.getLinkedEvent().getName()
+                booth.id(),
+                booth.name(),
+                booth.description(),
+                booth.mainImageUrl(),
+                getFormattingTime(booth.openTime()),
+                getFormattingTime(booth.closeTime()),
+                booth.locations(),
+                booth.tags().stream().map(BoothTagDto::name).toList(),
+                UserPublicResponse.of(booth.manager()),
+                EventPublicResponse.of(booth.linkedEvent())
         );
     }
 }

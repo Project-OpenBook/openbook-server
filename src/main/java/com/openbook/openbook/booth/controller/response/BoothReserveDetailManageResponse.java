@@ -3,6 +3,7 @@ package com.openbook.openbook.booth.controller.response;
 import com.openbook.openbook.booth.entity.BoothReservationDetail;
 import com.openbook.openbook.booth.entity.dto.BoothReservationStatus;
 import com.openbook.openbook.user.controller.response.UserPublicResponse;
+import com.openbook.openbook.user.dto.UserDto;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
@@ -14,12 +15,11 @@ public record BoothReserveDetailManageResponse(
         UserPublicResponse reserveUser
 ) {
     public static BoothReserveDetailManageResponse of(BoothReservationDetail detail){
-        UserPublicResponse userPublicResponse = detail.getUser() != null ? UserPublicResponse.of(detail.getUser()) : null;
         return new BoothReserveDetailManageResponse(
                 detail.getId(),
                 detail.getTime(),
                 detail.getStatus(),
-                userPublicResponse
+                detail.getUser() != null ? UserPublicResponse.of(UserDto.of(detail.getUser())) : null
         );
     }
 }

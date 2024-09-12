@@ -1,8 +1,7 @@
 package com.openbook.openbook.booth.controller.response;
 
-import com.openbook.openbook.booth.entity.Booth;
-import com.openbook.openbook.booth.entity.BoothTag;
-import com.openbook.openbook.event.entity.Event;
+import com.openbook.openbook.booth.service.dto.BoothDto;
+import com.openbook.openbook.booth.service.dto.BoothTagDto;
 import java.util.List;
 
 import static com.openbook.openbook.global.util.Formatter.getFormattingDate;
@@ -16,15 +15,15 @@ public record BoothBasicData(
         String mainImageUrl,
         List<String> tags
 ) {
-    public static BoothBasicData of(Booth booth, Event event, List<BoothTag> tags){
+    public static BoothBasicData of(BoothDto booth){
         return new BoothBasicData(
-                booth.getId(),
-                booth.getName(),
-                event.getName(),
-                getFormattingDate(event.getOpenDate().atStartOfDay()),
-                getFormattingDate(event.getCloseDate().atStartOfDay()),
-                booth.getMainImageUrl(),
-                tags.stream().map(BoothTag::getName).toList()
+                booth.id(),
+                booth.name(),
+                booth.linkedEvent().name(),
+                getFormattingDate(booth.linkedEvent().openDate().atStartOfDay()),
+                getFormattingDate(booth.linkedEvent().closeDate().atStartOfDay()),
+                booth.mainImageUrl(),
+                booth.tags().stream().map(BoothTagDto::name).toList()
         );
     }
 }

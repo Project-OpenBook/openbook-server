@@ -1,7 +1,7 @@
 package com.openbook.openbook.booth.service;
 
 
-import com.openbook.openbook.booth.service.dto.BoothAreaStatusData;
+import com.openbook.openbook.booth.service.dto.BoothAreaDto;
 import com.openbook.openbook.booth.entity.Booth;
 import com.openbook.openbook.booth.entity.dto.BoothAreaStatus;
 import com.openbook.openbook.event.entity.EventLayout;
@@ -27,6 +27,15 @@ public class BoothAreaService {
         );
     }
 
+    public boolean hasLinkedBooth(List<Long> targetAreas){
+        for(Long id : targetAreas){
+            if(!getBoothAreaOrException(id).getStatus().equals(BoothAreaStatus.EMPTY)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void createBoothArea(EventLayout layout, String classification, int lineMax) {
         for(int number=1; number<=lineMax; number++) {
             boothAreaRepository.save(
@@ -39,33 +48,42 @@ public class BoothAreaService {
         }
     }
 
-    public void setBoothToArea(List<Long> boothAreas, Booth booth){
-        for(Long areaId : boothAreas){
+    public void setBoothToArea(List<Long> targetAreas, Booth booth){
+        for(Long areaId : targetAreas){
             BoothArea boothArea = getBoothAreaOrException(areaId);
-            boothArea.updateBooth(BoothAreaStatus.WAITING, booth);
+            boothArea.updateStatus(booth, BoothAreaStatus.WAITING);
         }
     }
 
-    public List<BoothArea> getBoothAreasByBoothId(Long boothId) {
-        return boothAreaRepository.findAllByLinkedBoothId(boothId);
+    public void changeAreaStatusBy(Booth booth, BoothAreaStatus boothAreaStatus){
+        for(BoothArea boothArea : boothAreaRepository.findAllByLinkedBoothId(booth.getId())){
+            boothArea.updateStatus(booth, boothAreaStatus);
+        }
     }
 
-    public Map<String, List<BoothAreaStatusData>> getBoothAreaProgress(EventLayout layout) {
-        List<BoothArea> areas = boothAreaRepository.findAllByLinkedEventLayout(layout);
-        return areas.stream().collect(
-                Collectors.groupingBy(
+    public void disconnectBooth(Booth booth){
+        for(BoothArea boothArea : boothAreaRepository.findAllByLinkedBoothId(booth.getId())){
+            boothArea.updateStatus(null, BoothAreaStatus.EMPTY);
+        }
+    }
+
+    public List<BoothAreaDto> getBoothAreasByBoothId(Long boothId) {
+        return boothAreaRepository.findAllByLinkedBoothId(boothId)
+                .stream()
+                .map(BoothAreaDto::of)
+                .toList();
+    }
+
+    public Map<String, List<BoothAreaDto>> getBoothAreasOf(EventLayout layout) {
+        return boothAreaRepository.findAllByLinkedEventLayoutId(layout.getId())
+                .stream()
+                .collect(Collectors.groupingBy(
                         BoothArea::getClassification,
                         Collectors.mapping(
-                                e -> new BoothAreaStatusData(e.getId(), e.getStatus(), e.getNumber()),
+                                BoothAreaDto::of,
                                 Collectors.toList()
                         )
                 ));
-    }
-
-    public void disconnectBooth(List<BoothArea> boothAreas){
-        for(BoothArea boothArea : boothAreas){
-            boothArea.updateBooth(BoothAreaStatus.EMPTY, null);
-        }
     }
 
 }

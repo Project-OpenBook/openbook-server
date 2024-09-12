@@ -1,7 +1,7 @@
 package com.openbook.openbook.configuration;
 
-import com.openbook.openbook.global.exception.CustomAccessDeniedHandler;
-import com.openbook.openbook.global.exception.CustomAuthenticationEntryPoint;
+import com.openbook.openbook.exception.CustomAccessDeniedHandler;
+import com.openbook.openbook.exception.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,0 +1,54 @@
+package com.openbook.openbook.api.event;
+
+
+import com.openbook.openbook.api.event.request.EventNoticeRegisterRequest;
+import com.openbook.openbook.api.event.response.EventNoticeResponse;
+import com.openbook.openbook.service.event.EventNoticeService;
+import com.openbook.openbook.api.ResponseMessage;
+import com.openbook.openbook.api.SliceResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+public class EventNoticeController {
+
+    private final EventNoticeService eventNoticeService;
+
+
+    @GetMapping("/events/{event_id}/notices")
+    public SliceResponse<EventNoticeResponse> getEventNotices(@PathVariable Long event_id,
+                                                              @PageableDefault(size = 5) Pageable pageable) {
+        return SliceResponse.of(eventNoticeService.getEventNotices(event_id, pageable).map(EventNoticeResponse::of));
+    }
+
+    @GetMapping("/events/notices/{notice_id}")
+    public EventNoticeResponse getEventNotice(@PathVariable Long notice_id) {
+        return EventNoticeResponse.of(eventNoticeService.getEventNotice(notice_id));
+    }
+
+    @PostMapping("/events/{event_id}/notices")
+    public ResponseEntity<ResponseMessage> postNotice(Authentication authentication,
+                                                      @PathVariable Long event_id,
+                                                      @Valid EventNoticeRegisterRequest request) {
+        eventNoticeService.registerEventNotice(Long.valueOf(authentication.getName()), event_id, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("공지 등록에 성공했습니다."));
+    }
+
+    @DeleteMapping("/events/notices/{notice_id}")
+    public ResponseEntity<ResponseMessage> deleteNotice(Authentication authentication,
+                                                        @PathVariable Long notice_id) {
+        eventNoticeService.deleteEventNotice(Long.valueOf(authentication.getName()), notice_id);
+        return ResponseEntity.ok(new ResponseMessage("공지 삭제에 성공했습니다."));
+    }
+}

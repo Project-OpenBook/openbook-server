@@ -1,0 +1,9 @@
+package com.openbook.openbook.repository.booth;
+
+import com.openbook.openbook.domain.booth.BoothReview;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface BoothReviewRepository extends JpaRepository<BoothReview, Long> {
+}

@@ -4,6 +4,7 @@ package com.openbook.openbook.service.user;
 import com.openbook.openbook.api.user.request.BookmarkRequest;
 import com.openbook.openbook.domain.user.Bookmark;
 import com.openbook.openbook.domain.user.User;
+import com.openbook.openbook.domain.user.dto.BookmarkType;
 import com.openbook.openbook.repository.user.BookmarkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class BookmarkService {
         User user = userService.getUserOrException(userId);
         bookmarkRepository.save( Bookmark.builder()
                 .user(user)
-                .bookmarkType(request.type())
+                .bookmarkType(BookmarkType.fromString(request.type()))
                 .resourceId(request.resourceId())
                 .alarmSet(request.alarmSet() == null || request.alarmSet())
                 .build()

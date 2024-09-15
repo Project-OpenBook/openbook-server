@@ -7,6 +7,7 @@ import com.openbook.openbook.api.event.response.EventPublicResponse;
 import com.openbook.openbook.api.user.response.UserPublicResponse;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.openbook.openbook.util.Formatter.getFormattingTime;
@@ -16,10 +17,8 @@ public record BoothDetail(
         String name,
         String description,
         String mainImageUrl,
-        String openTime,
-        String closeTime,
-        LocalDate openDate,
-        LocalDate closeDate,
+        LocalDateTime openData,
+        LocalDateTime closeData,
         List<BoothAreaDto> location,
         List<String> tags,
         UserPublicResponse manager,
@@ -31,10 +30,8 @@ public record BoothDetail(
                 booth.name(),
                 booth.description(),
                 booth.mainImageUrl(),
-                getFormattingTime(booth.openTime()),
-                getFormattingTime(booth.closeTime()),
-                booth.linkedEvent().openDate(),
-                booth.linkedEvent().closeDate(),
+                booth.openTime(),
+                booth.closeTime(),
                 booth.locations(),
                 booth.tags().stream().map(BoothTagDto::name).toList(),
                 UserPublicResponse.of(booth.manager()),

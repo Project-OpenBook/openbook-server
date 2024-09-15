@@ -42,18 +42,18 @@ public class BoothProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("상품 추가에 성공했습니다."));
     }
 
-    @GetMapping("/{booth_id}/product-category")
+    @GetMapping("/booths/{booth_id}/product-category")
     public ResponseEntity<List<ProductCategoryResponse>> getProductCategory(@PathVariable Long booth_id) {
         return ResponseEntity.ok(boothProductService.getProductCategoryResponseList(booth_id));
     }
 
-    @GetMapping("/{booth_id}/products")
+    @GetMapping("/booths/{booth_id}/products")
     public ResponseEntity<List<CategoryProductsResponse>> getAllBoothProducts(@PathVariable Long booth_id,
                                                                               @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(boothProductService.findAllBoothProducts(booth_id, pageable));
     }
 
-    @GetMapping("/products/category")
+    @GetMapping("/booths/products/category")
     public ResponseEntity<CategoryProductsResponse> getProductsByCategory(@RequestParam Long category_id,
                                                                           @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(boothProductService.findCategoryProducts(category_id, pageable));

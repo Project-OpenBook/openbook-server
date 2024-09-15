@@ -19,7 +19,7 @@ public class BoothReviewController {
     private final BoothReviewService boothReviewService;
 
 
-    @PostMapping("/review")
+    @PostMapping("/booths/review")
     public ResponseEntity<ResponseMessage> postReview(Authentication authentication,
                                                       @Valid BoothReviewRegisterRequest request){
         boothReviewService.registerBoothReview(Long.valueOf(authentication.getName()), request);

@@ -1,6 +1,7 @@
 package com.openbook.openbook.api.booth;
 
 import com.openbook.openbook.api.booth.request.ReserveRegistrationRequest;
+import com.openbook.openbook.api.booth.request.ReserveStatusUpdateRequest;
 import com.openbook.openbook.api.booth.response.BoothReserveResponse;
 import com.openbook.openbook.api.booth.response.BoothReserveManageResponse;
 import com.openbook.openbook.service.booth.BoothReservationService;
@@ -35,6 +36,14 @@ public class BoothReservationController {
                                                                   @PathVariable Long boothId){
         return reservationService.getAllManageReservations(Long.valueOf(authentication.getName()), boothId)
                 .stream().map(BoothReserveManageResponse::of).toList();
+    }
+
+    @PatchMapping("/manage/booths/reserve/{detail_id}")
+    public ResponseEntity<ResponseMessage> changeReserveStatus(Authentication authentication,
+                                                               @RequestBody ReserveStatusUpdateRequest request,
+                                                               @PathVariable Long detail_id){
+        reservationService.changeReserveStatus(detail_id, request.status(), Long.valueOf(authentication.getName()));
+        return ResponseEntity.ok(new ResponseMessage("예약 상태가 변경되었습니다."));
     }
 
     @PatchMapping("/booths/reserve/{detail_id}")

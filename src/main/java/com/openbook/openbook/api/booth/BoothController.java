@@ -30,12 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/booths")
 public class BoothController {
 
     private final BoothService boothService;
 
-    @PostMapping
+    @PostMapping("/booths")
     public ResponseEntity<ResponseMessage> registration(Authentication authentication, @Valid BoothRegistrationRequest request){
         boothService.boothRegistration(Long.valueOf(authentication.getName()), request);
         return ResponseEntity
@@ -44,18 +43,18 @@ public class BoothController {
 
     }
 
-    @GetMapping
+    @GetMapping("/booths")
     public ResponseEntity<SliceResponse<BoothBasicData>> getBooths(@PageableDefault(size = 6) Pageable pageable){
         return ResponseEntity.ok(SliceResponse.of(boothService.getBooths(pageable).map(BoothBasicData::of)));
     }
 
-    @GetMapping("/{boothId}")
+    @GetMapping("/booths/{boothId}")
     public ResponseEntity<BoothDetail> getBooth(@PathVariable Long boothId){
         return ResponseEntity.ok(BoothDetail.of(boothService.getBoothById(boothId)));
     }
 
 
-    @GetMapping("/search")
+    @GetMapping("/booths/search")
     public ResponseEntity<SliceResponse<BoothBasicData>> searchBoothName(@RequestParam(value = "type") String searchType,
                                                                          @RequestParam(value = "query", defaultValue = "") String query,
                                                                          @RequestParam(value = "page", defaultValue = "0") int page,

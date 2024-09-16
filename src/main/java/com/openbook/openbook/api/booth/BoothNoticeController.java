@@ -32,12 +32,12 @@ public class BoothNoticeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("공지 등록에 성공했습니다."));
     }
 
-    @GetMapping("/{boothId}/notices")
+    @GetMapping("/booths/{boothId}/notices")
     public SliceResponse<BoothNoticeResponse> getBoothNotices(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
         return SliceResponse.of(boothNoticeService.getBoothNotices(boothId, pageable).map(BoothNoticeResponse::of));
     }
 
-    @GetMapping("/notices/{noticeId}")
+    @GetMapping("/booths/notices/{noticeId}")
     public ResponseEntity<BoothNoticeResponse> getBoothNotice(@PathVariable Long noticeId){
         return ResponseEntity.ok(BoothNoticeResponse.of(boothNoticeService.getBoothNotice(noticeId)));
     }

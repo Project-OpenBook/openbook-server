@@ -37,13 +37,13 @@ public class BoothReservationController {
                 .stream().map(BoothReserveManageResponse::of).toList();
     }
 
-    @PatchMapping("/reserve/{detail_id}")
+    @PatchMapping("/booths/reserve/{detail_id}")
     public ResponseEntity<ResponseMessage> reservation(Authentication authentication, @PathVariable Long detail_id){
         reservationService.reserveBooth(Long.valueOf(authentication.getName()), detail_id);
         return ResponseEntity.ok(new ResponseMessage("예약 신청이 되었습니다."));
     }
 
-    @GetMapping("/{booth_id}/reservations")
+    @GetMapping("/booths/{booth_id}/reservations")
     public List<BoothReserveResponse> getAllBoothReservations(@PathVariable Long booth_id){
         return reservationService.getReservationsByBooth(booth_id).stream().map(BoothReserveResponse::of).toList();
     }

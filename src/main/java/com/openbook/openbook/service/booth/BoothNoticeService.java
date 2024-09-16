@@ -38,8 +38,9 @@ public class BoothNoticeService {
     }
 
     @Transactional(readOnly = true)
-    public BoothNoticeDto getBoothNotice(Long boothId){
-        return BoothNoticeDto.of(getBoothNoticeOrException(boothId), boothService.getBoothById(boothId));
+    public BoothNoticeDto getBoothNotice(Long noticeId){
+        BoothNotice notice = getBoothNoticeOrException(noticeId);
+        return BoothNoticeDto.of(notice, boothService.getBoothById(notice.getLinkedBooth().getId()));
     }
 
     @Transactional

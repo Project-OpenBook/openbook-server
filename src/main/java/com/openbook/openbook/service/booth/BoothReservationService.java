@@ -145,11 +145,11 @@ public class BoothReservationService {
         if(status.equals(BoothReservationStatus.COMPLETE)){
             boothReservationDetail.updateUser(status, reserveUser);
             alarmService.createAlarm(manager, reserveUser,
-                    AlarmType.RESERVE_APPROVED, boothReservationDetail.getTime());
+                    AlarmType.RESERVE_APPROVED, boothReservationDetail.getLinkedReservation().getName());
         } else if (status.equals(BoothReservationStatus.EMPTY)) {
             boothReservationDetail.updateUser(status, null);
             alarmService.createAlarm(manager, reserveUser,
-                    AlarmType.RESERVE_REJECTED, boothReservationDetail.getTime());
+                    AlarmType.RESERVE_REJECTED, boothReservationDetail.getLinkedReservation().getName());
         }
     }
 

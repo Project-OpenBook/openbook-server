@@ -2,10 +2,14 @@ package com.openbook.openbook.api.user;
 
 
 import com.openbook.openbook.api.ResponseMessage;
+import com.openbook.openbook.api.SliceResponse;
 import com.openbook.openbook.api.user.request.BookmarkRequest;
+import com.openbook.openbook.api.user.response.BookmarkResponse;
 import com.openbook.openbook.service.user.BookmarkService;
+import com.openbook.openbook.service.user.dto.BookmarkDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,8 +35,13 @@ public class BookmarkController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/bookmark")
-    public void findBookmark(Authentication authentication, @RequestParam(value = "type") String request) {
-
+    public SliceResponse<BookmarkResponse> findBookmark(Authentication authentication,
+                                                        @RequestParam(value = "type") String request,
+                                                        Pageable pageable) {
+        return SliceResponse.of(bookmarkService
+                .findBookmarkList(Long.parseLong(authentication.getName()), request, pageable)
+                .map(BookmarkResponse::of)
+        );
     }
 
 }

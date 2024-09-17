@@ -1,6 +1,7 @@
 package com.openbook.openbook.api.booth;
 
 import com.openbook.openbook.api.booth.request.ReserveRegistrationRequest;
+import com.openbook.openbook.api.booth.request.ReserveStatusUpdateRequest;
 import com.openbook.openbook.api.booth.response.BoothReserveResponse;
 import com.openbook.openbook.api.booth.response.BoothReserveManageResponse;
 import com.openbook.openbook.service.booth.BoothReservationService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,6 +37,14 @@ public class BoothReservationController {
                                                                   @PathVariable Long boothId){
         return reservationService.getAllManageReservations(Long.valueOf(authentication.getName()), boothId)
                 .stream().map(BoothReserveManageResponse::of).toList();
+    }
+
+    @PatchMapping("/manage/booths/reserve/{detail_id}")
+    public ResponseEntity<ResponseMessage> changeReserveStatus(Authentication authentication,
+                                                               @RequestBody ReserveStatusUpdateRequest request,
+                                                               @PathVariable Long detail_id){
+        reservationService.changeReserveStatus(detail_id, request, Long.valueOf(authentication.getName()));
+        return ResponseEntity.ok(new ResponseMessage("예약 상태가 변경되었습니다."));
     }
 
     @PatchMapping("/booths/reserve/{detail_id}")

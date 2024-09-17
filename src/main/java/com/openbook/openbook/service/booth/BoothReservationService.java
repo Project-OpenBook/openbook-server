@@ -1,15 +1,18 @@
 package com.openbook.openbook.service.booth;
 
 import com.openbook.openbook.api.booth.request.ReserveRegistrationRequest;
+import com.openbook.openbook.api.booth.request.ReserveStatusUpdateRequest;
 import com.openbook.openbook.domain.booth.BoothReservationDetail;
 import com.openbook.openbook.domain.booth.dto.BoothReservationStatus;
 import com.openbook.openbook.domain.booth.dto.BoothStatus;
 import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.domain.booth.BoothReservation;
+import com.openbook.openbook.domain.user.dto.AlarmType;
 import com.openbook.openbook.repository.booth.BoothReservationRepository;
 import com.openbook.openbook.service.booth.dto.BoothReservationDto;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
+import com.openbook.openbook.service.user.AlarmService;
 import com.openbook.openbook.util.S3Service;
 import com.openbook.openbook.domain.user.User;
 import com.openbook.openbook.service.user.UserService;
@@ -32,6 +35,7 @@ public class BoothReservationService {
     private final BoothService boothService;
     private final BoothReservationDetailService reservationDetailService;
     private final BoothReservationRepository boothReservationRepository;
+    private final AlarmService alarmService;
 
 
     private Booth getValidBoothOrException(long userId, long boothId) {
@@ -125,5 +129,34 @@ public class BoothReservationService {
                 });
     }
 
+    @Transactional
+    public void changeReserveStatus(Long detailId, ReserveStatusUpdateRequest request, Long userId){
+        BoothReservationDetail boothReservationDetail =
+                reservationDetailService.getReservationDetailOrException(detailId);
+        VerifyUserIsManagerOfBooth(boothReservationDetail.getLinkedReservation().getLinkedBooth(), userId);
 
+        BoothReservationStatus status = BoothReservationStatus.fromString(request.status());
+
+        if(boothReservationDetail.getStatus().equals(status)){
+            throw new OpenBookException(ErrorCode.ALREADY_PROCESSED);
+        }
+
+        User manager = userService.getUserOrException(userId);
+        User reserveUser = boothReservationDetail.getUser();
+        if(status.equals(BoothReservationStatus.COMPLETE)){
+            boothReservationDetail.updateUser(status, reserveUser);
+            alarmService.createAlarm(manager, reserveUser,
+                    AlarmType.RESERVE_APPROVED, boothReservationDetail.getLinkedReservation().getName());
+        } else if (status.equals(BoothReservationStatus.EMPTY)) {
+            boothReservationDetail.updateUser(status, null);
+            alarmService.createAlarm(manager, reserveUser,
+                    AlarmType.RESERVE_REJECTED, boothReservationDetail.getLinkedReservation().getName());
+        }
+    }
+
+    private void VerifyUserIsManagerOfBooth(Booth booth, long userId){
+        if(!booth.getManager().getId().equals(userId)){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+    }
 }

@@ -17,7 +17,7 @@ public enum ErrorCode {
     // BAD REQUEST
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "요청 값이 유효하지 않습니다."),
     INVALID_BOOKMARK_TYPE(HttpStatus.BAD_REQUEST, "북마크 타입이 유효하지 않습니다."),
-    INVALID_RESERVATION_TYPE(HttpStatus.BAD_REQUEST, "북마크 타입이 유효하지 않습니다."),
+    INVALID_RESERVATION_TYPE(HttpStatus.BAD_REQUEST, "예약 타입이 유효하지 않습니다."),
 
     // CONFLICT
     ALREADY_PROCESSED(HttpStatus.CONFLICT, "이미 처리된 요청입니다."),

@@ -134,14 +134,15 @@ public class BoothReservationService {
         BoothReservationDetail boothReservationDetail =
                 reservationDetailService.getReservationDetailOrException(detailId);
         VerifyUserIsManagerOfBooth(boothReservationDetail.getLinkedReservation().getLinkedBooth(), userId);
-        User manager = userService.getUserOrException(userId);
-        User reserveUser = boothReservationDetail.getUser();
+
         BoothReservationStatus status = BoothReservationStatus.fromString(request.status());
 
         if(boothReservationDetail.getStatus().equals(status)){
             throw new OpenBookException(ErrorCode.ALREADY_PROCESSED);
         }
 
+        User manager = userService.getUserOrException(userId);
+        User reserveUser = boothReservationDetail.getUser();
         if(status.equals(BoothReservationStatus.COMPLETE)){
             boothReservationDetail.updateUser(status, reserveUser);
             alarmService.createAlarm(manager, reserveUser,

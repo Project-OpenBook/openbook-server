@@ -43,7 +43,7 @@ public class BoothReservationController {
     public ResponseEntity<ResponseMessage> changeReserveStatus(Authentication authentication,
                                                                @RequestBody ReserveStatusUpdateRequest request,
                                                                @PathVariable Long detail_id){
-        reservationService.changeReserveStatus(detail_id, request.status(), Long.valueOf(authentication.getName()));
+        reservationService.changeReserveStatus(detail_id, request, Long.valueOf(authentication.getName()));
         return ResponseEntity.ok(new ResponseMessage("예약 상태가 변경되었습니다."));
     }
 

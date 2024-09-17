@@ -1,6 +1,7 @@
 package com.openbook.openbook.service.booth;
 
 import com.openbook.openbook.api.booth.request.ReserveRegistrationRequest;
+import com.openbook.openbook.api.booth.request.ReserveStatusUpdateRequest;
 import com.openbook.openbook.domain.booth.BoothReservationDetail;
 import com.openbook.openbook.domain.booth.dto.BoothReservationStatus;
 import com.openbook.openbook.domain.booth.dto.BoothStatus;
@@ -129,12 +130,14 @@ public class BoothReservationService {
     }
 
     @Transactional
-    public void changeReserveStatus(Long detailId, BoothReservationStatus status, Long userId){
+    public void changeReserveStatus(Long detailId, ReserveStatusUpdateRequest request, Long userId){
         BoothReservationDetail boothReservationDetail =
                 reservationDetailService.getReservationDetailOrException(detailId);
         VerifyUserIsManagerOfBooth(boothReservationDetail.getLinkedReservation().getLinkedBooth(), userId);
         User manager = userService.getUserOrException(userId);
         User reserveUser = boothReservationDetail.getUser();
+        BoothReservationStatus status = BoothReservationStatus.fromString(request.status());
+
         if(boothReservationDetail.getStatus().equals(status)){
             throw new OpenBookException(ErrorCode.ALREADY_PROCESSED);
         }

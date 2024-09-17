@@ -8,8 +8,13 @@ import com.openbook.openbook.domain.user.dto.BookmarkType;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
 import com.openbook.openbook.repository.user.BookmarkRepository;
+import com.openbook.openbook.service.booth.BoothService;
+import com.openbook.openbook.service.event.EventService;
+import com.openbook.openbook.service.user.dto.BookmarkDto;
 import java.awt.print.Book;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookmarkService {
 
     private final UserService userService;
+    private final EventService eventService;
+    private final BoothService boothService;
 
     private final BookmarkRepository bookmarkRepository;
 
@@ -35,6 +42,19 @@ public class BookmarkService {
                 .alarmSet(request.alarmSet() == null || request.alarmSet())
                 .build()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<BookmarkDto> findBookmarkList(long userId, String request, Pageable pageable) {
+        userService.getUserOrException(userId);
+        BookmarkType type = BookmarkType.fromString(request);
+        return bookmarkRepository.findAllByUserIdAndBookmarkType(userId, type, pageable).map(bookmark -> {
+            if (type==BookmarkType.EVENT) {
+                return BookmarkDto.of(bookmark, eventService.getEventById(bookmark.getResourceId()), null);
+            } else {
+                return BookmarkDto.of(bookmark, null, boothService.getBoothById(bookmark.getResourceId()));
+            }
+        });
     }
 
 }

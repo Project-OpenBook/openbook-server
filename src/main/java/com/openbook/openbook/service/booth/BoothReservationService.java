@@ -89,7 +89,7 @@ public class BoothReservationService {
         }
         if(request.date().isBefore(booth.getLinkedEvent().getOpenDate())
                 || request.date().isAfter(booth.getLinkedEvent().getCloseDate())){
-            throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_DATE);
+            throw new OpenBookException(ErrorCode.INVALID_RESERVED_DATE);
         }
         checkAvailableTime(request, booth);
         checkDuplicateTimes(request.times());

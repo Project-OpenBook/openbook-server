@@ -84,9 +84,7 @@ public class BoothReservationService {
     @Transactional
     public void addReservation(Long userId, ReserveRegistrationRequest request, Long boothId) {
         Booth booth = getValidBoothOrException(userId, boothId);
-        if (hasExistDate(request.date(), booth)) {
-            throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
-        }
+        
         if(request.date().isBefore(booth.getLinkedEvent().getOpenDate())
                 || request.date().isAfter(booth.getLinkedEvent().getCloseDate())){
             throw new OpenBookException(ErrorCode.INVALID_RESERVED_DATE);

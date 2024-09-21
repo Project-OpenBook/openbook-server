@@ -51,10 +51,6 @@ public class BoothReservationDetailService {
         }
     }
 
-    public List<BoothReservationDetail> getDetailsOfReservation(Long reservationId){
-        return boothReservationDetailRepository.findBoothReservationDetailsByLinkedReservationId(reservationId);
-    }
-
     @Transactional
     public void setUserToReservation(User user, BoothReservationDetail boothReservationDetail){
         boothReservationDetail.updateUser(BoothReservationStatus.WAITING, user);

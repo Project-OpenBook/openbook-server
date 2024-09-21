@@ -57,4 +57,13 @@ public class BookmarkService {
         });
     }
 
+    @Transactional
+    public void deleteBookmark(long userId, BookmarkRequest request) {
+        Bookmark bookmark = bookmarkRepository.findByUserIdAndResourceIdAndBookmarkType(
+                userId, request.resourceId(), BookmarkType.fromString(request.type())).orElseThrow(()->
+                new OpenBookException(ErrorCode.BOOKMARK_NOT_FOUND)
+        );
+        bookmarkRepository.delete(bookmark);
+    }
+
 }

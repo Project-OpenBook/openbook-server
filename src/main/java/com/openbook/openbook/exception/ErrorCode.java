@@ -28,6 +28,7 @@ public enum ErrorCode {
     ALREADY_RESERVED_AREA(HttpStatus.CONFLICT, "선택 가능한 구역이 아닙니다."),
     INVALID_DATE_RANGE(HttpStatus.CONFLICT, "입력된 날짜 범위가 유효하지 않습니다."),
     INVALID_LAYOUT_ENTRY(HttpStatus.CONFLICT, "입력된 배치도 형식에 오류가 있습니다."),
+    INVALID_RESERVED_DATE(HttpStatus.CONFLICT, "예약 날짜가 유효하지 않습니다."),
     EMPTY_TAG_DATA(HttpStatus.CONFLICT, "공백을 태그로 사용할 수 없습니다."),
     ALREADY_TAG_DATA(HttpStatus.CONFLICT, "중복 되는 태그 데이터가 있습니다."),
     EVENT_NOT_APPROVED(HttpStatus.CONFLICT, "승인되지 않은 행사입니다."),

@@ -87,6 +87,10 @@ public class BoothReservationService {
         if (hasExistDate(request.date(), booth)) {
             throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
         }
+        if(request.date().isBefore(booth.getLinkedEvent().getOpenDate())
+                || request.date().isAfter(booth.getLinkedEvent().getCloseDate())){
+            throw new OpenBookException(ErrorCode.INVALID_RESERVED_DATE);
+        }
         checkAvailableTime(request, booth);
         checkDuplicateTimes(request.times());
         BoothReservation reservation = boothReservationRepository.save(

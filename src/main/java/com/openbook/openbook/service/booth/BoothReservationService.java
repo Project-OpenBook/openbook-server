@@ -21,8 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,27 +82,26 @@ public class BoothReservationService {
     @Transactional
     public void addReservation(Long userId, ReserveRegistrationRequest request, Long boothId) {
         Booth booth = getValidBoothOrException(userId, boothId);
-        
+
         if(request.date().isBefore(booth.getLinkedEvent().getOpenDate())
                 || request.date().isAfter(booth.getLinkedEvent().getCloseDate())){
             throw new OpenBookException(ErrorCode.INVALID_RESERVED_DATE);
         }
         checkAvailableTime(request, booth);
         checkDuplicateTimes(request.times());
-        BoothReservation reservation = boothReservationRepository.save(
+
+        BoothReservation reservation =
                 BoothReservation.builder()
                         .name(request.name())
                         .description(request.description())
                         .date(request.date())
                         .imageUrl(s3Service.uploadFileAndGetUrl(request.image()))
                         .linkedBooth(booth)
-                        .build()
-        );
-        reservationDetailService.createReservationDetail(request.times(), reservation);
-    }
+                        .build();
 
-    private boolean hasExistDate(LocalDate date, Booth booth){
-        return boothReservationRepository.existsByDateAndLinkedBooth(date, booth);
+        reservationDetailService.createReservationDetail(request.times(), reservation);
+        boothReservationRepository.save(reservation);
+
     }
 
     public List<BoothReservation> getBoothReservations(Long boothId){

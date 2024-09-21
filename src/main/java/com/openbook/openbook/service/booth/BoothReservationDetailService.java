@@ -26,6 +26,8 @@ public class BoothReservationDetailService {
     }
 
     public void createReservationDetail(List<String> reservationDetails, BoothReservation reservation){
+        checkExistTime(reservationDetails, reservation);
+
         for(String time : reservationDetails){
             boothReservationDetailRepository.save(
                     BoothReservationDetail.builder()
@@ -33,6 +35,19 @@ public class BoothReservationDetailService {
                             .time(time)
                             .build()
             );
+        }
+    }
+
+    private void checkExistTime(List<String> times, BoothReservation reservation){
+        for(String time : times){
+            if(boothReservationDetailRepository.existsByTime(time)) {
+                List<BoothReservationDetail> details = boothReservationDetailRepository.findBoothReservationDetailsByTime(time);
+                for(BoothReservationDetail detail : details){
+                    if(boothReservationDetailRepository.existsByLinkedReservation_DateAndTime(reservation.getDate(), detail.getTime())){
+                        throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
+                    }
+                }
+            }
         }
     }
 

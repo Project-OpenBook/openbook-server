@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public interface BoothReservationDetailRepository extends JpaRepository<BoothReservationDetail, Long> {
-    List<BoothReservationDetail> findBoothReservationDetailsByLinkedReservationId(Long reservationId);
     boolean existsByTime(String date);
 
     boolean existsByLinkedReservation_NameAndTime(String name, String time);

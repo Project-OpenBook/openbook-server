@@ -83,10 +83,7 @@ public class BoothReservationService {
     public void addReservation(Long userId, ReserveRegistrationRequest request, Long boothId) {
         Booth booth = getValidBoothOrException(userId, boothId);
 
-        if(request.date().isBefore(booth.getLinkedEvent().getOpenDate())
-                || request.date().isAfter(booth.getLinkedEvent().getCloseDate())){
-            throw new OpenBookException(ErrorCode.INVALID_RESERVED_DATE);
-        }
+        checkAvailableDate(request, booth);
         checkAvailableTime(request, booth);
         checkDuplicateTimes(request.times());
 
@@ -106,6 +103,13 @@ public class BoothReservationService {
 
     public List<BoothReservation> getBoothReservations(Long boothId){
         return boothReservationRepository.findBoothReservationByLinkedBoothId(boothId);
+    }
+
+    private void checkAvailableDate(ReserveRegistrationRequest request, Booth booth){
+        if(request.date().isBefore(booth.getLinkedEvent().getOpenDate())
+                || request.date().isAfter(booth.getLinkedEvent().getCloseDate())){
+            throw new OpenBookException(ErrorCode.INVALID_RESERVED_DATE);
+        }
     }
 
     private void checkAvailableTime(ReserveRegistrationRequest request, Booth booth){

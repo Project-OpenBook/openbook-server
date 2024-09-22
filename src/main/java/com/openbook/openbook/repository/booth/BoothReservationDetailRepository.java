@@ -12,7 +12,7 @@ public interface BoothReservationDetailRepository extends JpaRepository<BoothRes
     List<BoothReservationDetail> findBoothReservationDetailsByLinkedReservationId(Long reservationId);
     boolean existsByTime(String date);
 
-    boolean existsByLinkedReservation_DateAndTime(LocalDate date, String time);
+    boolean existsByLinkedReservation_NameAndTime(String name, String time);
 
     List<BoothReservationDetail> findBoothReservationDetailsByTime(String time);
 }

@@ -7,11 +7,14 @@ import com.openbook.openbook.domain.booth.BoothReview;
 import com.openbook.openbook.repository.booth.BoothReviewRepository;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
+import com.openbook.openbook.service.booth.dto.BoothReviewDto;
 import com.openbook.openbook.util.S3Service;
 import com.openbook.openbook.domain.user.User;
 import com.openbook.openbook.service.user.UserService;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +45,16 @@ public class BoothReviewService {
                 .imageUrl(s3Service.uploadFileAndGetUrl(request.image()))
                 .build()
         );
+    }
+
+    @Transactional
+    public Slice<BoothReviewDto> getBoothReviews(long boothId, Pageable pageable){
+        Booth booth = boothService.getBoothOrException(boothId);
+        if(!booth.getStatus().equals(BoothStatus.APPROVE)){
+            throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
+        }
+
+        return boothReviewRepository.findBoothReviewsByLinkedBoothId(boothId, pageable).map(BoothReviewDto::of);
     }
 
 }

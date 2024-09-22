@@ -39,7 +39,8 @@ public class SecurityConfig {
             "/events/{event_id}/notices",
             "/events/notices/{notice_id}",
             "/event/reviews",
-            "/events/search"
+            "/events/search",
+            "/booth/reviews"
     };
 
     @Bean

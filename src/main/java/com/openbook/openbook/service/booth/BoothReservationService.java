@@ -82,23 +82,29 @@ public class BoothReservationService {
     @Transactional
     public void addReservation(Long userId, ReserveRegistrationRequest request, Long boothId) {
         Booth booth = getValidBoothOrException(userId, boothId);
-
         checkAvailableDate(request, booth);
         checkAvailableTime(request, booth);
         checkDuplicateTimes(request.times());
 
-        BoothReservation reservation =
+        List<BoothReservation> boothReservations = getBoothReservations(boothId);
+        for(BoothReservation reservation : boothReservations){
+            if(request.name().equals(reservation.getName()) && request.date().equals(reservation.getDate()) &&
+                    reservationDetailService.hasExistTime(request.times())){
+                throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
+            }
+        }
+
+        BoothReservation reservation = boothReservationRepository.save(
                 BoothReservation.builder()
                         .name(request.name())
                         .description(request.description())
                         .date(request.date())
                         .imageUrl(s3Service.uploadFileAndGetUrl(request.image()))
                         .linkedBooth(booth)
-                        .build();
+                        .build()
+        );
 
         reservationDetailService.createReservationDetail(request.times(), reservation);
-        boothReservationRepository.save(reservation);
-
     }
 
     public List<BoothReservation> getBoothReservations(Long boothId){

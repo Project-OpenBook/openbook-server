@@ -1,5 +1,6 @@
 package com.openbook.openbook.service.event;
 
+import com.openbook.openbook.api.event.request.EventReviewModifyRequest;
 import com.openbook.openbook.api.event.request.EventReviewRegisterRequest;
 import com.openbook.openbook.service.event.dto.EventReviewDto;
 import com.openbook.openbook.domain.event.Event;
@@ -74,6 +75,11 @@ public class EventReviewService {
                 createEventReviewImage(review, request.images().get(i), i);
             }
         }
+    }
+
+    @Transactional
+    public void modifyReview(long userId, long reviewId, EventReviewModifyRequest request) {
+        
     }
 
     @Transactional

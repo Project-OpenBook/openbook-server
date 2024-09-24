@@ -79,6 +79,10 @@ public class EventReviewService {
 
     @Transactional
     public void modifyReview(long userId, long reviewId, EventReviewModifyRequest request) {
+        EventReview review = getEventReviewOrException(reviewId);
+        if(review.getReviewer().getId()!=userId) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
         
     }
 

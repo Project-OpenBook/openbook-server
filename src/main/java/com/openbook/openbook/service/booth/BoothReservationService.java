@@ -83,16 +83,7 @@ public class BoothReservationService {
     public void addReservation(Long userId, ReserveRegistrationRequest request, Long boothId) {
         Booth booth = getValidBoothOrException(userId, boothId);
         checkAvailableDate(request, booth);
-        checkAvailableTime(request, booth);
-        checkDuplicateTimes(request.times());
-
-        List<BoothReservation> boothReservations = getBoothReservations(boothId);
-        for(BoothReservation reservation : boothReservations){
-            if(request.name().equals(reservation.getName()) && request.date().equals(reservation.getDate()) &&
-                    reservationDetailService.hasExistTime(request.times())){
-                throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
-            }
-        }
+        checkDuplicateDates(request, booth);
 
         BoothReservation reservation = boothReservationRepository.save(
                 BoothReservation.builder()
@@ -104,7 +95,7 @@ public class BoothReservationService {
                         .build()
         );
 
-        reservationDetailService.createReservationDetail(request.times(), reservation);
+        reservationDetailService.createReservationDetail(request.times(), reservation, booth);
     }
 
     public List<BoothReservation> getBoothReservations(Long boothId){
@@ -118,24 +109,13 @@ public class BoothReservationService {
         }
     }
 
-    private void checkAvailableTime(ReserveRegistrationRequest request, Booth booth){
-        for(String time : request.times()){
-            if(booth.getOpenTime().toLocalTime().isAfter(LocalTime.parse(time))
-                    || booth.getCloseTime().toLocalTime().isBefore(LocalTime.parse(time))){
-                throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
+    private void checkDuplicateDates(ReserveRegistrationRequest request, Booth booth){
+        List<BoothReservation> reservations = getBoothReservations(booth.getId());
+        for(BoothReservation reservation : reservations){
+            if(reservation.getDate().equals(request.date()) && reservation.getName().equals(request.name())){
+                throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
             }
         }
-    }
-
-    private void checkDuplicateTimes(List<String> times) {
-        Set<String> validTimes = new HashSet<>();
-        times.stream()
-                .map(String::trim)
-                .forEach(time -> {
-                    if (!validTimes.add(time)) {
-                        throw new OpenBookException(ErrorCode.DUPLICATE_RESERVED_TIME);
-                    }
-                });
     }
 
     @Transactional

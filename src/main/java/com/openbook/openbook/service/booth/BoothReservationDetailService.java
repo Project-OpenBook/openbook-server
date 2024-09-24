@@ -1,5 +1,6 @@
 package com.openbook.openbook.service.booth;
 
+import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.domain.booth.BoothReservation;
 import com.openbook.openbook.domain.booth.BoothReservationDetail;
 import com.openbook.openbook.domain.booth.dto.BoothReservationStatus;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -25,23 +27,25 @@ public class BoothReservationDetailService {
         );
     }
 
-    public boolean hasExistTime(List<String> times){
-        for(String time : times){
-            if(!boothReservationDetailRepository.existsByTime(time)){
-                return false;
-            }
-        }
-        return true;
-    }
+    public void createReservationDetail(List<String> times, BoothReservation reservation, Booth booth){
+        checkAvailableTime(times, booth);
 
-    public void createReservationDetail(List<String> reservationDetails, BoothReservation reservation){
-        for(String time : reservationDetails){
+        for(String time : times){
             boothReservationDetailRepository.save(
                     BoothReservationDetail.builder()
                             .boothReservation(reservation)
                             .time(time)
                             .build()
             );
+        }
+    }
+
+    private void checkAvailableTime(List<String> times, Booth booth){
+        for(String time : times){
+            if(booth.getOpenTime().toLocalTime().isAfter(LocalTime.parse(time))
+                    || booth.getCloseTime().toLocalTime().isBefore(LocalTime.parse(time))){
+                throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
+            }
         }
     }
 

@@ -49,4 +49,10 @@ public class EventReview extends EntityBasicTime {
         this.star = star;
         this.content = content;
     }
+
+    public void update(float star, String content) {
+        this.star = star;
+        this.content = content;
+    }
+
 }

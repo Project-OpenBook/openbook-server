@@ -83,7 +83,10 @@ public class EventReviewService {
         if(review.getReviewer().getId()!=userId) {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
-        
+        review.update(
+                (request.star()==null)?review.getStar():request.star(),
+                (request.content()==null)?review.getContent():request.content()
+        );
     }
 
     @Transactional

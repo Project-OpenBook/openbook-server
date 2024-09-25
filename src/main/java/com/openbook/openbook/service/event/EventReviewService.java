@@ -112,6 +112,9 @@ public class EventReviewService {
     }
 
     private void modifyImage(List<MultipartFile> add, List<Long> delete, EventReview review) {
+        if(review.getReviewImages().size() - delete.size() + add.size() > 5) {
+            throw new OpenBookException(ErrorCode.EXCEED_MAXIMUM_IMAGE);
+        }
     }
 
 }

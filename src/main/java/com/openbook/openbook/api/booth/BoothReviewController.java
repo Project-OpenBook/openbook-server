@@ -4,6 +4,7 @@ package com.openbook.openbook.api.booth;
 import com.openbook.openbook.api.SliceResponse;
 import com.openbook.openbook.api.booth.request.BoothReviewRegisterRequest;
 import com.openbook.openbook.api.booth.response.BoothReviewResponse;
+import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.service.booth.BoothReviewService;
 import com.openbook.openbook.api.ResponseMessage;
 import jakarta.validation.Valid;
@@ -38,8 +39,8 @@ public class BoothReviewController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/booth/reviews/{review_id}")
-    public ResponseEntity<BoothReviewResponse> getReview(@PathVariable Long review_id){
-        return ResponseEntity.ok(BoothReviewResponse.of(boothReviewService.getBoothReview(review_id)));
+    public BoothReviewResponse getReview(@PathVariable Long review_id){
+        return BoothReviewResponse.of(boothReviewService.getBoothReview(review_id));
 
     }
 }

@@ -17,8 +17,6 @@ import com.openbook.openbook.util.S3Service;
 import com.openbook.openbook.domain.user.User;
 import com.openbook.openbook.service.user.UserService;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;

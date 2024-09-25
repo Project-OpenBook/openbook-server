@@ -1,16 +1,19 @@
 package com.openbook.openbook.api.booth;
 
 
+import com.openbook.openbook.api.SliceResponse;
 import com.openbook.openbook.api.booth.request.BoothReviewRegisterRequest;
+import com.openbook.openbook.api.booth.response.BoothReviewResponse;
 import com.openbook.openbook.service.booth.BoothReviewService;
 import com.openbook.openbook.api.ResponseMessage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,5 +27,12 @@ public class BoothReviewController {
                                                       @Valid BoothReviewRegisterRequest request){
         boothReviewService.registerBoothReview(Long.valueOf(authentication.getName()), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("부스 리뷰 작성에 성공했습니다."));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/booth/reviews")
+    public SliceResponse<BoothReviewResponse> getReviews(@RequestParam(value = "booth_id") Long boothId,
+                                                         @PageableDefault(size = 5) Pageable pageable){
+        return SliceResponse.of(boothReviewService.getBoothReviews(boothId, pageable).map(BoothReviewResponse::of));
     }
 }

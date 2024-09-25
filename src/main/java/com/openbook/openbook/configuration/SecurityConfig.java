@@ -34,6 +34,7 @@ public class SecurityConfig {
             "/booths/{booth_id}/products",
             "/booths/products/category",
             "/booths/{booth_id}/reservations",
+            "/booth/reviews",
             "/events",
             "/events/{eventId}",
             "/events/{event_id}/notices",

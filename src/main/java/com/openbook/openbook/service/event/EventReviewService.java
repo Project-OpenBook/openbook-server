@@ -40,6 +40,12 @@ public class EventReviewService {
         );
     }
 
+    public EventReviewImage getEventReviewImageOrException(long eventReviewImageId) {
+        return eventReviewImageRepository.findById(eventReviewImageId).orElseThrow(()->
+                new OpenBookException(ErrorCode.IMAGE_NOT_FOUND)
+        );
+    }
+
     @Transactional(readOnly = true)
     public Slice<EventReviewDto> getEventReviews(final long eventId, final Pageable pageable) {
         Event event = eventService.getEventOrException(eventId);

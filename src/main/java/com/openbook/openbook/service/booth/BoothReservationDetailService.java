@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class BoothReservationDetailService {
 
     public void createReservationDetail(List<String> times, BoothReservation reservation, Booth booth){
         checkAvailableTime(times, booth);
+        checkDuplicateTime(times);
 
         for(String time : times){
             boothReservationDetailRepository.save(
@@ -47,6 +50,17 @@ public class BoothReservationDetailService {
                 throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
             }
         }
+    }
+
+    private void checkDuplicateTime(List<String> times){
+        Set<String> validTimes = new HashSet<>();
+        times.stream()
+                .map(String::trim)
+                .forEach(time -> {
+                    if(!validTimes.add(time)){
+                        throw new OpenBookException(ErrorCode.DUPLICATE_RESERVED_TIME);
+                    }
+                });
     }
 
     @Transactional

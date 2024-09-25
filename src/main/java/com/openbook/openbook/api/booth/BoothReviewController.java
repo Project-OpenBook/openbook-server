@@ -35,4 +35,11 @@ public class BoothReviewController {
                                                          @PageableDefault(size = 5) Pageable pageable){
         return SliceResponse.of(boothReviewService.getBoothReviews(boothId, pageable).map(BoothReviewResponse::of));
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/booth/reviews/{review_id}")
+    public ResponseEntity<BoothReviewResponse> getReview(@PathVariable Long review_id){
+        return ResponseEntity.ok(BoothReviewResponse.of(boothReviewService.getBoothReview(review_id)));
+
+    }
 }

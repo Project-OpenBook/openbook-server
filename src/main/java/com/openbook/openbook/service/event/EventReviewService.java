@@ -94,7 +94,9 @@ public class EventReviewService {
                 (request.star()==null)?review.getStar():request.star(),
                 (request.content()==null)?review.getContent():request.content()
         );
-        modifyImage(request.imageToAdd(), request.imageToDelete(), review);
+        if(request.imageToAdd()!=null || request.imageToDelete()!=null) {
+            modifyImage(request.imageToAdd(), request.imageToDelete(), review);
+        }
     }
 
     @Transactional
@@ -118,18 +120,20 @@ public class EventReviewService {
     }
 
     private void modifyImage(List<MultipartFile> add, List<Long> delete, EventReview review) {
-        if(review.getReviewImages().size() - delete.size() + add.size() > 5) {
+        int addSize = (add!=null)?add.size():0;
+        int deleteSize = (delete!=null)?delete.size():0;
+        if(review.getReviewImages().size() - deleteSize + addSize > 5) {
             throw new OpenBookException(ErrorCode.EXCEED_MAXIMUM_IMAGE);
         }
-        delete.forEach( imageId -> {
-            EventReviewImage image = getEventReviewImageOrException(imageId);
+        for(int i = 0; i < addSize; i++) {
+            createEventReviewImage(review, add.get(i), i);
+        }
+        for(int i = 0; i < deleteSize; i++) {
+            EventReviewImage image = getEventReviewImageOrException(delete.get(i));
             if(image.getLinkedReview()!=review) {
                 throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
             }
             eventReviewImageRepository.delete(image);
-        });
-        for(int i=0;i<add.size();i++) {
-            createEventReviewImage(review, add.get(i), i);
         }
     }
 

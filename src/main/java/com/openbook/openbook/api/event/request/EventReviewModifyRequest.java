@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 public record EventReviewModifyRequest(
         @Max(value = 5) Float star,
         String content,
-        @Max(value = 5) List<MultipartFile> images
+        List<MultipartFile> imageToAdd,
+        List<Long> imageToDelete
 ) {
 }

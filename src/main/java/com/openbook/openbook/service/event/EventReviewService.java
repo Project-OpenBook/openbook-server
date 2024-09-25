@@ -15,6 +15,7 @@ import com.openbook.openbook.util.S3Service;
 import com.openbook.openbook.domain.user.User;
 import com.openbook.openbook.service.user.UserService;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -87,6 +88,7 @@ public class EventReviewService {
                 (request.star()==null)?review.getStar():request.star(),
                 (request.content()==null)?review.getContent():request.content()
         );
+        modifyImage(request.imageToAdd(), request.imageToDelete(), review);
     }
 
     @Transactional
@@ -107,6 +109,9 @@ public class EventReviewService {
                         .imageOrder(order)
                         .build()
         );
+    }
+
+    private void modifyImage(List<MultipartFile> add, List<Long> delete, EventReview review) {
     }
 
 }

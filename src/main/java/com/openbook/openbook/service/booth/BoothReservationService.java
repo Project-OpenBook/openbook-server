@@ -110,11 +110,8 @@ public class BoothReservationService {
     }
 
     private void checkDuplicateDates(ReserveRegistrationRequest request, Booth booth){
-        List<BoothReservation> reservations = getBoothReservations(booth.getId());
-        for(BoothReservation reservation : reservations){
-            if(reservation.getDate().equals(request.date()) && reservation.getName().equals(request.name())){
-                throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
-            }
+        if(boothReservationRepository.existsByLinkedBoothIdAndDateAndName(booth.getId(), request.date(), request.name())){
+            throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
         }
     }
 

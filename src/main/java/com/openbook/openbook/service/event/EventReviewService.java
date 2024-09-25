@@ -121,6 +121,13 @@ public class EventReviewService {
         if(review.getReviewImages().size() - delete.size() + add.size() > 5) {
             throw new OpenBookException(ErrorCode.EXCEED_MAXIMUM_IMAGE);
         }
+        delete.forEach( imageId -> {
+            EventReviewImage image = getEventReviewImageOrException(imageId);
+            if(image.getLinkedReview()!=review) {
+                throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+            }
+            eventReviewImageRepository.delete(image);
+        });
     }
 
 }

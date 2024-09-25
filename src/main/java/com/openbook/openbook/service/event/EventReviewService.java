@@ -128,6 +128,9 @@ public class EventReviewService {
             }
             eventReviewImageRepository.delete(image);
         });
+        for(int i=0;i<add.size();i++) {
+            createEventReviewImage(review, add.get(i), i);
+        }
     }
 
 }

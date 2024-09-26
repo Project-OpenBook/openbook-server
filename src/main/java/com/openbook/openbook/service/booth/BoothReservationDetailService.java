@@ -31,7 +31,6 @@ public class BoothReservationDetailService {
 
     public void createReservationDetail(List<String> times, BoothReservation reservation, Booth booth){
         checkAvailableTime(times, booth);
-        checkDuplicateTime(times);
 
         for(String time : times){
             boothReservationDetailRepository.save(
@@ -44,19 +43,14 @@ public class BoothReservationDetailService {
     }
 
     private void checkAvailableTime(List<String> times, Booth booth){
-        for(String time : times){
-            if(booth.getOpenTime().toLocalTime().isAfter(LocalTime.parse(time))
-                    || booth.getCloseTime().toLocalTime().isBefore(LocalTime.parse(time))){
-                throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
-            }
-        }
-    }
-
-    private void checkDuplicateTime(List<String> times){
         Set<String> validTimes = new HashSet<>();
         times.stream()
                 .map(String::trim)
                 .forEach(time -> {
+                    if(booth.getOpenTime().toLocalTime().isAfter(LocalTime.parse(time))
+                            || booth.getCloseTime().toLocalTime().isBefore(LocalTime.parse(time))){
+                        throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
+                    }
                     if(!validTimes.add(time)){
                         throw new OpenBookException(ErrorCode.DUPLICATE_RESERVED_TIME);
                     }

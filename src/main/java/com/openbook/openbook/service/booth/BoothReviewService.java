@@ -27,6 +27,12 @@ public class BoothReviewService {
     private final UserService userService;
     private final BoothService boothService;
 
+    public BoothReview getBoothReviewOrException(long reviewId){
+        return boothReviewRepository.findById(reviewId).orElseThrow(
+                () -> new OpenBookException(ErrorCode.RESERVATION_NOT_FOUND)
+        );
+    }
+
     @Transactional
     public void registerBoothReview(Long userId, BoothReviewRegisterRequest request){
         User user = userService.getUserOrException(userId);
@@ -55,6 +61,11 @@ public class BoothReviewService {
         }
 
         return boothReviewRepository.findBoothReviewsByLinkedBoothId(boothId, pageable).map(BoothReviewDto::of);
+    }
+
+    @Transactional(readOnly = true)
+    public BoothReviewDto getBoothReview(long reviewId){
+        return BoothReviewDto.of(getBoothReviewOrException(reviewId));
     }
 
 }

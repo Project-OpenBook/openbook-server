@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,7 +48,7 @@ public class EventReviewController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PatchMapping("/event/reviews/{review_id}")
+    @PutMapping("/event/reviews/{review_id}")
     public ResponseMessage modifyReview(Authentication authentication,
                                         @PathVariable Long review_id,
                                         @Valid EventReviewModifyRequest request) {

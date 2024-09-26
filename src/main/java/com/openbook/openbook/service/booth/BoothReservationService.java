@@ -17,12 +17,8 @@ import com.openbook.openbook.util.S3Service;
 import com.openbook.openbook.domain.user.User;
 import com.openbook.openbook.service.user.UserService;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,15 +80,9 @@ public class BoothReservationService {
     @Transactional
     public void addReservation(Long userId, ReserveRegistrationRequest request, Long boothId) {
         Booth booth = getValidBoothOrException(userId, boothId);
-        if (hasExistDate(request.date(), booth)) {
-            throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
-        }
-        if(request.date().isBefore(booth.getLinkedEvent().getOpenDate())
-                || request.date().isAfter(booth.getLinkedEvent().getCloseDate())){
-            throw new OpenBookException(ErrorCode.INVALID_RESERVED_DATE);
-        }
-        checkAvailableTime(request, booth);
-        checkDuplicateTimes(request.times());
+        checkAvailableDate(request, booth);
+        checkDuplicateDates(request, booth);
+
         BoothReservation reservation = boothReservationRepository.save(
                 BoothReservation.builder()
                         .name(request.name())
@@ -102,35 +92,25 @@ public class BoothReservationService {
                         .linkedBooth(booth)
                         .build()
         );
-        reservationDetailService.createReservationDetail(request.times(), reservation);
-    }
 
-    private boolean hasExistDate(LocalDate date, Booth booth){
-        return boothReservationRepository.existsByDateAndLinkedBooth(date, booth);
+        reservationDetailService.createReservationDetail(request.times(), reservation, booth);
     }
 
     public List<BoothReservation> getBoothReservations(Long boothId){
         return boothReservationRepository.findBoothReservationByLinkedBoothId(boothId);
     }
 
-    private void checkAvailableTime(ReserveRegistrationRequest request, Booth booth){
-        for(String time : request.times()){
-            if(booth.getOpenTime().toLocalTime().isAfter(LocalTime.parse(time))
-                    || booth.getCloseTime().toLocalTime().isBefore(LocalTime.parse(time))){
-                throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
-            }
+    private void checkAvailableDate(ReserveRegistrationRequest request, Booth booth){
+        if(request.date().isBefore(booth.getLinkedEvent().getOpenDate())
+                || request.date().isAfter(booth.getLinkedEvent().getCloseDate())){
+            throw new OpenBookException(ErrorCode.INVALID_RESERVED_DATE);
         }
     }
 
-    private void checkDuplicateTimes(List<String> times) {
-        Set<String> validTimes = new HashSet<>();
-        times.stream()
-                .map(String::trim)
-                .forEach(time -> {
-                    if (!validTimes.add(time)) {
-                        throw new OpenBookException(ErrorCode.DUPLICATE_RESERVED_TIME);
-                    }
-                });
+    private void checkDuplicateDates(ReserveRegistrationRequest request, Booth booth){
+        if(boothReservationRepository.existsByLinkedBoothIdAndDateAndName(booth.getId(), request.date(), request.name())){
+            throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
+        }
     }
 
     @Transactional

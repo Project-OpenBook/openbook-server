@@ -14,10 +14,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,6 +42,13 @@ public class BoothProductController {
                                                       @Valid ProductRegistrationRequest request){
         boothProductService.addBoothProduct(Long.valueOf(authentication.getName()), booth_id, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("상품 추가에 성공했습니다."));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/booths/products/{product_id}")
+    public ResponseMessage deleteProduct(Authentication authentication, @PathVariable Long product_id) {
+        boothProductService.deleteProduct(Long.parseLong(authentication.getName()), product_id);
+        return new ResponseMessage("상품 삭제에 성공했습니다.");
     }
 
     @GetMapping("/booths/{booth_id}/product-category")

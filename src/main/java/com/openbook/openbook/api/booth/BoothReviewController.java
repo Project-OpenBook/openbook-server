@@ -43,4 +43,10 @@ public class BoothReviewController {
         return BoothReviewResponse.of(boothReviewService.getBoothReview(review_id));
 
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/booth/reviews/{review_id}")
+    public void deleteReview(Authentication authentication, @PathVariable Long review_id){
+        boothReviewService.deleteReview(Long.parseLong(authentication.getName()), review_id);
+    }
 }

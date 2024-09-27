@@ -112,6 +112,14 @@ public class BoothProductService {
         }
     }
 
+    @Transactional
+    public void deleteProduct(final long userId, final long productId) {
+        BoothProduct product = getBoothProductOrException(productId);
+        if(product.getLinkedCategory().getLinkedBooth().getManager().getId()!=userId) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        boothProductRepository.delete(product);
+    }
 
     public Slice<BoothProduct> getProductsByCategory(final BoothProductCategory category, final Pageable pageable) {
         return boothProductRepository.findAllByLinkedCategoryId(category.getId(), pageable);
@@ -120,8 +128,6 @@ public class BoothProductService {
     public List<BoothProductImage> getProductImages(final BoothProduct product) {
         return boothProductImageRepository.findAllByLinkedProductId(product.getId());
     }
-
-
 
     public void createBoothProductImage(final MultipartFile imageUrl, final BoothProduct boothProduct) {
         boothProductImageRepository.save(

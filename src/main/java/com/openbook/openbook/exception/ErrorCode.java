@@ -25,6 +25,7 @@ public enum ErrorCode {
     INACCESSIBLE_PERIOD(HttpStatus.CONFLICT, "접근 가능한 기간이 아닙니다."),
     UNDELETABLE_PERIOD(HttpStatus.CONFLICT, "삭제 가능한 기간이 아닙니다."),
     CANNOT_REVIEW_PERIOD(HttpStatus.CONFLICT, "리뷰 작성 가능한 기간이 아닙니다."),
+    EXCEED_MAXIMUM_IMAGE(HttpStatus.CONFLICT, "첨부할 수 있는 최대 사진 수를 초과했습니다."),
     ALREADY_RESERVED_AREA(HttpStatus.CONFLICT, "선택 가능한 구역이 아닙니다."),
     INVALID_DATE_RANGE(HttpStatus.CONFLICT, "입력된 날짜 범위가 유효하지 않습니다."),
     INVALID_LAYOUT_ENTRY(HttpStatus.CONFLICT, "입력된 배치도 형식에 오류가 있습니다."),
@@ -54,6 +55,7 @@ public enum ErrorCode {
     ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "알림 정보를 찾을 수 없습니다."),
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "북마크 정보를 찾을 수 없습니다."),
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 정보를 찾을 수 없습니다."),
+    IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "이미지 정보를 찾을 수 없습니다."),
 
     // INTERNET SERVER ERROR
     FIlE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.")

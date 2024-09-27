@@ -1,5 +1,6 @@
 package com.openbook.openbook.api.event;
 
+import com.openbook.openbook.api.event.request.EventReviewModifyRequest;
 import com.openbook.openbook.api.event.request.EventReviewRegisterRequest;
 import com.openbook.openbook.api.event.response.EventReviewResponse;
 import com.openbook.openbook.service.event.EventReviewService;
@@ -14,9 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,6 +45,15 @@ public class EventReviewController {
     @GetMapping("/event/review/{review_id}")
     public ResponseEntity<EventReviewResponse> getReview(@PathVariable Long review_id) {
         return ResponseEntity.ok(EventReviewResponse.of(eventReviewService.getEventReview(review_id)));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/event/reviews/{review_id}")
+    public ResponseMessage modifyReview(Authentication authentication,
+                                        @PathVariable Long review_id,
+                                        @Valid EventReviewModifyRequest request) {
+        eventReviewService.modifyReview(Long.parseLong(authentication.getName()), review_id, request);
+        return new ResponseMessage("리뷰 수정에 성공했습니다.");
     }
 
     @DeleteMapping("/event/reviews/{review_id}")

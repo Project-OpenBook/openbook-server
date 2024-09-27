@@ -27,6 +27,7 @@ public class SecurityConfig {
     private final String[] permitPaths = {
             "/login",
             "/signup",
+            "/booths",
             "/booths/{boothId}",
             "/booths/{boothId}/notices",
             "/booths/notices/{noticeId}",

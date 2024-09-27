@@ -144,4 +144,10 @@ public class BoothProductService {
         return booth;
     }
 
+    public BoothProduct getBoothProductOrException(final long productId) {
+        return boothProductRepository.findById(productId).orElseThrow(() ->
+                new OpenBookException(ErrorCode.PRODUCT_NOT_FOUND)
+        );
+    }
+
 }

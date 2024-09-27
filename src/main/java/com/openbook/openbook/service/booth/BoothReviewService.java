@@ -68,4 +68,13 @@ public class BoothReviewService {
         return BoothReviewDto.of(getBoothReviewOrException(reviewId));
     }
 
+    @Transactional
+    public void deleteReview(long userId, long reviewId){
+        BoothReview review = getBoothReviewOrException(reviewId);
+        if(review.getReviewer().getId() != userId){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        boothReviewRepository.deleteById(reviewId);
+    }
+
 }

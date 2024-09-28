@@ -5,44 +5,31 @@ import com.openbook.openbook.api.event.request.EventReviewRegisterRequest;
 import com.openbook.openbook.service.event.dto.EventReviewDto;
 import com.openbook.openbook.domain.event.Event;
 import com.openbook.openbook.domain.event.EventReview;
-import com.openbook.openbook.domain.event.EventReviewImage;
 import com.openbook.openbook.domain.event.dto.EventStatus;
-import com.openbook.openbook.repository.event.EventReviewImageRepository;
 import com.openbook.openbook.repository.event.EventReviewRepository;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
-import com.openbook.openbook.util.S3Service;
 import com.openbook.openbook.domain.user.User;
 import com.openbook.openbook.service.user.UserService;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class EventReviewService {
 
+    public final EventReviewImageService imageService;
     private final EventReviewRepository eventReviewRepository;
-    private final EventReviewImageRepository eventReviewImageRepository;
-    private final S3Service s3Service;
-
     private final UserService userService;
     private final EventService eventService;
 
     public EventReview getEventReviewOrException(long eventReviewId) {
         return eventReviewRepository.findById(eventReviewId).orElseThrow(()->
                 new OpenBookException(ErrorCode.REVIEW_NOT_FOUND)
-        );
-    }
-
-    public EventReviewImage getEventReviewImageOrException(long eventReviewImageId) {
-        return eventReviewImageRepository.findById(eventReviewImageId).orElseThrow(()->
-                new OpenBookException(ErrorCode.IMAGE_NOT_FOUND)
         );
     }
 
@@ -79,7 +66,7 @@ public class EventReviewService {
         );
         if(request.images() != null) {
             for(int i=0;i<request.images().size();i++) {
-                createEventReviewImage(review, request.images().get(i), i);
+                imageService.createEventReviewImage(review, request.images().get(i), i);
             }
         }
     }
@@ -92,7 +79,7 @@ public class EventReviewService {
         }
         review.update(request.star(), request.content());
         if(request.imageToAdd()!=null || request.imageToDelete()!=null) {
-            modifyImage(request.imageToAdd(), request.imageToDelete(), review);
+            imageService.modifyReviewImage(request.imageToAdd(), request.imageToDelete(), review);
         }
     }
 
@@ -103,35 +90,6 @@ public class EventReviewService {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
         eventReviewRepository.deleteById(reviewId);
-    }
-
-
-    public void createEventReviewImage(EventReview linkedReview, MultipartFile image, int order){
-        eventReviewImageRepository.save(
-                EventReviewImage.builder()
-                        .linkedReview(linkedReview)
-                        .imageUrl(s3Service.uploadFileAndGetUrl(image))
-                        .imageOrder(order)
-                        .build()
-        );
-    }
-
-    private void modifyImage(List<MultipartFile> add, List<Long> delete, EventReview review) {
-        int addSize = (add!=null)?add.size():0;
-        int deleteSize = (delete!=null)?delete.size():0;
-        if(review.getReviewImages().size() - deleteSize + addSize > 5) {
-            throw new OpenBookException(ErrorCode.EXCEED_MAXIMUM_IMAGE);
-        }
-        for(int i = 0; i < addSize; i++) {
-            createEventReviewImage(review, add.get(i), i);
-        }
-        for(int i = 0; i < deleteSize; i++) {
-            EventReviewImage image = getEventReviewImageOrException(delete.get(i));
-            if(image.getLinkedReview()!=review) {
-                throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
-            }
-            eventReviewImageRepository.delete(image);
-        }
     }
 
 }

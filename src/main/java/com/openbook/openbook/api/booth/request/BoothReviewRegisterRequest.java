@@ -8,6 +8,6 @@ public record BoothReviewRegisterRequest(
         @NotNull long booth_id,
         @NotNull float star,
         @NotBlank String content,
-        @NotNull MultipartFile image
+        MultipartFile image
         ) {
 }

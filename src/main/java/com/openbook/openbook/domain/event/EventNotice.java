@@ -3,6 +3,7 @@ package com.openbook.openbook.domain.event;
 
 import com.openbook.openbook.domain.event.dto.EventNoticeType;
 import com.openbook.openbook.domain.EntityBasicTime;
+import com.openbook.openbook.service.event.dto.EventNoticeUpdateData;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -44,4 +45,20 @@ public class EventNotice extends EntityBasicTime {
         this.imageUrl = imageUrl;
         this.linkedEvent = linkedEvent;
     }
+
+    public void updateNotice(EventNoticeUpdateData updateData) {
+        if(updateData.title()!=null) {
+            this.title = updateData.title();
+        }
+        if(updateData.content()!=null) {
+            this.content = updateData.content();
+        }
+        if (updateData.type()!=null) {
+            this.type = updateData.type().name();
+        }
+        if (updateData.imageUrl()!=null) {
+            this.imageUrl = updateData.imageUrl();
+        }
+    }
+
 }

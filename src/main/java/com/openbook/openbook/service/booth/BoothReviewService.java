@@ -43,10 +43,7 @@ public class BoothReviewService {
         if(booth.getLinkedEvent().getOpenDate().isAfter(LocalDate.now())){
             throw new OpenBookException(ErrorCode.CANNOT_REVIEW_PERIOD);
         }
-        String image = null;
-        if(request.image() != null){
-            image = s3Service.uploadFileAndGetUrl(request.image());
-        }
+        String image = (request.image()!=null)?s3Service.uploadFileAndGetUrl(request.image()):null;
         boothReviewRepository.save(BoothReview.builder()
                 .reviewer(user)
                 .linkedBooth(booth)

@@ -95,7 +95,7 @@ public class EventReviewService {
             throw new OpenBookException(ErrorCode.CANNOT_REVIEW_PERIOD);
         }
         if(eventReviewRepository.existsByReviewerIdAndLinkedEventId(reviewerId, event.getId())) {
-            throw new OpenBookException(ErrorCode.ALREADY_REVIEW);
+            throw new OpenBookException(ErrorCode.ALREADY_EXIST_REVIEW);
         }
     }
 

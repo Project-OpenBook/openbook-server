@@ -26,7 +26,7 @@ public enum ErrorCode {
     UNDELETABLE_PERIOD(HttpStatus.CONFLICT, "삭제 가능한 기간이 아닙니다."),
 
     CANNOT_REVIEW_PERIOD(HttpStatus.CONFLICT, "리뷰 작성 가능한 기간이 아닙니다."),
-    ALREADY_REVIEW(HttpStatus.CONFLICT, "이미 작성한 리뷰가 있습니다."),
+    ALREADY_EXIST_REVIEW(HttpStatus.CONFLICT, "이미 작성한 리뷰가 있습니다."),
 
     EXCEED_MAXIMUM_IMAGE(HttpStatus.CONFLICT, "첨부할 수 있는 최대 사진 수를 초과했습니다."),
     ALREADY_RESERVED_AREA(HttpStatus.CONFLICT, "선택 가능한 구역이 아닙니다."),

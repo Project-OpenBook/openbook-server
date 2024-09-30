@@ -80,7 +80,7 @@ public class BoothReviewService {
             throw new OpenBookException(ErrorCode.CANNOT_REVIEW_PERIOD);
         }
         if(boothReviewRepository.existsByReviewerIdAndLinkedBoothId(reviewerId, booth.getId())) {
-            throw new OpenBookException(ErrorCode.ALREADY_REVIEW);
+            throw new OpenBookException(ErrorCode.ALREADY_EXIST_REVIEW);
         }
     }
 

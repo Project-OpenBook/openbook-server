@@ -24,7 +24,10 @@ public enum ErrorCode {
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
     INACCESSIBLE_PERIOD(HttpStatus.CONFLICT, "접근 가능한 기간이 아닙니다."),
     UNDELETABLE_PERIOD(HttpStatus.CONFLICT, "삭제 가능한 기간이 아닙니다."),
+
     CANNOT_REVIEW_PERIOD(HttpStatus.CONFLICT, "리뷰 작성 가능한 기간이 아닙니다."),
+    ALREADY_REVIEW(HttpStatus.CONFLICT, "이미 작성한 리뷰가 있습니다."),
+
     EXCEED_MAXIMUM_IMAGE(HttpStatus.CONFLICT, "첨부할 수 있는 최대 사진 수를 초과했습니다."),
     ALREADY_RESERVED_AREA(HttpStatus.CONFLICT, "선택 가능한 구역이 아닙니다."),
     INVALID_DATE_RANGE(HttpStatus.CONFLICT, "입력된 날짜 범위가 유효하지 않습니다."),
@@ -39,7 +42,6 @@ public enum ErrorCode {
     DUPLICATE_RESERVED_TIME(HttpStatus.CONFLICT, "중복 되는 시간 데이터가 있습니다."),
     ALREADY_RESERVED_SERVICE(HttpStatus.CONFLICT, "이미 예약된 시간 입니다."),
     ALREADY_BOOKMARK(HttpStatus.CONFLICT, "이미 북마크 목록에 존재합니다."),
-
     EXCEED_MAXIMUM_CATEGORY(HttpStatus.CONFLICT, "생성할 수 있는 최대 카테고리 수를 초과했습니다."),
     ALREADY_EXIST_CATEGORY(HttpStatus.CONFLICT, "이미 존재하는 카테고리 입니다."),
 

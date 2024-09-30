@@ -1,12 +1,14 @@
 package com.openbook.openbook.api.event;
 
 
+import com.openbook.openbook.api.event.request.EventNoticeModifyRequest;
 import com.openbook.openbook.api.event.request.EventNoticeRegisterRequest;
 import com.openbook.openbook.api.event.response.EventNoticeResponse;
 import com.openbook.openbook.service.event.EventNoticeService;
 import com.openbook.openbook.api.ResponseMessage;
 import com.openbook.openbook.api.SliceResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -15,8 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -43,6 +47,15 @@ public class EventNoticeController {
                                                       @Valid EventNoticeRegisterRequest request) {
         eventNoticeService.registerEventNotice(Long.valueOf(authentication.getName()), event_id, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("공지 등록에 성공했습니다."));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/event/notices/{notice_id}")
+    public ResponseMessage modifyNotice(Authentication authentication,
+                                        @PathVariable Long notice_id,
+                                        @NotNull EventNoticeModifyRequest request) {
+        eventNoticeService.updateNotice(Long.parseLong(authentication.getName()), notice_id, request);
+        return new ResponseMessage("공지 수정에 성공했습니다.");
     }
 
     @DeleteMapping("/events/notices/{notice_id}")

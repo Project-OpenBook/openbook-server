@@ -37,12 +37,7 @@ public class BoothReviewService {
     public void registerBoothReview(Long userId, BoothReviewRegisterRequest request){
         User user = userService.getUserOrException(userId);
         Booth booth = boothService.getBoothOrException(request.booth_id());
-        if(!booth.getStatus().equals(BoothStatus.APPROVE)){
-            throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
-        }
-        if(booth.getLinkedEvent().getOpenDate().isAfter(LocalDate.now())){
-            throw new OpenBookException(ErrorCode.CANNOT_REVIEW_PERIOD);
-        }
+        checkReviewable(booth, userId);
         String image = (request.image()!=null)?s3Service.uploadFileAndGetUrl(request.image()):null;
         boothReviewRepository.save(BoothReview.builder()
                 .reviewer(user)
@@ -76,6 +71,18 @@ public class BoothReviewService {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
         boothReviewRepository.deleteById(reviewId);
+    }
+
+    private void checkReviewable(Booth booth, long reviewerId) {
+        if(!booth.getStatus().equals(BoothStatus.APPROVE)){
+            throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
+        }
+        if(booth.getLinkedEvent().getOpenDate().isAfter(LocalDate.now())){
+            throw new OpenBookException(ErrorCode.CANNOT_REVIEW_PERIOD);
+        }
+        if(boothReviewRepository.existsByReviewerIdAndLinkedBoothId(reviewerId, booth.getId())) {
+            throw new OpenBookException(ErrorCode.ALREADY_EXIST_REVIEW);
+        }
     }
 
 }

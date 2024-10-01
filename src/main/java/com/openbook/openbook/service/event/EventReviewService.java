@@ -51,12 +51,7 @@ public class EventReviewService {
     public void registerEventReview(Long loginUser, EventReviewRegisterRequest request) {
         User user = userService.getUserOrException(loginUser);
         Event event = eventService.getEventOrException(request.event_id());
-        if(!event.getStatus().equals(EventStatus.APPROVE)) {
-            throw new OpenBookException(ErrorCode.EVENT_NOT_APPROVED);
-        }
-        if(event.getOpenDate().isAfter(LocalDate.now())) {
-            throw new OpenBookException(ErrorCode.CANNOT_REVIEW_PERIOD);
-        }
+        checkReviewable(event, loginUser);
         EventReview review = eventReviewRepository.save(EventReview.builder()
                 .reviewer(user)
                 .linkedEvent(event)
@@ -90,6 +85,18 @@ public class EventReviewService {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
         eventReviewRepository.deleteById(reviewId);
+    }
+
+    private void checkReviewable(Event event, long reviewerId) {
+        if(!event.getStatus().equals(EventStatus.APPROVE)) {
+            throw new OpenBookException(ErrorCode.EVENT_NOT_APPROVED);
+        }
+        if(event.getOpenDate().isAfter(LocalDate.now())) {
+            throw new OpenBookException(ErrorCode.CANNOT_REVIEW_PERIOD);
+        }
+        if(eventReviewRepository.existsByReviewerIdAndLinkedEventId(reviewerId, event.getId())) {
+            throw new OpenBookException(ErrorCode.ALREADY_EXIST_REVIEW);
+        }
     }
 
 }

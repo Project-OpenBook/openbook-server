@@ -8,5 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoothReviewRepository extends JpaRepository<BoothReview, Long> {
+
+    boolean existsByReviewerIdAndLinkedBoothId(Long reviewerId, Long linkedBoothId);
+
     Slice<BoothReview> findBoothReviewsByLinkedBoothId(long boothId, Pageable pageable);
 }

@@ -1,6 +1,7 @@
 package com.openbook.openbook.service.event;
 
 
+import com.openbook.openbook.api.event.request.EventNoticeModifyRequest;
 import com.openbook.openbook.api.event.request.EventNoticeRegisterRequest;
 import com.openbook.openbook.service.event.dto.EventNoticeDto;
 import com.openbook.openbook.domain.event.Event;
@@ -8,6 +9,7 @@ import com.openbook.openbook.domain.event.EventNotice;
 import com.openbook.openbook.repository.event.EventNoticeRepository;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
+import com.openbook.openbook.service.event.dto.EventNoticeUpdateData;
 import com.openbook.openbook.util.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +55,21 @@ public class EventNoticeService {
                 .imageUrl(s3Service.uploadFileAndGetUrl(request.image()))
                 .linkedEvent(event)
                 .build()
+        );
+    }
+
+    @Transactional
+    public void updateNotice(long userId, long noticeId, EventNoticeModifyRequest request) {
+        EventNotice notice = getEventNoticeOrException(noticeId);
+        if(!notice.getLinkedEvent().getManager().getId().equals(userId)) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        notice.updateNotice(EventNoticeUpdateData.builder()
+                        .title(request.title())
+                        .content(request.content())
+                        .type(request.noticeType())
+                        .imageUrl((request.image()!=null)?s3Service.uploadFileAndGetUrl(request.image()):null)
+                        .build()
         );
     }
 

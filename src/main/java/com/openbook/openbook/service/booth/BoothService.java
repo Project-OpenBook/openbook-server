@@ -3,6 +3,7 @@ package com.openbook.openbook.service.booth;
 
 import static com.openbook.openbook.util.Formatter.getDateTime;
 
+import com.openbook.openbook.api.booth.request.BoothModifyRequest;
 import com.openbook.openbook.api.booth.request.BoothRegistrationRequest;
 import com.openbook.openbook.domain.booth.dto.BoothAreaStatus;
 import com.openbook.openbook.domain.booth.dto.BoothStatus;
@@ -129,6 +130,24 @@ public class BoothService {
                 : boothRepository.findAllByManagerIdAndStatus(pageable, managerId, BoothStatus.valueOf(status));
         return booths.map(booth ->
              BoothDto.of(booth, boothAreaService.getBoothAreasByBoothId(booth.getId())));
+    }
+
+    @Transactional
+    public void modifyBooth(long userId, long boothId, BoothModifyRequest request){
+        Booth booth = getBoothOrException(boothId);
+        Event event = eventService.getEventOrException(booth.getLinkedEvent().getId());
+        VerifyUserIsManagerOfBooth(booth, userId);
+
+        LocalDateTime open = getDateTime(event.getOpenDate() + " " + request.openTime());
+        LocalDateTime close = getDateTime(event.getCloseDate() + " " + request.closeTime());
+        dateTimePeriodCheck(open, close, event);
+
+        booth.updateBooth(request.name(), request.description(), s3Service.uploadFileAndGetUrl(request.mainImage()),
+                request.accountNumber(), request.accountBankName(), open, close);
+
+        if(request.tagToAdd() != null || request.tagToDelete() != null){
+            boothTagService.modifyBoothTag(request.tagToAdd(), request.tagToDelete(), booth);
+        }
     }
 
     @Transactional

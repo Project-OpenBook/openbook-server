@@ -77,6 +77,17 @@ public class Booth extends EntityBasicTime {
 
     public void updateStatus(BoothStatus status){ this.status = status; }
 
+    public void updateBooth(String name, String description, String mainImageUrl,
+                            String accountNumber, String accountBankName, LocalDateTime openTime, LocalDateTime closeTime){
+        this.name = name;
+        this.description = description;
+        this.mainImageUrl = mainImageUrl;
+        this.accountNumber = accountNumber;
+        this.accountBankName = accountBankName;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+    }
+
     @Builder
     public Booth(User manager, Event linkedEvent, String name, String description, String mainImageUrl,
                  String accountBankName, String accountNumber, LocalDateTime openTime, LocalDateTime closeTime) {

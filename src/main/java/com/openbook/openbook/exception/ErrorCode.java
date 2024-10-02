@@ -35,6 +35,7 @@ public enum ErrorCode {
     INVALID_RESERVED_DATE(HttpStatus.CONFLICT, "예약 날짜가 유효하지 않습니다."),
     EMPTY_TAG_DATA(HttpStatus.CONFLICT, "공백을 태그로 사용할 수 없습니다."),
     ALREADY_TAG_DATA(HttpStatus.CONFLICT, "중복 되는 태그 데이터가 있습니다."),
+    EXCEED_MAXIMUM_TAG(HttpStatus.CONFLICT, "등록할 수 있는 최대 태그 수를 초과했습니다."),
     EVENT_NOT_APPROVED(HttpStatus.CONFLICT, "승인되지 않은 행사입니다."),
     BOOTH_NOT_APPROVED(HttpStatus.CONFLICT, "승인되지 않은 부스입니다."),
     UNAVAILABLE_RESERVED_TIME(HttpStatus.CONFLICT, "예약 가능 시간이 아닙니다."),
@@ -42,6 +43,7 @@ public enum ErrorCode {
     DUPLICATE_RESERVED_TIME(HttpStatus.CONFLICT, "중복 되는 시간 데이터가 있습니다."),
     ALREADY_RESERVED_SERVICE(HttpStatus.CONFLICT, "이미 예약된 시간 입니다."),
     ALREADY_BOOKMARK(HttpStatus.CONFLICT, "이미 북마크 목록에 존재합니다."),
+
     EXCEED_MAXIMUM_CATEGORY(HttpStatus.CONFLICT, "생성할 수 있는 최대 카테고리 수를 초과했습니다."),
     ALREADY_EXIST_CATEGORY(HttpStatus.CONFLICT, "이미 존재하는 카테고리 입니다."),
 
@@ -53,6 +55,7 @@ public enum ErrorCode {
     BOOTH_NOT_FOUND(HttpStatus.NOT_FOUND, "부스 정보를 찾을 수 없습니다."),
     PRODUCT_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "상품 카테고리를 찾을 수 없습니다."),
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."),
+    TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "태그 정보를 찾을 수 없습니다."),
     AREA_NOT_FOUND(HttpStatus.NOT_FOUND, "구역 정보를 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "리뷰 정보를 찾을 수 없습니다."),
     ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "알림 정보를 찾을 수 없습니다."),

@@ -47,11 +47,9 @@ public class BoothTagService {
     public void modifyBoothTag(List<String> tagsToAdd, List<Long> tagsToDelete, Booth booth){
         int add = (tagsToAdd != null) ? tagsToAdd.size() : 0;
         int delete = (tagsToDelete != null) ? tagsToDelete.size() : 0;
-
         if(booth.getBoothTags().size() - delete + add > 5){
             throw new OpenBookException(ErrorCode.EXCEED_MAXIMUM_TAG);
         }
-
         createBoothTags(tagsToAdd, booth);
 
         for(int i = 0; i < delete; i++){
@@ -59,7 +57,6 @@ public class BoothTagService {
             if(tag.getLinkedBooth() != booth){
                 throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
             }
-
             boothTagRepository.deleteById(tag.getId());
         }
     }

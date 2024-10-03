@@ -11,6 +11,7 @@ import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.repository.booth.BoothRepository;
 import com.openbook.openbook.service.booth.dto.BoothDto;
 import com.openbook.openbook.domain.event.Event;
+import com.openbook.openbook.service.booth.dto.BoothUpdateData;
 import com.openbook.openbook.service.event.EventService;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
@@ -142,8 +143,16 @@ public class BoothService {
         LocalDateTime close = getDateTime(event.getCloseDate() + " " + request.closeTime());
         dateTimePeriodCheck(open, close, event);
 
-        booth.updateBooth(request.name(), request.description(), s3Service.uploadFileAndGetUrl(request.mainImage()),
-                request.accountNumber(), request.accountBankName(), open, close);
+        booth.updateBooth(BoothUpdateData.builder()
+                .name(request.name())
+                .description(request.description())
+                .openTime(open)
+                .closeTime(close)
+                .mainImage(s3Service.uploadFileAndGetUrl(request.mainImage()))
+                .accountBankName(request.accountBankName())
+                .accountNumber(request.accountNumber())
+                .build()
+        );
 
         if(request.tagToAdd() != null || request.tagToDelete() != null){
             boothTagService.modifyBoothTag(request.tagToAdd(), request.tagToDelete(), booth);

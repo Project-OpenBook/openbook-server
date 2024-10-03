@@ -36,10 +36,12 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew build -x test
 
-    - uses: actions/checkout@v3
-    - run: touch ./src/main/resources/application.properties
-    - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-    - run: cat ./src/main/resources/application.properties
+    - name: make application.yml
+      run: |
+        cd ./src/main/resources
+        touch ./application.yml
+        echo "${{ secrets.APPLICATION }}" > ./application.yml
+
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.

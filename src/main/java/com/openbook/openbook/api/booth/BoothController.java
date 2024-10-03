@@ -12,6 +12,7 @@ import com.openbook.openbook.api.PageResponse;
 import com.openbook.openbook.api.ResponseMessage;
 import com.openbook.openbook.api.SliceResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -95,7 +96,7 @@ public class BoothController {
     @PatchMapping("/booths/{booth_id}")
     public ResponseMessage modifyReview(Authentication authentication,
                                         @PathVariable Long booth_id,
-                                        @Valid BoothModifyRequest request){
+                                        @NotNull BoothModifyRequest request){
         boothService.modifyBooth(Long.parseLong(authentication.getName()), booth_id, request);
         return new ResponseMessage("부스 수정에 성공했습니다.");
     }

@@ -7,11 +7,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public record BoothModifyRequest(
-        @NotBlank String name,
-        @NotBlank String description,
-        @NotNull String openTime,
-        @NotNull String closeTime,
-        @NotNull MultipartFile mainImage,
+        String name,
+        String description,
+        String openTime,
+        String closeTime,
+        MultipartFile mainImage,
         List<String> tagToAdd,
         List<Long> tagToDelete,
         String accountBankName,

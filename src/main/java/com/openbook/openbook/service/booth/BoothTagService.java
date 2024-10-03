@@ -35,10 +35,6 @@ public class BoothTagService {
         );
     }
 
-    public List<BoothTag> getBoothTag(Long id){
-        return boothTagRepository.findAllByLinkedBoothId(id);
-    }
-
     public Slice<Booth> getBoothByTag(Pageable pageable, String boothTag, BoothStatus status){
         return boothTagRepository.findAllBoothByName(pageable, boothTag, status);
     }

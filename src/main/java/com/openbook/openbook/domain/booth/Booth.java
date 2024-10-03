@@ -4,6 +4,7 @@ import com.openbook.openbook.domain.booth.dto.BoothStatus;
 import com.openbook.openbook.domain.event.Event;
 import com.openbook.openbook.domain.EntityBasicTime;
 import com.openbook.openbook.domain.user.User;
+import com.openbook.openbook.service.booth.dto.BoothUpdateData;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -76,6 +77,31 @@ public class Booth extends EntityBasicTime {
     }
 
     public void updateStatus(BoothStatus status){ this.status = status; }
+
+    public void updateBooth(BoothUpdateData updateData){
+        if(updateData.name() != null){
+            this.name = updateData.name();
+        }
+        if(updateData.description() != null){
+            this.description = updateData.description();
+        }
+        if(updateData.openTime() != null){
+            this.openTime = updateData.openTime();
+        }
+        if(updateData.closeTime() != null){
+            this.closeTime = updateData.closeTime();
+        }
+        if(updateData.mainImage() != null){
+            this.mainImageUrl = updateData.mainImage();
+        }
+        if(updateData.accountBankName() != null){
+            this.accountBankName = updateData.accountBankName();
+        }
+        if(updateData.accountNumber() != null){
+            this.accountNumber = updateData.accountNumber();
+        }
+
+    }
 
     @Builder
     public Booth(User manager, Event linkedEvent, String name, String description, String mainImageUrl,

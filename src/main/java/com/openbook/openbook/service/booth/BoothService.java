@@ -3,6 +3,7 @@ package com.openbook.openbook.service.booth;
 
 import static com.openbook.openbook.util.Formatter.getDateTime;
 
+import com.openbook.openbook.api.booth.request.BoothModifyRequest;
 import com.openbook.openbook.api.booth.request.BoothRegistrationRequest;
 import com.openbook.openbook.domain.booth.dto.BoothAreaStatus;
 import com.openbook.openbook.domain.booth.dto.BoothStatus;
@@ -10,6 +11,7 @@ import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.repository.booth.BoothRepository;
 import com.openbook.openbook.service.booth.dto.BoothDto;
 import com.openbook.openbook.domain.event.Event;
+import com.openbook.openbook.service.booth.dto.BoothUpdateData;
 import com.openbook.openbook.service.event.EventService;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
@@ -129,6 +131,32 @@ public class BoothService {
                 : boothRepository.findAllByManagerIdAndStatus(pageable, managerId, BoothStatus.valueOf(status));
         return booths.map(booth ->
              BoothDto.of(booth, boothAreaService.getBoothAreasByBoothId(booth.getId())));
+    }
+
+    @Transactional
+    public void modifyBooth(long userId, long boothId, BoothModifyRequest request){
+        Booth booth = getBoothOrException(boothId);
+        Event event = eventService.getEventOrException(booth.getLinkedEvent().getId());
+        VerifyUserIsManagerOfBooth(booth, userId);
+
+        LocalDateTime open = getDateTime(event.getOpenDate() + " " + request.openTime());
+        LocalDateTime close = getDateTime(event.getCloseDate() + " " + request.closeTime());
+        dateTimePeriodCheck(open, close, event);
+
+        booth.updateBooth(BoothUpdateData.builder()
+                .name(request.name())
+                .description(request.description())
+                .openTime(open)
+                .closeTime(close)
+                .mainImage(s3Service.uploadFileAndGetUrl(request.mainImage()))
+                .accountBankName(request.accountBankName())
+                .accountNumber(request.accountNumber())
+                .build()
+        );
+
+        if(request.tagToAdd() != null || request.tagToDelete() != null){
+            boothTagService.modifyBoothTag(request.tagToAdd(), request.tagToDelete(), booth);
+        }
     }
 
     @Transactional

@@ -2,12 +2,14 @@ package com.openbook.openbook.api.booth;
 
 
 import com.openbook.openbook.api.SliceResponse;
+import com.openbook.openbook.api.booth.request.BoothReviewModifyRequest;
 import com.openbook.openbook.api.booth.request.BoothReviewRegisterRequest;
 import com.openbook.openbook.api.booth.response.BoothReviewResponse;
 import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.service.booth.BoothReviewService;
 import com.openbook.openbook.api.ResponseMessage;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -42,6 +44,15 @@ public class BoothReviewController {
     public BoothReviewResponse getReview(@PathVariable Long review_id){
         return BoothReviewResponse.of(boothReviewService.getBoothReview(review_id));
 
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/booth/reviews/{review_id}")
+    public ResponseMessage modifyReview(Authentication authentication,
+                                        @PathVariable Long review_id,
+                                        @NotNull BoothReviewModifyRequest request){
+        boothReviewService.modifyReview(Long.parseLong(authentication.getName()), review_id, request);
+        return new ResponseMessage("리뷰 수정에 성공했습니다.");
     }
 
     @ResponseStatus(HttpStatus.OK)

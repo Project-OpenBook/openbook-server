@@ -42,7 +42,7 @@ public class BoothReview extends EntityBasicTime {
     }
 
     public void updateReview(BoothReviewUpdateData updateData){
-        if(updateData.star() != 0){
+        if(updateData.star() != null){
             this.star = updateData.star();
         }
         if(updateData.content() != null){

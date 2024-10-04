@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record BoothReviewUpdateData(
-        float star,
+        Float star,
         String content,
         String image
 ) {

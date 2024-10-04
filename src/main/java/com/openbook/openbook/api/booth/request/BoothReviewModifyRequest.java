@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Max;
 import org.springframework.web.multipart.MultipartFile;
 
 public record BoothReviewModifyRequest(
-        @Max(value = 5) float star,
+        @Max(value = 5) Float star,
         String content,
         MultipartFile image
 ) {

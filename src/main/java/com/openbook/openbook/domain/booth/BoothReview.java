@@ -2,6 +2,7 @@ package com.openbook.openbook.domain.booth;
 
 import com.openbook.openbook.domain.EntityBasicTime;
 import com.openbook.openbook.domain.user.User;
+import com.openbook.openbook.service.booth.dto.BoothReviewUpdateData;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import lombok.AccessLevel;
@@ -38,5 +39,17 @@ public class BoothReview extends EntityBasicTime {
         this.star = star;
         this.content = content;
         this.imageUrl = imageUrl;
+    }
+
+    public void updateReview(BoothReviewUpdateData updateData){
+        if(updateData.star() != null){
+            this.star = updateData.star();
+        }
+        if(updateData.content() != null){
+            this.content = updateData.content();
+        }
+        if(updateData.image() != null){
+            this.imageUrl = updateData.image();
+        }
     }
 }

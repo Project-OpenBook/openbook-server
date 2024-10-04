@@ -1,5 +1,6 @@
 package com.openbook.openbook.service.booth;
 
+import com.openbook.openbook.api.booth.request.BoothReviewModifyRequest;
 import com.openbook.openbook.api.booth.request.BoothReviewRegisterRequest;
 import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.domain.booth.dto.BoothStatus;
@@ -8,6 +9,7 @@ import com.openbook.openbook.repository.booth.BoothReviewRepository;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
 import com.openbook.openbook.service.booth.dto.BoothReviewDto;
+import com.openbook.openbook.service.booth.dto.BoothReviewUpdateData;
 import com.openbook.openbook.util.S3Service;
 import com.openbook.openbook.domain.user.User;
 import com.openbook.openbook.service.user.UserService;
@@ -62,6 +64,20 @@ public class BoothReviewService {
     @Transactional(readOnly = true)
     public BoothReviewDto getBoothReview(long reviewId){
         return BoothReviewDto.of(getBoothReviewOrException(reviewId));
+    }
+
+    @Transactional
+    public void modifyReview(long userId, long reviewId, BoothReviewModifyRequest request){
+        BoothReview boothReview = getBoothReviewOrException(reviewId);
+        if(!boothReview.getReviewer().getId().equals(userId)){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        boothReview.updateReview(BoothReviewUpdateData.builder()
+                        .star(request.star())
+                        .content(request.content())
+                        .image((request.image() != null) ? s3Service.uploadFileAndGetUrl(request.image()) : null)
+                        .build());
     }
 
     @Transactional

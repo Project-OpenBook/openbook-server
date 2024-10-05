@@ -25,6 +25,16 @@ public class BoothProductCategoryService {
         );
     }
 
+    public void createProductCategory(String categoryName, String description, Booth linkedBooth) {
+        categoryRepository.save(
+                BoothProductCategory.builder()
+                        .name(categoryName)
+                        .description(description)
+                        .linkedBooth(linkedBooth)
+                        .build()
+        );
+    }
+
     public void deleteProductCategory(final BoothProductCategory category) {
         if(category.getName().equals(DEFAULT_NAME)) {
             throw new OpenBookException(ErrorCode.DEFAULT_CATEGORY_CANNOT_DELETED);
@@ -48,13 +58,5 @@ public class BoothProductCategoryService {
         return categoryRepository.findAllByLinkedBoothId(linkedBooth.getId());
     }
 
-    public void createProductCategory(String categoryName, String description, Booth linkedBooth) {
-        categoryRepository.save(
-                BoothProductCategory.builder()
-                        .name(categoryName)
-                        .description(description)
-                        .linkedBooth(linkedBooth)
-                        .build()
-        );
-    }
+
 }

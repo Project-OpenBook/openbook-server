@@ -2,6 +2,7 @@ package com.openbook.openbook.service.booth;
 
 
 import com.openbook.openbook.domain.booth.Booth;
+import com.openbook.openbook.domain.booth.BoothProduct;
 import com.openbook.openbook.domain.booth.BoothProductCategory;
 import com.openbook.openbook.repository.booth.BoothProductCategoryRepository;
 import com.openbook.openbook.exception.ErrorCode;
@@ -15,12 +16,17 @@ import org.springframework.stereotype.Service;
 public class BoothProductCategoryService {
 
     private final BoothProductCategoryRepository categoryRepository;
+    private final String DEFAULT_NAME = "기본";
 
 
     public BoothProductCategory getProductCategoryOrException(final long id) {
         return categoryRepository.findById(id).orElseThrow(()->
                 new OpenBookException(ErrorCode.PRODUCT_CATEGORY_NOT_FOUND)
         );
+    }
+
+    public BoothProductCategory getDefaultCategory(Booth linkedBooth) {
+        return categoryRepository.findByLinkedBoothIdAndName(linkedBooth.getId(), DEFAULT_NAME);
     }
 
     public boolean isExistsCategoryIn(Booth linkedBooth, String name) {

@@ -25,6 +25,13 @@ public class BoothProductCategoryService {
         );
     }
 
+    public void deleteProductCategory(final BoothProductCategory category) {
+        if(category.getName().equals(DEFAULT_NAME)) {
+            throw new OpenBookException(ErrorCode.DEFAULT_CATEGORY_CANNOT_DELETED);
+        }
+        categoryRepository.deleteById(category.getId());
+    }
+
     public BoothProductCategory getDefaultCategory(Booth linkedBooth) {
         return categoryRepository.findByLinkedBoothIdAndName(linkedBooth.getId(), DEFAULT_NAME);
     }

@@ -56,6 +56,7 @@ public class BoothProductController {
     public ResponseMessage deleteProductCategory(Authentication authentication,
                                                  @PathVariable Long category_id,
                                                  @RequestParam(defaultValue = "false") String deleteProducts) {
+        boothProductService.deleteCategory(Long.parseLong(authentication.getName()), category_id, deleteProducts);
         return new ResponseMessage("상품 카테고리 삭제에 성공했습니다.");
     }
 

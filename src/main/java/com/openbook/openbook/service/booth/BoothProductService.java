@@ -127,8 +127,6 @@ public class BoothProductService {
         if(category.getLinkedBooth().getManager().getId()!=userId) {
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
-        categoryService.deleteProductCategory(category);
-
         BoothProductCategory defaultCategory = categoryService.getDefaultCategory(category.getLinkedBooth());
         boolean delete = deleteProduct.equals("true");
         boothProductRepository.findAllByLinkedCategoryId(categoryId).forEach(product -> {
@@ -139,6 +137,7 @@ public class BoothProductService {
                 product.updateCategory(defaultCategory);
             }
         });
+        categoryService.deleteProductCategory(category);
     }
 
     public Slice<BoothProduct> getProductsByCategory(final BoothProductCategory category, final Pageable pageable) {

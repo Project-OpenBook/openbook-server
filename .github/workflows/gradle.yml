@@ -46,6 +46,30 @@ jobs:
         touch ./application.yml
         echo "${{ secrets.APPLICATION }}" > ./application.yml
 
+    # docker build & push to develop
+    - name: Docker build & push to dev
+      if: contains(github.ref, 'dev')
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USERNAME }}/openbook .
+        docker push ${{ secrets.DOCKER_USERNAME }}/openbook
+
+    ## deploy to develop
+    - name: Deploy to dev
+      uses: appleboy/ssh-action@master
+      id: dev
+      if: contains(github.ref, 'dev')
+      with:
+        host: ${{ secrets.HOST_DEV }} # EC2 퍼블릭 IPv4 DNS
+        username: ${{ secrets.USERNAME }}
+        port: 22
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          sudo docker ps
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/openbook
+          sudo docker run -d -p 8081:8081 ${{ secrets.DOCKER_USERNAME }}/openbook
+          sudo docker image prune -f
+
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.

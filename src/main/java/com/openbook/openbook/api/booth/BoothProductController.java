@@ -51,6 +51,15 @@ public class BoothProductController {
         return new ResponseMessage("상품 삭제에 성공했습니다.");
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/booths/product-categories/{category_id}")
+    public ResponseMessage deleteProductCategory(Authentication authentication,
+                                                 @PathVariable Long category_id,
+                                                 @RequestParam(defaultValue = "false") String deleteProducts) {
+        boothProductService.deleteCategory(Long.parseLong(authentication.getName()), category_id, deleteProducts);
+        return new ResponseMessage("상품 카테고리 삭제에 성공했습니다.");
+    }
+
     @GetMapping("/booths/{booth_id}/product-category")
     public ResponseEntity<List<ProductCategoryResponse>> getProductCategory(@PathVariable Long booth_id) {
         return ResponseEntity.ok(boothProductService.getProductCategoryResponseList(booth_id));

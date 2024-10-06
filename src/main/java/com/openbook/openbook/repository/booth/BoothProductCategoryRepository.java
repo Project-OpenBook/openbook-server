@@ -13,6 +13,8 @@ public interface BoothProductCategoryRepository extends JpaRepository<BoothProdu
 
     boolean existsByLinkedBoothIdAndName(Long linkedBoothId, String name);
 
+    BoothProductCategory findByLinkedBoothIdAndName(Long linkedBoothId, String name);
+
     List<BoothProductCategory> findAllByLinkedBoothId(Long linkedBoothId);
 
 }

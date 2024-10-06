@@ -40,4 +40,8 @@ public class BoothProduct {
         this.linkedCategory = linkedCategory;
     }
 
+    public void updateCategory(BoothProductCategory category) {
+        this.linkedCategory = category;
+    }
+
 }

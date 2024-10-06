@@ -5,6 +5,7 @@ import static com.openbook.openbook.util.Formatter.getFormattingDate;
 import com.openbook.openbook.service.booth.dto.BoothAreaDto;
 import com.openbook.openbook.service.booth.dto.BoothDto;
 import com.openbook.openbook.service.booth.dto.BoothTagDto;
+import com.openbook.openbook.service.event.dto.EventDto;
 
 import java.util.List;
 
@@ -14,9 +15,11 @@ public record BoothManageData(
         String mainImageUrl,
         List<BoothAreaDto> boothLocationData,
         String registrationDate,
+        String closeDate,
         String description,
         List<String> tags,
-        String status
+        String status,
+        String eventName
 ) {
     public static BoothManageData of(BoothDto booth) {
         return new BoothManageData(
@@ -25,9 +28,11 @@ public record BoothManageData(
                 booth.mainImageUrl(),
                 booth.locations(),
                 getFormattingDate(booth.registeredAt()),
+                getFormattingDate(booth.closeTime()),
                 booth.description(),
                 booth.tags().stream().map(BoothTagDto::name).toList(),
-                booth.status()
+                booth.status(),
+                booth.linkedEvent().name()
         );
     }
 }

@@ -1,5 +1,6 @@
 package com.openbook.openbook.service.booth;
 
+import com.openbook.openbook.api.booth.request.BoothNoticeModifyRequest;
 import com.openbook.openbook.api.booth.request.BoothNoticeRegisterRequest;
 import com.openbook.openbook.domain.booth.dto.BoothStatus;
 import com.openbook.openbook.domain.booth.Booth;
@@ -8,6 +9,7 @@ import com.openbook.openbook.repository.booth.BoothNoticeRepository;
 import com.openbook.openbook.service.booth.dto.BoothNoticeDto;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
+import com.openbook.openbook.service.booth.dto.BoothNoticeUpdateData;
 import com.openbook.openbook.util.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -58,6 +60,21 @@ public class BoothNoticeService {
                         .linkedBooth(booth)
                         .build()
         );
+    }
+
+    @Transactional
+    public void modifyNotice(long userId, long noticeId, BoothNoticeModifyRequest request){
+        BoothNotice notice = getBoothNoticeOrException(noticeId);
+        if(!notice.getLinkedBooth().getManager().getId().equals(userId)){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        notice.updateNotice(BoothNoticeUpdateData.builder()
+                        .title(request.title())
+                        .content(request.content())
+                        .type(request.noticeType())
+                        .imageUrl((request.image() != null)?s3Service.uploadFileAndGetUrl(request.image()):null)
+                        .build());
     }
 
 }

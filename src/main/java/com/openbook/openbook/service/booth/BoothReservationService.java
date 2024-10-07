@@ -87,6 +87,7 @@ public class BoothReservationService {
                 BoothReservation.builder()
                         .name(request.name())
                         .description(request.description())
+                        .price(request.price())
                         .date(request.date())
                         .imageUrl(s3Service.uploadFileAndGetUrl(request.image()))
                         .linkedBooth(booth)

@@ -6,7 +6,6 @@ import com.openbook.openbook.api.event.response.EventPublicResponse;
 import com.openbook.openbook.service.booth.dto.BoothAreaDto;
 import com.openbook.openbook.service.booth.dto.BoothDto;
 import com.openbook.openbook.service.booth.dto.BoothTagDto;
-import com.openbook.openbook.service.event.dto.EventDto;
 
 import java.util.List;
 

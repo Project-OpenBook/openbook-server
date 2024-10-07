@@ -2,6 +2,7 @@ package com.openbook.openbook.api.booth.response;
 
 import static com.openbook.openbook.util.Formatter.getFormattingDate;
 
+import com.openbook.openbook.api.event.response.EventPublicResponse;
 import com.openbook.openbook.service.booth.dto.BoothAreaDto;
 import com.openbook.openbook.service.booth.dto.BoothDto;
 import com.openbook.openbook.service.booth.dto.BoothTagDto;
@@ -19,7 +20,7 @@ public record BoothManageData(
         String description,
         List<String> tags,
         String status,
-        String eventName
+        EventPublicResponse eventName
 ) {
     public static BoothManageData of(BoothDto booth) {
         return new BoothManageData(
@@ -32,7 +33,7 @@ public record BoothManageData(
                 booth.description(),
                 booth.tags().stream().map(BoothTagDto::name).toList(),
                 booth.status(),
-                booth.linkedEvent().name()
+                EventPublicResponse.of(booth.linkedEvent())
         );
     }
 }

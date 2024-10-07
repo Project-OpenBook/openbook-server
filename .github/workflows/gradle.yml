@@ -5,12 +5,10 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Java CI with Gradle
+name: Java CI/CD with Gradle
 
 on:
   push:
-    branches: [ "dev" ]
-  pull_request:
     branches: [ "dev" ]
 
 jobs:
@@ -45,6 +43,30 @@ jobs:
         cd ./src/main/resources
         touch ./application.yml
         echo "${{ secrets.APPLICATION }}" > ./application.yml
+
+    # docker build & push to develop
+    - name: Docker build & push to dev
+      if: contains(github.ref, 'dev')
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USERNAME }}/openbook .
+        docker push ${{ secrets.DOCKER_USERNAME }}/openbook
+
+    ## deploy to develop
+    - name: Deploy to dev
+      uses: appleboy/ssh-action@master
+      id: dev
+      if: contains(github.ref, 'dev')
+      with:
+        host: ${{ secrets.HOST_DEV }} # EC2 퍼블릭 IPv4 DNS
+        username: ${{ secrets.USERNAME }}
+        port: 22
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          sudo docker ps
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/openbook
+          sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/openbook
+          sudo docker image prune -f
 
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).

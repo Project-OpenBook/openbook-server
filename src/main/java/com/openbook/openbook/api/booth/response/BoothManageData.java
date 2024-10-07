@@ -20,7 +20,7 @@ public record BoothManageData(
         String description,
         List<String> tags,
         String status,
-        EventPublicResponse eventName
+        EventPublicResponse event
 ) {
     public static BoothManageData of(BoothDto booth) {
         return new BoothManageData(

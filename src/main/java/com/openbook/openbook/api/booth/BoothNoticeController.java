@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,22 +27,29 @@ public class BoothNoticeController {
 
     private final BoothNoticeService boothNoticeService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/booths/{boothId}/notices")
-    public ResponseEntity<ResponseMessage> postNotice(Authentication authentication,
-                                                      @PathVariable Long boothId,
-                                                      @Valid BoothNoticeRegisterRequest boothNoticeRegisterRequest){
-        boothNoticeService.registerBoothNotice(Long.valueOf(authentication.getName()), boothId, boothNoticeRegisterRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("공지 등록에 성공했습니다."));
+    public ResponseMessage postNotice(Authentication authentication,
+                                      @PathVariable Long boothId,
+                                      @Valid BoothNoticeRegisterRequest request){
+        boothNoticeService.registerBoothNotice(Long.valueOf(authentication.getName()), boothId, request);
+        return new ResponseMessage("공지 등록에 성공했습니다.");
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/booths/{boothId}/notices")
-    public SliceResponse<BoothNoticeResponse> getBoothNotices(@PathVariable Long boothId, @PageableDefault(size = 5) Pageable pageable){
-        return SliceResponse.of(boothNoticeService.getBoothNotices(boothId, pageable).map(BoothNoticeResponse::of));
+    public SliceResponse<BoothNoticeResponse> getBoothNotices(@PathVariable Long boothId,
+                                                              @PageableDefault(size = 5) Pageable pageable){
+        return SliceResponse.of(
+                boothNoticeService.getBoothNotices(boothId, pageable)
+                        .map(BoothNoticeResponse::of)
+        );
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/booths/notices/{noticeId}")
-    public ResponseEntity<BoothNoticeResponse> getBoothNotice(@PathVariable Long noticeId){
-        return ResponseEntity.ok(BoothNoticeResponse.of(boothNoticeService.getBoothNotice(noticeId)));
+    public BoothNoticeResponse getBoothNotice(@PathVariable Long noticeId){
+        return BoothNoticeResponse.of(boothNoticeService.getBoothNotice(noticeId));
     }
 
     @ResponseStatus(HttpStatus.OK)

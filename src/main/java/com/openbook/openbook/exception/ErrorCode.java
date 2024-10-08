@@ -51,6 +51,8 @@ public enum ErrorCode {
     EXCEED_MAXIMUM_CATEGORY(HttpStatus.CONFLICT, "생성할 수 있는 최대 카테고리 수를 초과했습니다."),
     DEFAULT_CATEGORY_CANNOT_DELETED(HttpStatus.CONFLICT, "기본 카테고리는 삭제할 수 없습니다."),
     ALREADY_EXIST_CATEGORY(HttpStatus.CONFLICT, "이미 존재하는 카테고리 입니다."),
+    NOT_SELECTABLE_CATEGORY(HttpStatus.CONFLICT, "해당 부스의 카테고리만 선택 가능합니다."),
+
 
     // NOT FOUND
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저 정보를 찾을 수 없습니다."),

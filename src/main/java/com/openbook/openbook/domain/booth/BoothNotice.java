@@ -2,6 +2,7 @@ package com.openbook.openbook.domain.booth;
 
 import com.openbook.openbook.domain.booth.dto.BoothNoticeType;
 import com.openbook.openbook.domain.EntityBasicTime;
+import com.openbook.openbook.service.booth.dto.BoothNoticeUpdateData;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -36,5 +37,20 @@ public class BoothNotice extends EntityBasicTime {
         this.type = type.name();
         this.imageUrl = imageUrl;
         this.linkedBooth = linkedBooth;
+    }
+
+    public void updateNotice(BoothNoticeUpdateData noticeUpdateData){
+        if(noticeUpdateData.title() != null){
+            this.title = noticeUpdateData.title();
+        }
+        if(noticeUpdateData.content() != null){
+            this.content = noticeUpdateData.content();
+        }
+        if(noticeUpdateData.title() != null){
+            this.type = noticeUpdateData.type().name();
+        }
+        if(noticeUpdateData.imageUrl() != null){
+            this.imageUrl = noticeUpdateData.imageUrl();
+        }
     }
 }

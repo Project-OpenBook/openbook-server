@@ -5,7 +5,6 @@ import com.openbook.openbook.api.SliceResponse;
 import com.openbook.openbook.api.booth.request.BoothReviewModifyRequest;
 import com.openbook.openbook.api.booth.request.BoothReviewRegisterRequest;
 import com.openbook.openbook.api.booth.response.BoothReviewResponse;
-import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.service.booth.BoothReviewService;
 import com.openbook.openbook.api.ResponseMessage;
 import jakarta.validation.Valid;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +22,12 @@ public class BoothReviewController {
 
     private final BoothReviewService boothReviewService;
 
-
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/booths/review")
-    public ResponseEntity<ResponseMessage> postReview(Authentication authentication,
-                                                      @Valid BoothReviewRegisterRequest request){
+    public ResponseMessage postReview(Authentication authentication,
+                                      @Valid BoothReviewRegisterRequest request){
         boothReviewService.registerBoothReview(Long.valueOf(authentication.getName()), request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("부스 리뷰 작성에 성공했습니다."));
+        return new ResponseMessage("부스 리뷰 작성에 성공했습니다.");
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -43,7 +41,6 @@ public class BoothReviewController {
     @GetMapping("/booth/reviews/{review_id}")
     public BoothReviewResponse getReview(@PathVariable Long review_id){
         return BoothReviewResponse.of(boothReviewService.getBoothReview(review_id));
-
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -57,8 +54,10 @@ public class BoothReviewController {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/booth/reviews/{review_id}")
-    public ResponseMessage deleteReview(Authentication authentication, @PathVariable Long review_id){
+    public ResponseMessage deleteReview(Authentication authentication,
+                                        @PathVariable Long review_id){
         boothReviewService.deleteReview(Long.parseLong(authentication.getName()), review_id);
         return new ResponseMessage("부스 리뷰 삭제에 성공했습니다.");
     }
+
 }

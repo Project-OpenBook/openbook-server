@@ -1,6 +1,7 @@
 package com.openbook.openbook.service.booth;
 
 
+import com.openbook.openbook.api.booth.request.ProductModifyRequest;
 import com.openbook.openbook.api.booth.request.ProductCategoryRegister;
 import com.openbook.openbook.api.booth.request.ProductRegistrationRequest;
 import com.openbook.openbook.api.booth.response.BoothProductResponse;
@@ -15,6 +16,7 @@ import com.openbook.openbook.repository.booth.BoothProductImageRepository;
 import com.openbook.openbook.repository.booth.BoothProductRepository;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
+import com.openbook.openbook.service.booth.dto.BoothProductUpdateData;
 import com.openbook.openbook.util.S3Service;
 import com.openbook.openbook.domain.user.User;
 import com.openbook.openbook.service.user.UserService;
@@ -110,6 +112,21 @@ public class BoothProductService {
                 createBoothProductImage(imageUrl, product);
             });
         }
+    }
+
+    @Transactional
+    public void updateProduct(final long userId, final long productId, final ProductModifyRequest request) {
+        BoothProduct product = getBoothProductOrException(productId);
+        if(product.getLinkedCategory().getLinkedBooth().getManager().getId()!=userId) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        product.updateProduct(BoothProductUpdateData.builder()
+                .name(request.name())
+                .description(request.description())
+                .stock(request.stock())
+                .price(request.price())
+                .build()
+        );
     }
 
     @Transactional

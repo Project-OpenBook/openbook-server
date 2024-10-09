@@ -44,8 +44,8 @@ public class BookmarkController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/bookmark-list")
     public SliceResponse<BookmarkResponse> findBookmarkList(Authentication authentication,
-                                                        @RequestParam(value = "type") String request,
-                                                        Pageable pageable) {
+                                                            @RequestParam(value = "type") String request,
+                                                            Pageable pageable) {
         return SliceResponse.of(bookmarkService
                 .findBookmarkList(Long.parseLong(authentication.getName()), request, pageable)
                 .map(BookmarkResponse::of)

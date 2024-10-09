@@ -12,10 +12,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,24 +26,25 @@ public class UserController {
     final private TokenProvider tokenProvider;
     private final UserService userService;
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("user/access_token_info")
-    public ResponseEntity<TokenInfo> getTokenInfo(@NotNull HttpServletRequest request) {
+    public TokenInfo getTokenInfo(@NotNull HttpServletRequest request) {
         String token = tokenProvider.getTokenFrom(request);
-        return ResponseEntity.ok(tokenProvider.getInfoOf(token));
+        return tokenProvider.getInfoOf(token);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
-    public ResponseEntity<ResponseMessage> signup(@RequestBody @Valid final SignUpRequest request) {
+    public ResponseMessage signup(@RequestBody @Valid final SignUpRequest request) {
         userService.signup(request);
-        return ResponseEntity.ok(new ResponseMessage("API 요청 성공"));
+        return new ResponseMessage("API 요청 성공");
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid final LoginRequest request) {
+    public Map<String, String> login(@RequestBody @Valid final LoginRequest request) {
         String token = userService.login(request);
-        return ResponseEntity.ok(Map.of("token", token));
+        return Map.of("token", token);
     }
-
-
 
 }

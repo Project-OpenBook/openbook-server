@@ -65,7 +65,7 @@ public class BoothNoticeController {
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/booths/notices/{notice_id}")
     public ResponseMessage deleteNotice(Authentication authentication,
-                                                        @PathVariable Long notice_id){
+                                        @PathVariable Long notice_id){
         boothNoticeService.deleteBoothNotice(Long.parseLong(authentication.getName()), notice_id);
         return new ResponseMessage("공지 삭제에 성공했습니다.");
     }

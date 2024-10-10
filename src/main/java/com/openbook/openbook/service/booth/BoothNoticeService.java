@@ -31,12 +31,6 @@ public class BoothNoticeService {
         );
     }
 
-    private void VerifyUserIsManagerOfBooth(BoothNotice boothNotice, long userId){
-        if(!boothNotice.getLinkedBooth().getManager().getId().equals(userId)){
-            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
-        }
-    }
-
     @Transactional(readOnly = true)
     public Slice<BoothNoticeDto> getBoothNotices(Long boothId, Pageable pageable){
         boothService.getBoothOrException(boothId);
@@ -89,6 +83,12 @@ public class BoothNoticeService {
         VerifyUserIsManagerOfBooth(notice, userId);
         s3Service.deleteFileFromS3(notice.getImageUrl());
         boothNoticeRepository.delete(notice);
+    }
+
+    private void VerifyUserIsManagerOfBooth(BoothNotice boothNotice, long userId){
+        if(!boothNotice.getLinkedBooth().getManager().getId().equals(userId)){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
     }
 
 }

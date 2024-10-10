@@ -77,4 +77,18 @@ public class BoothNoticeService {
                         .build());
     }
 
+    @Transactional
+    public void deleteBoothNotice(Long userId, Long noticeId){
+        BoothNotice notice = getBoothNoticeOrException(noticeId);
+        VerifyUserIsManagerOfBooth(notice, userId);
+        s3Service.deleteFileFromS3(notice.getImageUrl());
+        boothNoticeRepository.delete(notice);
+    }
+
+    private void VerifyUserIsManagerOfBooth(BoothNotice boothNotice, long userId){
+        if(!boothNotice.getLinkedBooth().getManager().getId().equals(userId)){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+    }
+
 }

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,6 +60,14 @@ public class BoothNoticeController {
                                         @NotNull BoothNoticeModifyRequest request){
         boothNoticeService.modifyNotice(Long.parseLong(authentication.getName()), notice_id, request);
         return new ResponseMessage("공지 수정에 성공했습니다.");
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/booths/notices/{notice_id}")
+    public ResponseMessage deleteNotice(Authentication authentication,
+                                        @PathVariable Long notice_id){
+        boothNoticeService.deleteBoothNotice(Long.parseLong(authentication.getName()), notice_id);
+        return new ResponseMessage("공지 삭제에 성공했습니다.");
     }
 
 }

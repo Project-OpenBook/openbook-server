@@ -56,7 +56,7 @@ public class BoothNoticeService {
                         .title(request.title())
                         .content(request.content())
                         .type(request.noticeType())
-                        .imageUrl(s3Service.uploadFileAndGetUrl(request.image()))
+                        .imageUrl((request.image() != null)?s3Service.uploadFileAndGetUrl(request.image()):null)
                         .linkedBooth(booth)
                         .build()
         );

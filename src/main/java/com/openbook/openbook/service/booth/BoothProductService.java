@@ -122,13 +122,7 @@ public class BoothProductService {
                 .price(request.price())
                 .build()
         );
-        if(request.categoryId()!=null) {
-            BoothProductCategory category = categoryService.getProductCategoryOrException(request.categoryId());
-            if(category.getLinkedBooth()!=product.getLinkedCategory().getLinkedBooth()) {
-                throw new OpenBookException(ErrorCode.NOT_SELECTABLE_CATEGORY);
-            }
-            product.updateCategory(category);
-        }
+        categoryService.updateProductCategory(request.categoryId(), product);
     }
 
     @Transactional
@@ -151,8 +145,7 @@ public class BoothProductService {
         boothProductRepository.findAllByLinkedCategoryId(categoryId).forEach(product -> {
             if(delete) {
                 boothProductRepository.delete(product);
-            }
-            else {
+            } else {
                 product.updateCategory(defaultCategory);
             }
         });

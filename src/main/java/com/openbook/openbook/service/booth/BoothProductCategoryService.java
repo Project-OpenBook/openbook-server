@@ -35,6 +35,14 @@ public class BoothProductCategoryService {
         );
     }
 
+    public void updateProductCategory(Long id, final BoothProduct product) {
+        BoothProductCategory category = getProductCategoryOrException(id);
+        if(category.getLinkedBooth()!=product.getLinkedCategory().getLinkedBooth()) {
+            throw new OpenBookException(ErrorCode.NOT_SELECTABLE_CATEGORY);
+        }
+        product.updateCategory(category);
+    }
+
     public void deleteProductCategory(final BoothProductCategory category) {
         if(category.getName().equals(DEFAULT_NAME)) {
             throw new OpenBookException(ErrorCode.DEFAULT_CATEGORY_CANNOT_DELETED);

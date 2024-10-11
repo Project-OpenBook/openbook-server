@@ -10,14 +10,11 @@ import com.openbook.openbook.api.booth.response.ProductCategoryResponse;
 import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.domain.booth.BoothProduct;
 import com.openbook.openbook.domain.booth.BoothProductCategory;
-import com.openbook.openbook.domain.booth.BoothProductImage;
 import com.openbook.openbook.domain.booth.dto.BoothStatus;
-import com.openbook.openbook.repository.booth.BoothProductImageRepository;
 import com.openbook.openbook.repository.booth.BoothProductRepository;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
 import com.openbook.openbook.service.booth.dto.BoothProductUpdateData;
-import com.openbook.openbook.util.S3Service;
 import com.openbook.openbook.domain.user.User;
 import com.openbook.openbook.service.user.UserService;
 import java.util.ArrayList;
@@ -27,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -155,9 +151,6 @@ public class BoothProductService {
 
     public Slice<BoothProduct> getProductsByCategory(final BoothProductCategory category, final Pageable pageable) {
         return boothProductRepository.findAllByLinkedCategoryId(category.getId(), pageable);
-    }
-
-
     }
 
     private Booth getValidBoothOrException(Long userId, Long boothId) {

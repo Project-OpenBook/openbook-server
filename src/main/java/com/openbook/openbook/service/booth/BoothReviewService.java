@@ -40,13 +40,12 @@ public class BoothReviewService {
         User user = userService.getUserOrException(userId);
         Booth booth = boothService.getBoothOrException(request.booth_id());
         checkReviewable(booth, userId);
-        String image = (request.image()!=null)?s3Service.uploadFileAndGetUrl(request.image()):null;
         boothReviewRepository.save(BoothReview.builder()
                 .reviewer(user)
                 .linkedBooth(booth)
                 .star(request.star())
                 .content(request.content())
-                .imageUrl(image)
+                .imageUrl((request.image()!=null) ? s3Service.uploadFileAndGetUrl(request.image()):null)
                 .build()
         );
     }

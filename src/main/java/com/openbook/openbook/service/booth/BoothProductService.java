@@ -123,6 +123,7 @@ public class BoothProductService {
                 .build()
         );
         categoryService.updateProductCategory(request.categoryId(), product);
+        imageService.modifyReviewImage(request.imageToAdd(), request.imageToDelete(), product);
     }
 
     @Transactional

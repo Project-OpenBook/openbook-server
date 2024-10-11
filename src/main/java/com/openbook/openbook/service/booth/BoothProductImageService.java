@@ -2,6 +2,8 @@ package com.openbook.openbook.service.booth;
 
 import com.openbook.openbook.domain.booth.BoothProduct;
 import com.openbook.openbook.domain.booth.BoothProductImage;
+import com.openbook.openbook.exception.ErrorCode;
+import com.openbook.openbook.exception.OpenBookException;
 import com.openbook.openbook.repository.booth.BoothProductImageRepository;
 import com.openbook.openbook.util.S3Service;
 import java.util.List;
@@ -28,6 +30,28 @@ public class BoothProductImageService {
 
     public List<BoothProductImage> getProductImages(final BoothProduct product) {
         return boothProductImageRepository.findAllByLinkedProductId(product.getId());
+    }
+
+    public void modifyReviewImage(List<MultipartFile> add, List<Long> delete, BoothProduct product) {
+        int addSize = (add!=null)?add.size():0, deleteSize = (delete!=null)?delete.size():0;
+        if(getProductImageCount(product) - deleteSize + addSize > 5) {
+            throw new OpenBookException(ErrorCode.EXCEED_MAXIMUM_IMAGE);
+        }
+        createBoothProductImage(add, product);
+        for(int i = 0; i < deleteSize; i++) {
+            BoothProductImage image = getProductImageOrException(delete.get(i));
+            boothProductImageRepository.delete(image);
+        }
+    }
+
+    private BoothProductImage getProductImageOrException(long id) {
+        return boothProductImageRepository.findById(id).orElseThrow(() ->
+                new OpenBookException(ErrorCode.IMAGE_NOT_FOUND)
+        );
+    }
+
+    private int getProductImageCount(final BoothProduct product) {
+        return boothProductImageRepository.countAllByLinkedProductId(product.getId());
     }
 
 }

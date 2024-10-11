@@ -34,12 +34,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class BoothProductService {
 
     private final BoothProductRepository boothProductRepository;
-    private final BoothProductImageRepository boothProductImageRepository;
-    private final S3Service s3Service;
 
     private final UserService userService;
     private final BoothService boothService;
     private final BoothProductCategoryService categoryService;
+    private final BoothProductImageService imageService;
 
 
     @Transactional(readOnly = true)
@@ -51,7 +50,7 @@ public class BoothProductService {
             Slice<BoothProductResponse> products = getProductsByCategory(category, pageable).map(
                     boothProduct -> BoothProductResponse.of(
                             boothProduct,
-                            getProductImages(boothProduct)
+                            imageService.getProductImages(boothProduct)
                     )
             );
             if(products.getNumberOfElements()!=0) {
@@ -77,7 +76,7 @@ public class BoothProductService {
         Slice<BoothProductResponse> products = getProductsByCategory(category, pageable).map(
                 boothProduct -> BoothProductResponse.of(
                         boothProduct,
-                        getProductImages(boothProduct)
+                        imageService.getProductImages(boothProduct)
                 )
         );
         return CategoryProductsResponse.of(category, products);
@@ -107,11 +106,7 @@ public class BoothProductService {
                 .linkedCategory(categoryService.getProductCategoryOrException(request.categoryId()))
                 .build()
         );
-        if(request.images()!=null && !request.images().isEmpty()) {
-            request.images().forEach(imageUrl -> {
-                createBoothProductImage(imageUrl, product);
-            });
-        }
+        imageService.createBoothProductImage(request.images(), product);
     }
 
     @Transactional
@@ -168,17 +163,7 @@ public class BoothProductService {
         return boothProductRepository.findAllByLinkedCategoryId(category.getId(), pageable);
     }
 
-    public List<BoothProductImage> getProductImages(final BoothProduct product) {
-        return boothProductImageRepository.findAllByLinkedProductId(product.getId());
-    }
 
-    public void createBoothProductImage(final MultipartFile imageUrl, final BoothProduct boothProduct) {
-        boothProductImageRepository.save(
-                BoothProductImage.builder()
-                        .imageUrl(s3Service.uploadFileAndGetUrl(imageUrl))
-                        .linkedProduct(boothProduct)
-                        .build()
-        );
     }
 
     private Booth getValidBoothOrException(Long userId, Long boothId) {

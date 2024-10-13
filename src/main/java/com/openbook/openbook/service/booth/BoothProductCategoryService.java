@@ -36,6 +36,7 @@ public class BoothProductCategoryService {
     }
 
     public void updateProductCategory(Long id, final BoothProduct product) {
+        if(id==null) return;
         BoothProductCategory category = getProductCategoryOrException(id);
         if(category.getLinkedBooth()!=product.getLinkedCategory().getLinkedBooth()) {
             throw new OpenBookException(ErrorCode.NOT_SELECTABLE_CATEGORY);

@@ -52,7 +52,7 @@ public class BoothProductController {
     @PatchMapping("/booths/products/{product_id}")
     public ResponseMessage modifyProduct(Authentication authentication,
                                          @PathVariable long product_id,
-                                         @NotNull @RequestBody ProductModifyRequest request) {
+                                         @NotNull ProductModifyRequest request) {
         boothProductService.updateProduct(Long.parseLong(authentication.getName()), product_id, request);
         return new ResponseMessage("상품 수정에 성공했습니다.");
     }

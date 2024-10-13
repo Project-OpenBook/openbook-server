@@ -82,10 +82,10 @@ public class BoothReservationService {
     @Transactional
     public void addReservation(Long userId, ReserveRegistrationRequest request, Long boothId) {
         Booth booth = getValidBoothOrException(userId, boothId);
-        checkAvailableDate(request.date(), booth);
+        checkAvailableDate(request.dates(), booth);
         checkDuplicateDates(request, booth);
 
-        for(LocalDate date : request.date()){
+        for(LocalDate date : request.dates()){
             BoothReservation reservation = boothReservationRepository.save(
                     BoothReservation.builder()
                             .name(request.name())
@@ -115,7 +115,7 @@ public class BoothReservationService {
     }
 
     private void checkDuplicateDates(ReserveRegistrationRequest request, Booth booth){
-        for(LocalDate date : request.date()){
+        for(LocalDate date : request.dates()){
             if(boothReservationRepository.existsByLinkedBoothIdAndDateAndName(booth.getId(), date, request.name())){
                 throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
             }

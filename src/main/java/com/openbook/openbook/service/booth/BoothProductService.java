@@ -1,6 +1,7 @@
 package com.openbook.openbook.service.booth;
 
 
+import com.openbook.openbook.api.booth.request.ProductModifyRequest;
 import com.openbook.openbook.api.booth.request.ProductCategoryRegister;
 import com.openbook.openbook.api.booth.request.ProductRegistrationRequest;
 import com.openbook.openbook.api.booth.response.BoothProductResponse;
@@ -9,13 +10,11 @@ import com.openbook.openbook.api.booth.response.ProductCategoryResponse;
 import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.domain.booth.BoothProduct;
 import com.openbook.openbook.domain.booth.BoothProductCategory;
-import com.openbook.openbook.domain.booth.BoothProductImage;
 import com.openbook.openbook.domain.booth.dto.BoothStatus;
-import com.openbook.openbook.repository.booth.BoothProductImageRepository;
 import com.openbook.openbook.repository.booth.BoothProductRepository;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
-import com.openbook.openbook.util.S3Service;
+import com.openbook.openbook.service.booth.dto.BoothProductUpdateData;
 import com.openbook.openbook.domain.user.User;
 import com.openbook.openbook.service.user.UserService;
 import java.util.ArrayList;
@@ -25,19 +24,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class BoothProductService {
 
     private final BoothProductRepository boothProductRepository;
-    private final BoothProductImageRepository boothProductImageRepository;
-    private final S3Service s3Service;
 
     private final UserService userService;
     private final BoothService boothService;
     private final BoothProductCategoryService categoryService;
+    private final BoothProductImageService imageService;
 
 
     @Transactional(readOnly = true)
@@ -49,7 +46,7 @@ public class BoothProductService {
             Slice<BoothProductResponse> products = getProductsByCategory(category, pageable).map(
                     boothProduct -> BoothProductResponse.of(
                             boothProduct,
-                            getProductImages(boothProduct)
+                            imageService.getProductImages(boothProduct)
                     )
             );
             if(products.getNumberOfElements()!=0) {
@@ -75,7 +72,7 @@ public class BoothProductService {
         Slice<BoothProductResponse> products = getProductsByCategory(category, pageable).map(
                 boothProduct -> BoothProductResponse.of(
                         boothProduct,
-                        getProductImages(boothProduct)
+                        imageService.getProductImages(boothProduct)
                 )
         );
         return CategoryProductsResponse.of(category, products);
@@ -105,11 +102,24 @@ public class BoothProductService {
                 .linkedCategory(categoryService.getProductCategoryOrException(request.categoryId()))
                 .build()
         );
-        if(request.images()!=null && !request.images().isEmpty()) {
-            request.images().forEach(imageUrl -> {
-                createBoothProductImage(imageUrl, product);
-            });
+        imageService.createBoothProductImage(request.images(), product);
+    }
+
+    @Transactional
+    public void updateProduct(final long userId, final long productId, final ProductModifyRequest request) {
+        BoothProduct product = getBoothProductOrException(productId);
+        if(product.getLinkedCategory().getLinkedBooth().getManager().getId()!=userId) {
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
+        product.updateProduct(BoothProductUpdateData.builder()
+                .name(request.name())
+                .description(request.description())
+                .stock(request.stock())
+                .price(request.price())
+                .build()
+        );
+        categoryService.updateProductCategory(request.categoryId(), product);
+        imageService.modifyReviewImage(request.imageToAdd(), request.imageToDelete(), product);
     }
 
     @Transactional
@@ -132,8 +142,7 @@ public class BoothProductService {
         boothProductRepository.findAllByLinkedCategoryId(categoryId).forEach(product -> {
             if(delete) {
                 boothProductRepository.delete(product);
-            }
-            else {
+            } else {
                 product.updateCategory(defaultCategory);
             }
         });
@@ -142,19 +151,6 @@ public class BoothProductService {
 
     public Slice<BoothProduct> getProductsByCategory(final BoothProductCategory category, final Pageable pageable) {
         return boothProductRepository.findAllByLinkedCategoryId(category.getId(), pageable);
-    }
-
-    public List<BoothProductImage> getProductImages(final BoothProduct product) {
-        return boothProductImageRepository.findAllByLinkedProductId(product.getId());
-    }
-
-    public void createBoothProductImage(final MultipartFile imageUrl, final BoothProduct boothProduct) {
-        boothProductImageRepository.save(
-                BoothProductImage.builder()
-                        .imageUrl(s3Service.uploadFileAndGetUrl(imageUrl))
-                        .linkedProduct(boothProduct)
-                        .build()
-        );
     }
 
     private Booth getValidBoothOrException(Long userId, Long boothId) {

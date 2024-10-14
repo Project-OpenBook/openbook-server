@@ -8,4 +8,6 @@ public interface BoothProductImageRepository extends JpaRepository<BoothProductI
 
     List<BoothProductImage> findAllByLinkedProductId(Long linkedProductId);
 
+    int countAllByLinkedProductId(Long linkedProductId);
+
 }

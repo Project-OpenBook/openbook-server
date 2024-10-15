@@ -16,6 +16,8 @@ import com.openbook.openbook.service.user.AlarmService;
 import com.openbook.openbook.util.S3Service;
 import com.openbook.openbook.domain.user.User;
 import com.openbook.openbook.service.user.UserService;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -80,38 +82,45 @@ public class BoothReservationService {
     @Transactional
     public void addReservation(Long userId, ReserveRegistrationRequest request, Long boothId) {
         Booth booth = getValidBoothOrException(userId, boothId);
-        checkAvailableDate(request, booth);
+        checkAvailableDate(request.dates(), booth);
         checkDuplicateDates(request, booth);
 
-        BoothReservation reservation = boothReservationRepository.save(
-                BoothReservation.builder()
-                        .name(request.name())
-                        .description(request.description())
-                        .price(request.price())
-                        .date(request.date())
-                        .imageUrl(s3Service.uploadFileAndGetUrl(request.image()))
-                        .linkedBooth(booth)
-                        .build()
-        );
-
-        reservationDetailService.createReservationDetail(request.times(), reservation, booth);
+        for(LocalDate date : request.dates()){
+            BoothReservation reservation = boothReservationRepository.save(
+                    BoothReservation.builder()
+                            .name(request.name())
+                            .description(request.description())
+                            .price(request.price())
+                            .date(date)
+                            .imageUrl(s3Service.uploadFileAndGetUrl(request.image()))
+                            .linkedBooth(booth)
+                            .build()
+            );
+            reservationDetailService.createReservationDetail(request.times(), reservation, booth);
+        }
     }
 
     public List<BoothReservation> getBoothReservations(Long boothId){
         return boothReservationRepository.findBoothReservationByLinkedBoothId(boothId);
     }
 
-    private void checkAvailableDate(ReserveRegistrationRequest request, Booth booth){
-        if(request.date().isBefore(booth.getLinkedEvent().getOpenDate())
-                || request.date().isAfter(booth.getLinkedEvent().getCloseDate())){
-            throw new OpenBookException(ErrorCode.INVALID_RESERVED_DATE);
+    private void checkAvailableDate(List<LocalDate> dates, Booth booth){
+        for(LocalDate date : dates){
+            if(date.isBefore(booth.getLinkedEvent().getOpenDate())
+                    || date.isAfter(booth.getLinkedEvent().getCloseDate())){
+                throw new OpenBookException(ErrorCode.INVALID_RESERVED_DATE);
+            }
         }
+
     }
 
     private void checkDuplicateDates(ReserveRegistrationRequest request, Booth booth){
-        if(boothReservationRepository.existsByLinkedBoothIdAndDateAndName(booth.getId(), request.date(), request.name())){
-            throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
+        for(LocalDate date : request.dates()){
+            if(boothReservationRepository.existsByLinkedBoothIdAndDateAndName(booth.getId(), date, request.name())){
+                throw new OpenBookException(ErrorCode.ALREADY_RESERVED_DATE);
+            }
         }
+
     }
 
     @Transactional

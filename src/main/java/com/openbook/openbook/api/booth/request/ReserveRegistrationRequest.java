@@ -13,7 +13,7 @@ public record ReserveRegistrationRequest(
         @NotBlank String description,
         @NotNull int price,
         MultipartFile image,
-        @NotNull LocalDate date,
+        @NotNull List<LocalDate> dates,
         @NotEmpty List<String> times
         ) {
 }

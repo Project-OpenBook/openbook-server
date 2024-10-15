@@ -63,10 +63,8 @@ jobs:
         port: 22
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
-          sudo docker rm -f $(docker ps -qa)
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/openbook
-          docker-compose up -d
-          docker image prune -f
+          cd /home/ubuntu
+          ./deploy.sh
 
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).

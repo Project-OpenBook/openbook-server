@@ -47,6 +47,7 @@ public class BoothController {
     @GetMapping("/booths")
     public SliceResponse<BoothBasicData> getBooths(@PageableDefault(size = 6) Pageable pageable,
                                                    @RequestParam(defaultValue = "ALL") String event){
+        return SliceResponse.of(boothService.getBooths(pageable, event).map(BoothBasicData::of));
     }
 
     @ResponseStatus(HttpStatus.OK)

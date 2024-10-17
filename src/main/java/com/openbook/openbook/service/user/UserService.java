@@ -2,6 +2,7 @@ package com.openbook.openbook.service.user;
 
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
+import com.openbook.openbook.service.user.dto.UserProfileDto;
 import com.openbook.openbook.util.TokenProvider;
 import com.openbook.openbook.api.user.request.LoginRequest;
 import com.openbook.openbook.api.user.request.SignUpRequest;
@@ -58,6 +59,12 @@ public class UserService {
         return tokenProvider.generateToken(user.getId(), user.getNickname(), user.getRole().name());
     }
 
+    @Transactional(readOnly = true)
+    public UserProfileDto getUserProfile(Long userId){
+        User user = getUserOrException(userId);
+        return UserProfileDto.of(user);
+    }
+
     public Optional<User> getUserByEmail(final String email) {
         return userRepository.findByEmail(email);
     }
@@ -67,6 +74,4 @@ public class UserService {
                 new OpenBookException(ErrorCode.USER_NOT_FOUND)
         );
     }
-
-
 }

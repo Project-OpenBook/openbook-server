@@ -1,6 +1,7 @@
 package com.openbook.openbook.api.user;
 
 
+import com.openbook.openbook.api.user.response.UserProfileResponse;
 import com.openbook.openbook.util.TokenProvider;
 import com.openbook.openbook.api.ResponseMessage;
 import com.openbook.openbook.api.user.response.TokenInfo;
@@ -13,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +47,12 @@ public class UserController {
     public Map<String, String> login(@RequestBody @Valid final LoginRequest request) {
         String token = userService.login(request);
         return Map.of("token", token);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/manage/profile")
+    public UserProfileResponse getProfile(Authentication authentication){
+        return UserProfileResponse.of(userService.getUserProfile(Long.valueOf(authentication.getName())));
     }
 
 }

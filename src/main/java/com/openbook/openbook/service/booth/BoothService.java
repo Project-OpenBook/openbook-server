@@ -99,10 +99,14 @@ public class BoothService {
 
 
     @Transactional(readOnly = true)
-    public Slice<BoothDto> getBooths(Pageable pageable) {
-        return boothRepository.findAllByStatus(pageable, BoothStatus.APPROVE).map(booth ->
-                BoothDto.of(booth, boothAreaService.getBoothAreasByBoothId(booth.getId()))
-        );
+    public Slice<BoothDto> getBooths(Pageable pageable, String event) {
+        if(event.equals("ALL")) {
+            return boothRepository.findAllByStatus(pageable, BoothStatus.APPROVE).map(booth ->
+                    BoothDto.of(booth, boothAreaService.getBoothAreasByBoothId(booth.getId()))
+            );
+        }
+        return boothRepository.findAllByLinkedEventIdAndStatus(pageable, Long.parseLong(event), BoothStatus.APPROVE)
+                .map(booth -> BoothDto.of(booth, boothAreaService.getBoothAreasByBoothId(booth.getId())));
     }
 
     @Transactional(readOnly = true)

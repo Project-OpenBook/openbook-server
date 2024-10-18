@@ -14,8 +14,7 @@ on:
     branches: [ "dev" ]
 
 jobs:
-  build:
-
+  build-docker-image:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -47,23 +46,35 @@ jobs:
       - name: Check if application.properties exists
         run: test -f ./src/main/resources/application.properties && echo "File exists" || echo "File does not exist"
 
-      # Docker 이미지 빌드 및 openbook 레포지토리에 푸시
-      - name: Docker build & push for openbook
-        run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/openbook:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/openbook:latest
+      - name: docker image build
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/openbook .
 
-      # EC2 서버로 배포
-      - name: Deploy to server
-        uses: appleboy/ssh-action@master
+      - name: docker login
+        uses: docker/login-action@v2
         with:
-          host: ${{ secrets.HOST_DEV }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/ubuntu
-            ./deploy.sh
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: docker Hub push
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/openbook
+
+  run-docker-image-on-ec2:
+    needs: build-docker-image
+    runs-on: self-hosted
+
+    steps:
+      - name: docker pull
+        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/openbook
+
+      - name: docker stop container
+        run: sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
+
+      - name: docker run new container
+        run: sudo docker run --name github-actions-demo --rm -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/openbook
+
+      - name: delete old docker image
+        run: sudo docker system prune -f
+
 
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).

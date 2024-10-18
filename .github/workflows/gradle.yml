@@ -44,6 +44,9 @@ jobs:
           mkdir -p ./src/main/resources
           echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
 
+      - name: Check if application.properties exists
+        run: test -f ./src/main/resources/application.properties && echo "File exists" || echo "File does not exist"
+
       # Docker 이미지 빌드 및 openbook 레포지토리에 푸시
       - name: Docker build & push for openbook
         run: |

@@ -65,6 +65,7 @@ jobs:
     steps:
       - name: deploy
         run: |
+          cd ~
           chmod +x ./deploy.sh
           ./deploy.sh
 

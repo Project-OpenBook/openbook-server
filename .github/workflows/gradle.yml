@@ -64,10 +64,14 @@ jobs:
 
     steps:
       - name: deploy
-        run: |
-          cd ~
-          chmod +x ./deploy.sh
-          ./deploy.sh
+        uses: appleboy/ssh-action@master
+        with:
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            cd ~
+            chmod +x ./deploy.sh
+            ./deploy.sh
 
 
 

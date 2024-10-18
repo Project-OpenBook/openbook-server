@@ -63,17 +63,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: docker pull
-        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/openbook
-
-      - name: docker stop container
-        run: sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
-
-      - name: docker run new container
-        run: sudo docker run --name openbook --rm -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/openbook
-
-      - name: delete old docker image
-        run: sudo docker system prune -f
+      - name: 배포 스크립트 실행
+        run: |
+          sh /home/ubuntu/deploy.sh
 
 
 

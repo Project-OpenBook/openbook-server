@@ -39,12 +39,10 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build -x test
 
-      - name: make application.properties
+      - name: Create application.properties
         run: |
-          mkdir ./src/main/resources
-          cd ./src/main/resources
-          touch ./application.properties
-          echo "${{ secrets.APPLICATION }}" > ./application.properties
+          mkdir -p ./src/main/resources
+          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
 
       # Docker 이미지 빌드 및 openbook 레포지토리에 푸시
       - name: Docker build & push for openbook

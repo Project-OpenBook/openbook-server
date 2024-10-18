@@ -47,7 +47,7 @@ jobs:
         run: test -f ./src/main/resources/application.properties && echo "File exists" || echo "File does not exist"
 
       - name: docker image build
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/openbook .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/openbook:latest .
 
       - name: docker login
         uses: docker/login-action@v2

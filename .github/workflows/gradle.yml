@@ -14,8 +14,7 @@ on:
     branches: [ "dev" ]
 
 jobs:
-  build:
-
+  build-docker-image:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -39,35 +38,42 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build -x test
 
-      - name: make application.yml
+      - name: Create application.properties
         run: |
-          mkdir ./src/main/resources
-          cd ./src/main/resources
-          touch ./application.yml
-          echo "${{ secrets.APPLICATION }}" > ./application.yml
+          mkdir -p ./src/main/resources
+          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
 
-      # docker build & push to develop
-      - name: Docker build & push to dev
-        run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/openbook .
-          docker push ${{ secrets.DOCKER_USERNAME }}/openbook
+      - name: Check if application.properties exists
+        run: test -f ./src/main/resources/application.properties && echo "File exists" || echo "File does not exist"
 
-      ## deploy to develop
-      - name: Deploy to dev
-        uses: appleboy/ssh-action@master
-        id: dev
+      - name: docker image build
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/openbook:latest .
+
+      - name: docker login
+        uses: docker/login-action@v2
         with:
-          host: ${{ secrets.HOST_DEV }} # EC2 퍼블릭 IPv4 DNS
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: docker Hub push
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/openbook
+
+  run-docker-image-on-ec2:
+    needs: build-docker-image
+    runs-on: self-hosted
+
+    steps:
+      - name: deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DEV }}
           username: ${{ secrets.USERNAME }}
-          port: 22
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          envs: GITHUB_SHA
           script: |
-            sudo docker rm -f $(docker ps -qa)
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/openbook
-            docker-compose up -d
-            docker image prune -f
+            cd ~
+            chmod +x ./deploy.sh
+            ./deploy.sh
+
 
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).

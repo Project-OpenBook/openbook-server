@@ -22,7 +22,7 @@ public record BoothDetail(
         String accountNumber,
         String accountBankName,
         List<BoothAreaDto> location,
-        List<String> tags,
+        List<BoothTagDto> tags,
         UserPublicResponse manager,
         EventPublicResponse event
 ) {
@@ -37,7 +37,7 @@ public record BoothDetail(
                 booth.accountNumber(),
                 booth.accountBankName(),
                 booth.locations(),
-                booth.tags().stream().map(BoothTagDto::name).toList(),
+                booth.tags(),
                 UserPublicResponse.of(booth.manager()),
                 EventPublicResponse.of(booth.linkedEvent())
         );

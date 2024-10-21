@@ -5,8 +5,10 @@ import com.openbook.openbook.api.ResponseMessage;
 import com.openbook.openbook.api.SliceResponse;
 import com.openbook.openbook.api.user.request.BookmarkRequest;
 import com.openbook.openbook.api.user.response.BookmarkResponse;
+import com.openbook.openbook.domain.user.dto.BookmarkType;
 import com.openbook.openbook.service.user.BookmarkService;
 import jakarta.validation.Valid;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookmarkController {
 
     private final BookmarkService bookmarkService;
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/bookmark")
+    public Map<String, Boolean> bookmarked(Authentication authentication,
+                                           @RequestParam(value = "type") BookmarkType type,
+                                           @RequestParam(value = "resourceId") long resourceId) {
+        Boolean bookmark = bookmarkService.isUserBookmark(Long.parseLong(authentication.getName()), type, resourceId);
+        return Map.of("bookmark", bookmark);
+    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/bookmark")

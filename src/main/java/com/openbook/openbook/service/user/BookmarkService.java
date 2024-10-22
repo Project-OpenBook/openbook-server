@@ -28,11 +28,15 @@ public class BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
 
+    public boolean isUserBookmark(long userId, BookmarkType type, long resourceId) {
+        return bookmarkRepository.existsByUserIdAndResourceIdAndBookmarkType(userId, resourceId, type);
+    }
+
     @Transactional
     public void createBookmark(long userId, BookmarkRequest request) {
         User user = userService.getUserOrException(userId);
         BookmarkType type = BookmarkType.fromString(request.type());
-        if(bookmarkRepository.existsByUserIdAndResourceIdAndBookmarkType(userId, request.resourceId(), type)) {
+        if(isUserBookmark(userId, type, request.resourceId())) {
             throw new OpenBookException(ErrorCode.ALREADY_BOOKMARK);
         }
         bookmarkRepository.save( Bookmark.builder()

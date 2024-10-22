@@ -1,5 +1,6 @@
 package com.openbook.openbook.api.booth;
 
+import com.openbook.openbook.api.booth.request.ReserveModifyRequest;
 import com.openbook.openbook.api.booth.request.ReserveRegistrationRequest;
 import com.openbook.openbook.api.booth.request.ReserveStatusUpdateRequest;
 import com.openbook.openbook.api.booth.response.BoothReserveResponse;
@@ -8,6 +9,8 @@ import com.openbook.openbook.service.booth.BoothReservationService;
 import com.openbook.openbook.api.ResponseMessage;
 import jakarta.validation.Valid;
 import java.util.List;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -67,6 +70,15 @@ public class BoothReservationController {
                                                @RequestBody ReserveStatusUpdateRequest request ){
         reservationService.changeReserveStatus(detail_id, request, Long.valueOf(authentication.getName()));
         return new ResponseMessage("예약 상태가 변경되었습니다.");
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/booth/reserve/{reserve_id}")
+    public ResponseMessage modifyReservation(Authentication authentication,
+                                             @PathVariable Long reserve_id,
+                                             @NotNull ReserveModifyRequest request){
+        reservationService.modifyReservation(Long.valueOf(authentication.getName()), reserve_id, request);
+        return new ResponseMessage("예약이 변경되었습니다.");
     }
 
 }

@@ -1,5 +1,6 @@
 package com.openbook.openbook.service.booth;
 
+import com.openbook.openbook.api.booth.request.ReserveModifyRequest;
 import com.openbook.openbook.api.booth.request.ReserveRegistrationRequest;
 import com.openbook.openbook.api.booth.request.ReserveStatusUpdateRequest;
 import com.openbook.openbook.domain.booth.BoothReservationDetail;
@@ -12,6 +13,7 @@ import com.openbook.openbook.repository.booth.BoothReservationRepository;
 import com.openbook.openbook.service.booth.dto.BoothReservationDto;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
+import com.openbook.openbook.service.booth.dto.BoothReservationUpdateData;
 import com.openbook.openbook.service.user.AlarmService;
 import com.openbook.openbook.util.S3Service;
 import com.openbook.openbook.domain.user.User;
@@ -152,5 +154,30 @@ public class BoothReservationService {
         if(!booth.getManager().getId().equals(userId)){
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
+    }
+
+    @Transactional
+    public void modifyReservation(Long userId, long reserveId, ReserveModifyRequest request){
+        BoothReservation reservation = getBoothReservationOrException(reserveId);
+        VerifyUserIsManagerOfBooth(reservation.getLinkedBooth(), userId);
+
+        reservation.updateReservation(BoothReservationUpdateData.builder()
+                        .name(request.name())
+                        .description(request.description())
+                        .image((request.image()!=null) ? s3Service.uploadFileAndGetUrl(request.image()):null)
+                        .price(request.price())
+                        .date(request.date())
+                        .build()
+        );
+
+        if(request.timesToAdd() != null || request.timesToDelete() != null){
+            reservationDetailService.modifyReservationDetail(reservation, request.timesToAdd(), request.timesToDelete());
+        }
+    }
+
+    private BoothReservation getBoothReservationOrException(long reserveId){
+        return boothReservationRepository.findById(reserveId).orElseThrow(
+                () -> new OpenBookException(ErrorCode.RESERVATION_NOT_FOUND)
+        );
     }
 }

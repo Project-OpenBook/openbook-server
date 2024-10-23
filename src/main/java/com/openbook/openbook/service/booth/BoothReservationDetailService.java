@@ -65,6 +65,7 @@ public class BoothReservationDetailService {
     @Transactional
     public void modifyReservationDetail(BoothReservation reservation, List<String> addTimes, List<Long> deleteTimes){
         if(addTimes != null){
+            checkAvailableTime(addTimes, reservation.getLinkedBooth());
             for(String time : addTimes){
                 if(boothReservationDetailRepository.existsByLinkedReservationAndTime(reservation, time)){
                     throw new OpenBookException(ErrorCode.ALREADY_RESERVED_TIME);
@@ -76,6 +77,9 @@ public class BoothReservationDetailService {
         if(deleteTimes != null){
             for(Long deleteId : deleteTimes){
                 BoothReservationDetail detail = getReservationDetailOrException(deleteId);
+                if(!detail.getStatus().equals(BoothReservationStatus.EMPTY)){
+                    throw new OpenBookException(ErrorCode.UNDELETEABLE_RESERVED_SERVICE);
+                }
                 boothReservationDetailRepository.delete(detail);
             }
         }

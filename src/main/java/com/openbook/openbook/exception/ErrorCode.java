@@ -46,7 +46,7 @@ public enum ErrorCode {
     ALREADY_RESERVED_TIME(HttpStatus.CONFLICT, "이미 존재하는 예약 시간 입니다."),
     DUPLICATE_RESERVED_TIME(HttpStatus.CONFLICT, "중복 되는 시간 데이터가 있습니다."),
     ALREADY_RESERVED_SERVICE(HttpStatus.CONFLICT, "이미 예약된 시간 입니다."),
-    UNDELETEABLE_RESERVED_SERVICE(HttpStatus.CONFLICT, "예약자가 있어 삭제 불가합니다."),
+    RESERVATION_EXIST(HttpStatus.CONFLICT, "예약자가 존재합니다."),
 
     ALREADY_BOOKMARK(HttpStatus.CONFLICT, "이미 북마크 목록에 존재합니다."),
 

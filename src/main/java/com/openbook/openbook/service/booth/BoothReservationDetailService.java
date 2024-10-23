@@ -78,7 +78,7 @@ public class BoothReservationDetailService {
             for(Long deleteId : deleteTimes){
                 BoothReservationDetail detail = getReservationDetailOrException(deleteId);
                 if(!detail.getStatus().equals(BoothReservationStatus.EMPTY)){
-                    throw new OpenBookException(ErrorCode.UNDELETEABLE_RESERVED_SERVICE);
+                    throw new OpenBookException(ErrorCode.RESERVATION_EXIST);
                 }
                 boothReservationDetailRepository.delete(detail);
             }

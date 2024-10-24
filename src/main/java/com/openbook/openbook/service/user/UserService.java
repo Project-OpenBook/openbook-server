@@ -1,8 +1,10 @@
 package com.openbook.openbook.service.user;
 
+import com.openbook.openbook.api.user.request.UserModifyRequest;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
 import com.openbook.openbook.service.user.dto.UserProfileDto;
+import com.openbook.openbook.service.user.dto.UserUpdateDto;
 import com.openbook.openbook.util.TokenProvider;
 import com.openbook.openbook.api.user.request.LoginRequest;
 import com.openbook.openbook.api.user.request.SignUpRequest;
@@ -63,6 +65,16 @@ public class UserService {
     public UserProfileDto getUserProfile(Long userId){
         User user = getUserOrException(userId);
         return UserProfileDto.of(user);
+    }
+
+    @Transactional
+    public void modifyUser(long userId, UserModifyRequest request){
+        User user = getUserOrException(userId);
+        user.updateUser(UserUpdateDto.builder()
+                        .name(request.name())
+                        .nickname(request.nickname())
+                        .email(request.email())
+                        .build());
     }
 
     public Optional<User> getUserByEmail(final String email) {

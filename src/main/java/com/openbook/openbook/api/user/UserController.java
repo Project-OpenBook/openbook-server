@@ -1,6 +1,7 @@
 package com.openbook.openbook.api.user;
 
 
+import com.openbook.openbook.api.user.request.UserModifyRequest;
 import com.openbook.openbook.api.user.response.UserProfileResponse;
 import com.openbook.openbook.util.TokenProvider;
 import com.openbook.openbook.api.ResponseMessage;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -53,6 +55,14 @@ public class UserController {
     @GetMapping("/manage/profile")
     public UserProfileResponse getProfile(Authentication authentication){
         return UserProfileResponse.of(userService.getUserProfile(Long.valueOf(authentication.getName())));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/manage/profile")
+    public ResponseMessage modifyUser(Authentication authentication,
+                                      @NotNull UserModifyRequest request){
+        userService.modifyUser(Long.parseLong(authentication.getName()), request);
+        return new ResponseMessage("프로필 수정에 성공했습니다.");
     }
 
 }

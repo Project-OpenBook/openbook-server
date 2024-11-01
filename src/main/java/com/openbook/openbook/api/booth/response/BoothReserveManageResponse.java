@@ -21,7 +21,8 @@ public record BoothReserveManageResponse(
                 reservation.price(),
                 reservation.imageUrl(),
                 reservation.groupedDetails().entrySet().stream()
-                        .map(entry -> new BoothReservationDateDto(Formatter.getFormattingDate(entry.getKey().atStartOfDay()), entry.getValue()))
+                        .map(entry -> new BoothReservationDateDto(
+                                Formatter.getFormattingDate(entry.getKey().atStartOfDay()), entry.getValue()))
                         .toList()
         );
     }

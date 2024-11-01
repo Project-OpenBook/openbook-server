@@ -1,6 +1,7 @@
 package com.openbook.openbook.api.booth.response;
 
 import com.openbook.openbook.service.booth.dto.BoothReservationDateDto;
+import com.openbook.openbook.service.booth.dto.BoothReservationDetailDto;
 import com.openbook.openbook.service.booth.dto.BoothReservationDto;
 import com.openbook.openbook.util.Formatter;
 import java.util.List;
@@ -24,7 +25,15 @@ public record BoothReserveResponse(
                 reservation.imageUrl(),
                 reservation.groupedDetails().entrySet().stream()
                         .map(entry -> new BoothReservationDateDto(
-                                Formatter.getFormattingDate(entry.getKey().atStartOfDay()), entry.getValue()))
+                                Formatter.getFormattingDate(entry.getKey().atStartOfDay()),
+                                entry.getValue().stream()
+                                        .map(detail -> new BoothReservationDetailDto(
+                                                detail.id(),
+                                                detail.times(),
+                                                detail.status(),
+                                                null
+                                        )).toList()
+                        ))
                         .toList()
         );
     }

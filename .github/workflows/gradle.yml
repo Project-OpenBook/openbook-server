@@ -71,8 +71,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             cd ~
-            chmod +x ./deploy.sh
-            ./deploy.sh
+            chmod +x ./deploytest.sh
+            ./deploytest.sh
 
 
 

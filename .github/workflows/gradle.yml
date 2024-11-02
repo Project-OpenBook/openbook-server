@@ -72,7 +72,7 @@ jobs:
           script: |
             cd ~
             chmod +x ./deploy.sh
-            ./deploy.sh
+            ./deploytest.sh
 
 
 

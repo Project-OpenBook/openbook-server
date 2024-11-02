@@ -25,6 +25,7 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     private final String[] permitPaths = {
+            "/actuator/health",
             "/login",
             "/signup",
             "/booths",

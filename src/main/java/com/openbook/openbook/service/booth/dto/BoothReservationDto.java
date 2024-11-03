@@ -3,6 +3,8 @@ package com.openbook.openbook.service.booth.dto;
 import com.openbook.openbook.domain.booth.BoothReservation;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public record BoothReservationDto(
         long id,
@@ -10,8 +12,7 @@ public record BoothReservationDto(
         String description,
         String imageUrl,
         int price,
-        LocalDate date,
-        List<BoothReservationDetailDto> details
+        Map<LocalDate, List<BoothReservationDetailDto>> groupedDetails
 ) {
     public static BoothReservationDto of(BoothReservation boothReservation) {
         return new BoothReservationDto(
@@ -20,8 +21,11 @@ public record BoothReservationDto(
                 boothReservation.getDescription(),
                 boothReservation.getImageUrl(),
                 boothReservation.getPrice(),
-                boothReservation.getDate(),
-                boothReservation.getBoothReservationDetails().stream().map(BoothReservationDetailDto::of).toList()
+                boothReservation.getBoothReservationDetails().stream()
+                        .collect(Collectors.groupingBy(
+                                detail -> detail.getLinkedReservation().getDate(),
+                                Collectors.mapping(BoothReservationDetailDto::of, Collectors.toList())
+                        ))
         );
     }
 }

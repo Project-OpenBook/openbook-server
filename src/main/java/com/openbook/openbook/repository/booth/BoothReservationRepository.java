@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface BoothReservationRepository extends JpaRepository<BoothReservation, Long> {
-    @Query("SELECT b FROM BoothReservation b WHERE b.linkedBooth.id=:boothId GROUP BY b.date")
+    @Query("SELECT b FROM BoothReservation b WHERE b.linkedBooth.id=:boothId ")
     List<BoothReservation> findBoothReservationByLinkedBoothId(Long boothId);
     boolean existsByLinkedBoothIdAndDateAndName(Long boothId, LocalDate date, String name);
 }

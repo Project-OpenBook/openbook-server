@@ -9,6 +9,8 @@ import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.domain.booth.BoothReservation;
 import com.openbook.openbook.domain.user.dto.AlarmType;
 import com.openbook.openbook.repository.booth.BoothReservationRepository;
+import com.openbook.openbook.service.booth.dto.BoothReservationDateDto;
+import com.openbook.openbook.service.booth.dto.BoothReservationDetailDto;
 import com.openbook.openbook.service.booth.dto.BoothReservationDto;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
@@ -22,6 +24,9 @@ import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -52,13 +57,43 @@ public class BoothReservationService {
         if(!booth.getStatus().equals(BoothStatus.APPROVE)){
             throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
         }
-        return getBoothReservations(booth.getId()).stream().map(BoothReservationDto::of).toList();
+        return getGroupReservation(boothId);
     }
 
     @Transactional
     public List<BoothReservationDto> getAllManageReservations(Long userId, Long boothId){
-        Booth booth = getValidBoothOrException(userId, boothId);
-        return getBoothReservations(booth.getId()).stream().map(BoothReservationDto::of).toList();
+        Booth booth = boothService.getBoothOrException(boothId);
+        if(!booth.getManager().getId().equals(userId)){
+            throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        return getGroupReservation(boothId);
+    }
+
+    private List<BoothReservationDto> getGroupReservation(Long boothId){
+        List<BoothReservation> reservations = getBoothReservations(boothId);
+        Map<String, List<BoothReservation>> groupedByName = reservations.stream()
+                .collect(Collectors.groupingBy(BoothReservation::getName));
+
+        return groupedByName.values().stream()
+                .map(groupedReservations -> {
+                    BoothReservation firstReservation = groupedReservations.get(0);
+                    List<BoothReservationDateDto> reservationsByDate = groupedReservations.stream()
+                            .collect(Collectors.groupingBy(BoothReservation::getDate))
+                            .entrySet().stream()
+                            .map(dateEntry -> {
+                                LocalDate date = dateEntry.getKey();
+                                List<BoothReservationDetailDto> details = dateEntry.getValue().stream()
+                                        .flatMap(reservation -> reservationDetailService
+                                                .getReservationDetails(reservation.getId()).stream())
+                                        .collect(Collectors.toList());
+
+                                return BoothReservationDateDto.of(date, details);
+                            })
+                            .collect(Collectors.toList());
+
+                    return BoothReservationDto.of(firstReservation, reservationsByDate);
+                })
+                .collect(Collectors.toList());
     }
 
     public void reserveBooth(Long userId, Long detailId){
@@ -73,9 +108,8 @@ public class BoothReservationService {
         if(!boothReservationDetail.getStatus().equals(BoothReservationStatus.EMPTY)) {
             throw new OpenBookException(ErrorCode.ALREADY_RESERVED_SERVICE);
         }
-
-        if(LocalTime.parse(boothReservationDetail.getTime()).isBefore(LocalTime.now())){
-            throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
+        if(boothReservationDetail.getLinkedReservation().getDate().isBefore(LocalDate.now())){
+            throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_DATE);
         }
     }
 

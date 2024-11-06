@@ -8,6 +8,7 @@ import com.openbook.openbook.repository.booth.BoothReservationDetailRepository;
 import com.openbook.openbook.exception.ErrorCode;
 import com.openbook.openbook.exception.OpenBookException;
 import com.openbook.openbook.domain.user.User;
+import com.openbook.openbook.service.booth.dto.BoothReservationDetailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,15 @@ public class BoothReservationDetailService {
                             .build()
             );
         }
+    }
+
+    public List<BoothReservationDetailDto> getReservationDetails(Long reserveId) {
+        List<BoothReservationDetail> details = boothReservationDetailRepository
+                .findByLinkedReservationId(reserveId);
+
+        return details.stream()
+                .map(BoothReservationDetailDto::of)
+                .collect(Collectors.toList());
     }
 
     private void checkAvailableTime(List<String> times, Booth booth){

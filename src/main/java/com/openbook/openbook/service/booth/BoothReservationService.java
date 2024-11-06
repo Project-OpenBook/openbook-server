@@ -108,9 +108,8 @@ public class BoothReservationService {
         if(!boothReservationDetail.getStatus().equals(BoothReservationStatus.EMPTY)) {
             throw new OpenBookException(ErrorCode.ALREADY_RESERVED_SERVICE);
         }
-
-        if(LocalTime.parse(boothReservationDetail.getTime()).isBefore(LocalTime.now())){
-            throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_TIME);
+        if(boothReservationDetail.getLinkedReservation().getDate().isBefore(LocalDate.now())){
+            throw new OpenBookException(ErrorCode.UNAVAILABLE_RESERVED_DATE);
         }
     }
 

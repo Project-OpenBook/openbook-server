@@ -57,7 +57,7 @@ public class BoothReservationService {
         if(!booth.getStatus().equals(BoothStatus.APPROVE)){
             throw new OpenBookException(ErrorCode.BOOTH_NOT_APPROVED);
         }
-        return getGroupReservation(boothId);
+        return getGroupReservation(boothId, false);
     }
 
     @Transactional
@@ -66,10 +66,10 @@ public class BoothReservationService {
         if(!booth.getManager().getId().equals(userId)){
             throw new OpenBookException(ErrorCode.FORBIDDEN_ACCESS);
         }
-        return getGroupReservation(boothId);
+        return getGroupReservation(boothId, true);
     }
 
-    private List<BoothReservationDto> getGroupReservation(Long boothId){
+    private List<BoothReservationDto> getGroupReservation(Long boothId, boolean isAdmin) {
         List<BoothReservation> reservations = getBoothReservations(boothId);
         Map<String, List<BoothReservation>> groupedByName = reservations.stream()
                 .collect(Collectors.groupingBy(BoothReservation::getName));
@@ -85,6 +85,18 @@ public class BoothReservationService {
                                 List<BoothReservationDetailDto> details = dateEntry.getValue().stream()
                                         .flatMap(reservation -> reservationDetailService
                                                 .getReservationDetails(reservation.getId()).stream())
+                                        .map(detail -> {
+                                            if (isAdmin) {
+                                                return detail;
+                                            } else {
+                                                return new BoothReservationDetailDto(
+                                                        detail.id(),
+                                                        detail.times(),
+                                                        detail.status(),
+                                                        null
+                                                );
+                                            }
+                                        })
                                         .collect(Collectors.toList());
 
                                 return BoothReservationDateDto.of(date, details);

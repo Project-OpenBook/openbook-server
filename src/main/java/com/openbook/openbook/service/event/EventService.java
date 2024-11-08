@@ -188,7 +188,7 @@ public class EventService {
         Sort.Direction direction = "asc".equalsIgnoreCase(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
         String sortProperty = searchType.equals("eventName") ? "registeredAt" : "linkedEvent.registeredAt";
 
-        return PageRequest.of(page, 6, Sort.by(direction, sortProperty));
+        return PageRequest.of(page, 8, Sort.by(direction, sortProperty));
     }
 
 

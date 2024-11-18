@@ -43,4 +43,8 @@ public class BoothReservationDetail {
         this.status = status;
         this.user = user;
     }
+
+    public void updateReservationDetail(String time){
+        this.time = time;
+    }
 }

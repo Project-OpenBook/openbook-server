@@ -73,5 +73,27 @@ public class BoothReservationDetailService {
         boothReservationDetail.updateUser(BoothReservationStatus.WAITING, user);
     }
 
+    @Transactional
+    public void modifyReservationDetail(BoothReservation reservation, List<String> addTimes, List<Long> deleteTimes){
+        if(addTimes != null){
+            checkAvailableTime(addTimes, reservation.getLinkedBooth());
+            for(String time : addTimes){
+                if(boothReservationDetailRepository.existsByLinkedReservationAndTime(reservation, time)){
+                    throw new OpenBookException(ErrorCode.ALREADY_RESERVED_TIME);
+                }
+            }
+            createReservationDetail(addTimes, reservation, reservation.getLinkedBooth());
+        }
+
+        if(deleteTimes != null){
+            for(Long deleteId : deleteTimes){
+                BoothReservationDetail detail = getReservationDetailOrException(deleteId);
+                if(!detail.getStatus().equals(BoothReservationStatus.EMPTY)){
+                    throw new OpenBookException(ErrorCode.RESERVATION_EXIST);
+                }
+                boothReservationDetailRepository.delete(detail);
+            }
+        }
+    }
 
 }

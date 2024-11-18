@@ -1,5 +1,6 @@
 package com.openbook.openbook.domain.booth;
 
+import com.openbook.openbook.service.booth.dto.BoothReservationUpdateData;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -42,5 +43,23 @@ public class BoothReservation {
         this.imageUrl = imageUrl;
         this.price = price;
         this.linkedBooth = linkedBooth;
+    }
+
+    public void updateReservation(BoothReservationUpdateData updateData){
+        if(updateData.name() != null){
+            this.name = updateData.name();
+        }
+        if(updateData.description() != null){
+            this.description = updateData.description();
+        }
+        if(updateData.image() != null){
+            this.imageUrl = updateData.image();
+        }
+        if(updateData.price() != null){
+            this.price = updateData.price();
+        }
+        if(updateData.date() != null){
+            this.date = updateData.date();
+        }
     }
 }

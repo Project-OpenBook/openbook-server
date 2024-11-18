@@ -47,7 +47,7 @@ jobs:
         run: test -f ./src/main/resources/application.properties && echo "File exists" || echo "File does not exist"
 
       - name: docker image build
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/openbook:latest .
+        run: docker build --build-arg DEPENDENCY=build/dependency -t ${{ secrets.DOCKER_USERNAME }}/openbook --platform linux/amd64 .
 
       - name: docker login
         uses: docker/login-action@v2
@@ -71,9 +71,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             cd ~
-            chmod +x ./deploy.sh
-            ./deploy.sh
-
+            chmod +x ./deploytest.sh
+            ./deploytest.sh
 
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).

@@ -41,6 +41,7 @@ public enum ErrorCode {
     EVENT_NOT_APPROVED(HttpStatus.CONFLICT, "승인되지 않은 행사입니다."),
     BOOTH_NOT_APPROVED(HttpStatus.CONFLICT, "승인되지 않은 부스입니다."),
 
+    UNAVAILABLE_RESERVED_DATE(HttpStatus.CONFLICT, "예약 가능 날짜가 아닙니다."),
     UNAVAILABLE_RESERVED_TIME(HttpStatus.CONFLICT, "예약 가능 시간이 아닙니다."),
     ALREADY_RESERVED_DATE(HttpStatus.CONFLICT, "이미 존재하는 예약 날짜 입니다."),
     ALREADY_RESERVED_TIME(HttpStatus.CONFLICT, "이미 존재하는 예약 시간 입니다."),

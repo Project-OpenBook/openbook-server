@@ -4,6 +4,7 @@ import com.openbook.openbook.domain.booth.Booth;
 import com.openbook.openbook.domain.event.Event;
 import com.openbook.openbook.domain.EntityBasicTime;
 import com.openbook.openbook.domain.user.dto.UserRole;
+import com.openbook.openbook.service.user.dto.UserUpdateDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -56,5 +57,17 @@ public class User extends EntityBasicTime {
         this.name = name;
         this.nickname = nickname;
         this.role = role;
+    }
+
+    public void updateUser(UserUpdateDto updateDto){
+        if(updateDto.name() != null){
+            this.name = updateDto.name();
+        }
+        if(updateDto.nickname() != null){
+            this.nickname = updateDto.nickname();
+        }
+        if(updateDto.email() != null){
+            this.email = updateDto.email();
+        }
     }
 }

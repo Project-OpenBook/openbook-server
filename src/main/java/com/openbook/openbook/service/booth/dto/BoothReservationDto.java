@@ -11,9 +11,9 @@ public record BoothReservationDto(
         String imageUrl,
         int price,
         LocalDate date,
-        List<BoothReservationDetailDto> details
+        List<BoothReservationDateDto> details
 ) {
-    public static BoothReservationDto of(BoothReservation boothReservation) {
+    public static BoothReservationDto of(BoothReservation boothReservation, List<BoothReservationDateDto> details) {
         return new BoothReservationDto(
                 boothReservation.getId(),
                 boothReservation.getName(),
@@ -21,7 +21,7 @@ public record BoothReservationDto(
                 boothReservation.getImageUrl(),
                 boothReservation.getPrice(),
                 boothReservation.getDate(),
-                boothReservation.getBoothReservationDetails().stream().map(BoothReservationDetailDto::of).toList()
+                details
         );
     }
 }
